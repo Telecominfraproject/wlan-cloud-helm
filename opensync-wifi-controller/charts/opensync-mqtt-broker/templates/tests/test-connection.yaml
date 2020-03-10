@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "opensync-mqtt-broker.fullname" . }}-test-connection"
+  labels:
+    {{- include "opensync-mqtt-broker.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "opensync-mqtt-broker.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never

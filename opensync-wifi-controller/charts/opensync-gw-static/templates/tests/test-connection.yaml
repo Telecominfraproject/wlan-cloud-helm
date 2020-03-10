@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "opensync-gw-static.fullname" . }}-test-connection"
+  labels:
+    {{- include "opensync-gw-static.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "opensync-gw-static.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never

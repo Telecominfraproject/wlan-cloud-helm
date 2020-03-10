@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "opensync-gw-static.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "opensync-gw-static.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "opensync-gw-static.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "opensync-gw-static.selectorLabels" . | nindent 8 }}
+    spec:
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecrets.name }} 
+      serviceAccountName: {{ include "opensync-gw-static.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+          - mountPath: /opt/tip-wlan/certs/client_keystore.jks
+            name: opensync-gw-static-truststore
+            subPath: client_keystore.jks
+          - mountPath: /opt/tip-wlan/certs/truststore.jks
+            name: opensync-gw-static-truststore
+            subPath: truststore.jks
+          - mountPath: /opt/tip-wlan/certs/server.pkcs12
+            name: opensync-gw-static-truststore
+            subPath: server.pkcs12
+          - mountPath: /opt/tip-wlan/certs/httpClientConfig.json
+            name: opensync-gw-static-truststore
+            subPath: httpClientConfig.json
+          - mountPath: /opt/tip-wlan/certs/ssl.properties
+            name: opensync-gw-static-truststore
+            subPath: ssl.properties
+          ports:
+            - name: {{ .Values.service.name1 }}
+              containerPort: {{ .Values.service.port1 }}
+              protocol: TCP
+            - name: {{ .Values.service.name2 }}
+              containerPort: {{ .Values.service.port2 }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+
+      volumes:
+      - name: opensync-gw-static-truststore
+        secret:
+          secretName: opensync-common-certs

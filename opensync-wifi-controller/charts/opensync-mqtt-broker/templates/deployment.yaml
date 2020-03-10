@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "opensync-mqtt-broker.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "opensync-mqtt-broker.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "opensync-mqtt-broker.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "opensync-mqtt-broker.selectorLabels" . | nindent 8 }}
+    spec:
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecrets.name }} 
+      serviceAccountName: {{ include "opensync-mqtt-broker.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+          - mountPath: /certs/cacert.pem
+            name: opensync-mqtt-broker-truststore
+            subPath: cacert.pem
+          - mountPath: /certs/servercert.pem
+            name: opensync-mqtt-broker-truststore
+            subPath: servercert.pem
+          - mountPath: /certs/serverkey_dec.pem
+            name: opensync-mqtt-broker-truststore
+            subPath: serverkey_dec.pem
+          - mountPath: /mosquitto/config/mosquitto.conf
+            name: opensync-mqtt-broker-conf
+            subPath: mosquitto.conf
+          ports:
+            - name: {{ .Values.service.name1 }}
+              containerPort: {{ .Values.service.port1 }}
+              protocol: TCP
+            - name: {{ .Values.service.name2 }}
+              containerPort: {{ .Values.service.port2 }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      volumes:
+      - name: opensync-mqtt-broker-truststore
+        secret:
+          secretName: opensync-mqtt-broker-certs
+      - name: opensync-mqtt-broker-conf
+        configMap:
+            name: mosquitto-config
