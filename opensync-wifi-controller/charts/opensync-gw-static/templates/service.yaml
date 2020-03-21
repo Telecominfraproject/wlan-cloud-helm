@@ -12,11 +12,9 @@ spec:
       targetPort: {{ .Values.service.port1 }}
       protocol: TCP
       name: {{ .Values.service.name1 }}
-      nodePort: {{ .Values.service.nodePort1 }}
     - port: {{ .Values.service.port2 }}
       targetPort: {{ .Values.service.port2 }}
       protocol: TCP
       name: {{ .Values.service.name2 }}
-      nodePort: {{ .Values.service.nodePort2 }}
   selector:
     {{- include "opensync-gw-static.selectorLabels" . | nindent 4 }}

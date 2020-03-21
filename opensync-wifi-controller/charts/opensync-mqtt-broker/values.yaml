@@ -36,12 +36,10 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: NodePort
+  type: ClusterIP
   port1: 1883
-  nodePort1: 31883
   name1: listener
   port2: 9001
-  nodePort2: 30009
   name2: debug
 
 ingress:

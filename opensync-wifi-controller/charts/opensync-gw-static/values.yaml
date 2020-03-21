@@ -8,7 +8,7 @@ namespace: connectus
 
 image:
   repository: ec2-54-80-163-0.compute-1.amazonaws.com:5000/opensync_gateway:0.0.1-SNAPSHOT
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 imagePullSecrets:
   name: new-regcred
@@ -36,12 +36,10 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: NodePort
+  type: ClusterIP
   port1: 6640
-  nodePort1: 31640
   name1: controller
   port2: 6643
-  nodePort2: 31643
   name2: redirector
 
 ingress:
