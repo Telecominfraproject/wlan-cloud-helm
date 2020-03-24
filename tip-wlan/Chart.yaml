@@ -1,6 +1,6 @@
 apiVersion: v2
-name: opensync-wifi-controller
-description: A Helm chart for Kubernetes
+name: tip-wlan
+description: Telecom Infra Platform - Wifi
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -19,3 +19,8 @@ version: 0.1.0
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
 appVersion: 1.16.0
+
+home: https://telecominfraproject.com/wifi/
+sources:
+- https://github.com/Telecominfraproject
+icon: 
