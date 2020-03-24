@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: coffee
-  namespace: connectus
+  namespace: {{ .Values.global.namespace }}
 spec:
   replicas: 2
   selector:
@@ -23,7 +23,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: coffee-svc
-  namespace: connectus
+  namespace: {{ .Values.global.namespace }}
 spec:
   ports:
   - port: 80
@@ -37,7 +37,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: tea
-  namespace: connectus
+  namespace: {{ .Values.global.namespace }}
 spec:
   replicas: 3
   selector:
@@ -58,7 +58,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: tea-svc
-  namespace: connectus
+  namespace: {{ .Values.global.namespace }}
   labels:
 spec:
   ports:

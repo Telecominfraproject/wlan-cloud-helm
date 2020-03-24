@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: cafe-ingress
-  namespace: connectus
+  namespace: {{ .Values.global.namespace }}
 spec:
   tls:
   - hosts:

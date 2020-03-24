@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "opensync-mqtt-broker.fullname" . }}
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Values.global.namespace }}
   labels:
     {{- include "opensync-mqtt-broker.labels" . | nindent 4 }}
 spec:

@@ -24,3 +24,14 @@ home: https://telecominfraproject.com/wifi/
 sources:
 - https://github.com/Telecominfraproject
 icon: 
+
+dependencies:
+  - name: opensync-gw-static
+    version: 0.1.0
+    condition: opensync-gw-static.enabled
+  - name: opensync-mqtt-broker
+    version: 0.1.0
+    condition: opensync-mqtt-broker.enabled
+  - name: nginx-ingress
+    version: 0.1.0
+    condition: nginx-ingress-controller.enabled

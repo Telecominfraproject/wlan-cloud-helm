@@ -1,14 +1,15 @@
 # Default values for opensync-gw.
 # This is a YAML-formatted file.
+
+#################################################################
+# Application configuration defaults.
+#################################################################
+
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
-namespace: connectus
-
-image:
-  repository: ec2-54-80-163-0.compute-1.amazonaws.com:5000/opensync_gateway:0.0.1-SNAPSHOT
-  pullPolicy: IfNotPresent
+image: opensync_gateway:0.0.1-SNAPSHOT
 
 imagePullSecrets:
   name: new-regcred

@@ -1,4 +1,8 @@
+{{- if and .Release.Namespace (.Values.createReleaseNamespace | default false) -}}
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: {{ .Values.namespace }}
+  name: {{ .Values.global.namespace }}
+  labels:
+    release: {{ .Release.Name }}
+{{- end -}}

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "opensync-mqtt-broker.fullname" . }}
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Values.global.namespace }}
   labels:
     {{- include "opensync-mqtt-broker.labels" . | nindent 4 }}
 spec:
@@ -24,8 +24,8 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.image }}"
+          imagePullPolicy: {{ .Values.global.pullPolicy }}
           volumeMounts:
           - mountPath: /certs/cacert.pem
             name: opensync-mqtt-broker-truststore
