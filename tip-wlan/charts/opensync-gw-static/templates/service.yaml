@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "opensync-gw-static.fullname" . }}
-  namespace: {{ .Values.global.namespace }}
+  name: {{ include "common.fullname" . }}
+  namespace: {{ include "common.namespace" . }}
   labels:
-    {{- include "opensync-gw-static.labels" . | nindent 4 }}
+    {{- include "common.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -17,4 +17,4 @@ spec:
       protocol: TCP
       name: {{ .Values.service.name2 }}
   selector:
-    {{- include "opensync-gw-static.selectorLabels" . | nindent 4 }}
+    {{- include "common.selectorLabels" . | nindent 4 }}

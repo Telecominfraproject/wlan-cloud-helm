@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: coffee
-  namespace: {{ .Values.global.namespace }}
+  namespace: {{ include "common.namespace" . }}
 spec:
   replicas: 2
   selector:
@@ -23,7 +23,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: coffee-svc
-  namespace: {{ .Values.global.namespace }}
+  namespace: {{ include "common.namespace" . }}
 spec:
   ports:
   - port: 80
@@ -37,7 +37,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: tea
-  namespace: {{ .Values.global.namespace }}
+  namespace: {{ include "common.namespace" . }}
 spec:
   replicas: 3
   selector:
@@ -58,7 +58,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: tea-svc
-  namespace: {{ .Values.global.namespace }}
+  namespace: {{ include "common.namespace" . }}
   labels:
 spec:
   ports:

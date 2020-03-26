@@ -12,9 +12,9 @@ global:
   # Change to an unused port prefix range to prevent port conflicts
   # with other instances running within the same k8s cluster
   nodePortPrefix: 302
-
+  nsPrefix: connectus
   # namespace to deploy the release
-  namespace: connectus
+  # namespace: connectus
 
   # Uncomment the following to enable the use of a single docker
   # repository but ONLY if your repository mirrors all ONAP
@@ -47,4 +47,4 @@ opensync-gw-static:
 opensync-mqtt-broker:
   enabled: true
 nginx-ingress-controller:
-  enabled: false
+  enabled: true

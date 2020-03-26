@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "opensync-mqtt-broker.fullname" . }}
-  namespace: {{ .Values.global.namespace }}
+  name: {{ include "common.fullname" . }}
+  namespace: {{ include "common.namespace" . }}
   labels:
-    {{- include "opensync-mqtt-broker.labels" . | nindent 4 }}
+    {{- include "common.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "opensync-mqtt-broker.selectorLabels" . | nindent 6 }}
+      {{- include "common.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "opensync-mqtt-broker.selectorLabels" . | nindent 8 }}
+        {{- include "common.selectorLabels" . | nindent 8 }}
     spec:
       imagePullSecrets:
         - name: {{ .Values.imagePullSecrets.name }} 
-      serviceAccountName: {{ include "opensync-mqtt-broker.serviceAccountName" . }}
+      serviceAccountName: {{ include "common.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:

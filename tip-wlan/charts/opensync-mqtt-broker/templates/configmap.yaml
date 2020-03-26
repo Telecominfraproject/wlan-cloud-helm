@@ -2,6 +2,6 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mosquitto-config
-  namespace: {{ .Values.global.namespace }}
+  namespace: {{ include "common.namespace" . }}
 data:
 {{ tpl (.Files.Glob "resources/config/mosquitto.conf").AsConfig . | indent 2 }}

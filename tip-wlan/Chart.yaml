@@ -35,3 +35,5 @@ dependencies:
   - name: nginx-ingress
     version: 0.1.0
     condition: nginx-ingress-controller.enabled
+  - name: common
+    version: 0.1.0

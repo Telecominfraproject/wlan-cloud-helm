@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: cafe-ingress
-  namespace: {{ .Values.global.namespace }}
+  namespace: {{ include "common.namespace" . }}
 spec:
   tls:
   - hosts:

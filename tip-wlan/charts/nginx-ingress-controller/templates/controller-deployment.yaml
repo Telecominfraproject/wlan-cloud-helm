@@ -2,10 +2,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ default (include "nginx-ingress.name" .) .Values.controller.name }}
-  namespace: {{ .Values.global.namespace }}
+  name: {{ default (include "common.name" .) .Values.controller.name }}
+  namespace: {{ include "common.namespace" . }}
   labels:
-    {{- include "nginx-ingress.labels" . | nindent 4 }}
+    {{- include "common.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.controller.replicaCount }}
   selector:
@@ -45,11 +45,11 @@ spec:
 {{- if .Values.controller.priorityClassName }}
       priorityClassName: {{ .Values.controller.priorityClassName }}
 {{- end }}
-      serviceAccountName: {{ include "nginx-ingress.serviceAccountName" . }}
+      serviceAccountName: {{ include "common.serviceAccountName" . }}
       hostNetwork: {{ .Values.controller.hostNetwork }}
       containers:
       - image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
-        name: {{ include "nginx-ingress.name" . }}
+        name: {{ include "common.name" . }}
         imagePullPolicy: "{{ .Values.controller.image.pullPolicy }}"
         ports:
         - name: http
@@ -113,7 +113,7 @@ spec:
 {{- if .Values.controller.reportIngressStatus.externalService }}
           - -external-service={{ .Values.controller.reportIngressStatus.externalService }}
 {{- else if and (.Values.controller.service.create) (eq .Values.controller.service.type "LoadBalancer") }}
-          - -external-service={{ include "nginx-ingress.serviceName" . }}
+          - -external-service={{ include "common.serviceName" . }}
 {{- end }}
           - -enable-leader-election={{ .Values.controller.reportIngressStatus.enableLeaderElection }}
           - -leader-election-lock-name={{ include "nginx-ingress.leaderElectionName" . }}
