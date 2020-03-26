@@ -185,7 +185,7 @@ controller:
       port: 80
 
       ## The custom NodePort for the HTTP port. Requires controller.service.type set to NodePort.
-      nodePort: 30080
+      nodePort: 80
 
       ## The HTTP port on the POD where the Ingress controller service is running.
       targetPort: 80
@@ -198,7 +198,7 @@ controller:
       port: 443
 
       ## The custom NodePort for the HTTPS port. Requires controller.service.type set to NodePort.
-      nodePort: 30443
+      nodePort: 43
 
       ## The HTTPS port on the POD where the Ingress controller service is running.
       targetPort: 443
