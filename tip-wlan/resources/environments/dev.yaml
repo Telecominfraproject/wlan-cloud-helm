@@ -15,7 +15,7 @@ global:
   nodePortPrefix: 302
   nsPrefix: connectus
   # image pull policy
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
   repository: docker-repo.lab.connectus.ai:5000
   # override default mount path root directory

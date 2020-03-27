@@ -16,9 +16,6 @@ global:
   nsPrefix: connectus
 
   repository: docker-repo.lab.connectus.ai:5000
-  repositoryCred:
-    user: xxx
-    password: yyy
   # image pull policy
   pullPolicy: Always
 
