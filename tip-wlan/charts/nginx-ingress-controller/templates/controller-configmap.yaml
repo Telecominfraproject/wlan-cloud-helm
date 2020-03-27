@@ -4,25 +4,26 @@ metadata:
   name: {{ include "nginx-ingress.configName" . }}
   namespace: {{ include "common.namespace" . }}
   labels:
-    {{- include "common.labels" . | nindent 4 }}
+    {{- include "common.labels" . | nindent 4 }}  
 data:
-    stream-snippets:
-      upstream mqtt-tcp-server {
-          server opensync-wifi-controller-opensync-mqtt-broker.connectus.svc.cluster.local:1883;
-      }
+    external-status-address: "192.168.56.101"
+    stream-snippets: |
       upstream controller-tcp-server {
-          server opensync-wifi-controller-opensync-gw-static.connectus.svc.cluster.local:6640;
+          server opensync-wifi-controller-opensync-gw-static:6640;
       }
-      upstream redirector-tcp-server {
-          server opensync-wifi-controller-opensync-gw-static.connectus.svc.cluster.local:6643;
+      server {
+          listen 6640;
+          proxy_pass controller-tcp-server;
+      }
+      upstream mqtt-tcp-server {
+          server opensync-wifi-controller-opensync-mqtt-broker:1883;
       }
       server {
           listen 1883;
           proxy_pass mqtt-tcp-server;
       }
-      server {
-          listen 6640;
-          proxy_pass controller-tcp-server;
+      upstream redirector-tcp-server {
+          server opensync-wifi-controller-opensync-gw-static:6643;
       }
       server {
           listen 6643;
