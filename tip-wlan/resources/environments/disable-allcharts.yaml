@@ -1,8 +1,12 @@
-# This is a development override file.
-# It overrides the default Tip-Wlan parent chart behaviour
+# This override file is useful to test one or more subcharts.
+# It overrides the default Tip-Wlan parent chart behaviour 
 #
-# It can be tweaked, based on the need to support different
-# dev environments.
+# Example use to enable a single subchart (from tip-wlan/ directory):
+#
+# helm install opensync-wifi-controller tip-wlan/ -n default 
+#   -f tip-wlan/resources/environments/disable-allcharts.yaml 
+#   --set opensync-gw-static.enabled=true
+#
 #################################################################
 # Global configuration overrides.
 #
@@ -30,8 +34,8 @@ global:
 # to customize the TIP-WLAN deployment.
 #################################################################
 opensync-gw-static:
-  enabled: true
+  enabled: false
 opensync-mqtt-broker:
-  enabled: true
+  enabled: false
 nginx-ingress-controller:
-  enabled: true
+  enabled: false

@@ -15,10 +15,6 @@ global:
   # namespace to deploy the release
   nsPrefix: connectus
 
-  # Uncomment the following to enable the use of a single docker
-  # repository but ONLY if your repository mirrors all ONAP
-  # docker images. This includes all images from dockerhub and
-  # any other repository that hosts images for ONAP components.
   repository: docker-repo.lab.connectus.ai:5000
   repositoryCred:
     user: xxx
