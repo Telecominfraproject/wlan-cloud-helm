@@ -11,8 +11,6 @@ replicaCount: 1
 
 image: opensync_gateway:0.0.1-SNAPSHOT
 
-imagePullSecrets:
-  name: privatedockerreg
 nameOverride: ""
 fullnameOverride: ""
 

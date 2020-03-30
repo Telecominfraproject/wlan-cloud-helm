@@ -6,8 +6,6 @@ replicaCount: 1
 
 image: eclipse-mosquitto
 
-imagePullSecrets:
-  name: regcred
 nameOverride: ""
 fullnameOverride: ""
 
