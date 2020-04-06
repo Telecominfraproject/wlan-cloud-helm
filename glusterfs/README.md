@@ -1,4 +1,4 @@
- # GlusterFS on kubernetes
+# GlusterFS on kubernetes
 
 The goal of this project is to spin-up GlusterFS on Kubernetes, so we can use the cluster as a Storage class in our environment.
 
