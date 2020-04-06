@@ -2,7 +2,10 @@
 
 The goal of this project is to spin-up GlusterFS on Kubernetes, so we can use the cluster as a Storage class in our environment.
 
-This project is based on the gluster-kubernetes project - https://github.com/gluster/gluster-kubernetes. It follows the instructions described in the setup guide (https://github.com/gluster/gluster-kubernetes/blob/master/docs/setup-guide.md). However, there are subtle differences:
+This project is based on the gluster-kubernetes project - https://github.com/gluster/gluster-kubernetes. 
+It follows the instructions described in the setup guide (https://github.com/gluster/gluster-kubernetes/blob/master/docs/setup-guide.md). 
+However, there are subtle differences:
+
 - We are using Ubuntu (Debian based) instead of CentOS as the base OS. Hence a few package/commands are different.
 - Certain resource types are different in Kubernetes 1.17/1.18:
     - Hence need to update the yamls
@@ -14,15 +17,15 @@ This project is based on the gluster-kubernetes project - https://github.com/glu
 - Preferably a separate volume should be attached to these nodes.
 - gk-deploy script will create a new namespace "gluster-ns"
 
-For some other issues faced during deployment, see here: https://connectustechnologies.atlassian.net/wiki/spaces/TW/pages/123732038/Creating+GlusterFS+on+Kubernetes
+For other issues faced during deployment, see here: 
+- https://connectustechnologies.atlassian.net/wiki/spaces/TW/pages/123732038/Creating+GlusterFS+on+Kubernetes
 
 # Usage
-Creation:
-  ./gk-deploy -g --admin-key <ADMIN_KEY> --user-key <USER_KEY> -v topology.json
-  As an example: ./gk-deploy -g --admin-key admin --user-key user -v topology.json
+- Creation:
+  ./gk-deploy -g --admin-key <ADMIN_KEY> --user-key <USER_KEY> -v topology.json. As an example: ./gk-deploy -g --admin-key admin --user-key user -v topology.json
 
 
-Deletion:
+- Deletion:
   ./gk-deploy --admin-key <ADMIN_KEY> --user-key <USER_KEY> --abort -v
   Note: this won't delete the glusterfs pods. To remove the pods, delete the daemon set, then delete the namespace - 'gluster-ns':
   Example:
