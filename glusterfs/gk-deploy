@@ -559,8 +559,11 @@ In addition, for an OpenShift deployment you must:
  * Have a router deployed that is configured to allow apps to access services
    running in the cluster
 
-Also note that we would be using 'gluster-ns' as the namespace to deploy the cluster.
-No need to pass the namespace.
+Namespace specifics: 
+- If namespace is passed, we will create (if it does not exist) and use that namespace 
+  for glusterFS resources.
+- If namespace is NOT passed, we will create (if it does not exist) namespace='gluster-ns'
+  and use it for glusterFS resources.
 
 Do you wish to proceed with deployment?
 "
@@ -649,23 +652,21 @@ if [[ "x${TEMPLATES}" == "x" ]]; then
   fi
 fi
 
-output "Creating/Updating Gluster-FS deployment in 'gluster-ns' namespace."
-output "--------------------------------------------------------------------"
-if [[ -n "$NAMESPACE" ]]; then
-  output "Passed Namespace is \"${NAMESPACE}\"."
-  if [[ "$NAMESPACE" != "gluster-ns" ]]; then
-    output "We cannot continue with the namespace \"${NAMESPACE}\". Quitting..."
-    output "Please re-run the script with 'gluster-ns' namespace or even better no namespace"
-    exit 1
-  fi
+if [[ -z "$NAMESPACE" ]]; then
+  NAMESPACE="gluster-ns"
+  output "Namespace not passed. Using \"${NAMESPACE}\" as NAMESPACE."
 fi
-NAMESPACE="gluster-ns"
+
+output "Creating/Updating Gluster-FS deployment in \"${NAMESPACE}\" namespace."
+output "--------------------------------------------------------------------"
+
+# Note: Below snippet is only tested on kubernetes
 eval_output "${CLI} get ns ${NAMESPACE} 2>&1"
 if [[ ${?} -eq 0 ]]; then
-  output "Using namespace \"${NAMESPACE}\"."
+  output "\"${NAMESPACE}\" exists. Using it..."
 else
-  output "Namespace \"${NAMESPACE}\" does not exists, creating it..."
-  eval_output "${CLI} create -f ${TEMPLATES}/create-gluster-ns.yaml 2>&1"
+  output "Namespace \"${NAMESPACE}\" does not exists, creating one"
+  eval_output "${CLI} create namespace $NAMESPACE --save-config 2>&1"
 fi
 CLI="${CLI} -n ${NAMESPACE}"
 
