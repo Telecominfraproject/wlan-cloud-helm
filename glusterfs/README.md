@@ -22,7 +22,11 @@ For other issues faced during deployment, see here:
 
 # Usage
 - Creation:
-  ./gk-deploy -g --admin-key <ADMIN_KEY> --user-key <USER_KEY> -v topology.json. As an example: ./gk-deploy -g --admin-key admin --user-key user -v topology.json
+  ./gk-deploy -g --admin-key <ADMIN_KEY> --user-key <USER_KEY> -n <GLUSTER_NAMESPACE> -v topology.json. 
+  - As an example: ./gk-deploy -g --admin-key admin --user-key user -n glusterns -v topology.json
+  - Namespace specifics: 
+    - If namespace is passed, we will create (if it does not exist) and use that namespace for glusterFS resources.
+    - If namespace is NOT passed, we will create (if it does not exist) namespace='gluster-ns' and use it for glusterFS resources.
 
 
 - Deletion:
