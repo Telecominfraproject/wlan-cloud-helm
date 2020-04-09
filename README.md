@@ -1,7 +1,7 @@
-# tip-wlan-helm
+# wlan-cloud-helm
 This repository contains helm charts for various deployment types of the tip wlan cloud services.
 
-# Deploying the Tip-wlan cloud deployment
+# Deploying the wlan-cloud deployment
  - Run the following command under tip-wlan-helm directory:
  	- helm install <installation-name> tip-wlan/ -n default -f tip-wlan/resources/environments/dev.yaml
 	
