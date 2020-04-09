@@ -7,3 +7,4 @@ parameters:
   resturl: "http://192.168.56.101:31080"
   restuser: "admin"
   restuserkey: "admin"
+reclaimPolicy: Retain 
