@@ -1,8 +1,12 @@
 # This is a development override file.
 # It overrides the default Tip-Wlan parent chart behaviour
 #
-# It can be tweaked, based on the need to support different
-# dev environments.
+# This file targets the case where we want to reuse existing
+# PersistentVolumeClaim. Note: for this override file to be used,
+# you should have used the dev.yaml override file to create the 
+# PVC in the first place (which basically annotates PVC and NS with
+#  "helm.sh/resource-policy: keep" annotation)
+#
 #################################################################
 # Global configuration overrides.
 #
@@ -25,9 +29,8 @@ global:
   # flag to enable debugging - application support required
   debugEnabled: true
 
-annotations: {
-    "helm.sh/resource-policy": keep
-}
+# Namespace should already exist
+createReleaseNamespace: false
 #################################################################
 # Enable/disable and configure helm charts (ie. applications)
 # to customize the TIP-WLAN deployment.
@@ -38,9 +41,8 @@ opensync-mqtt-broker:
   enabled: true
   persistence:
     enabled: true
-    annotations: {
-      volume.beta.kubernetes.io/storage-class: glusterfs-storage,
-      "helm.sh/resource-policy": keep
-    }
+    # PVCs should already exist
+    existingClaimData: opensync-wifi-controller-opensync-mqtt-broker-data
+    existingClaimDb: opensync-wifi-controller-opensync-mqtt-broker-db
 nginx-ingress-controller:
   enabled: true

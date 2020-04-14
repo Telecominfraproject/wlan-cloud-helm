@@ -39,10 +39,12 @@ spec:
           - mountPath: /mosquitto/config/mosquitto.conf
             name: opensync-mqtt-broker-conf
             subPath: mosquitto.conf
+          {{- if and .Values.persistence.enabled }}
           - mountPath: /mosquitto/db/
             name: opensync-mqtt-broker-db
           - mountPath: /mosquitto/data/
             name: opensync-mqtt-broker-data
+          {{- end }}
           ports:
             - name: {{ .Values.service.name1 }}
               containerPort: {{ .Values.service.port1 }}
@@ -71,9 +73,11 @@ spec:
       - name: opensync-mqtt-broker-conf
         configMap:
             name: mosquitto-config
+      {{- if and .Values.persistence.enabled }}
       - name: opensync-mqtt-broker-db
         persistentVolumeClaim:
           claimName: {{ include "common.fullname" . }}-db
       - name: opensync-mqtt-broker-data
         persistentVolumeClaim:
           claimName: {{ include "common.fullname" . }}-data
+      {{- end }}

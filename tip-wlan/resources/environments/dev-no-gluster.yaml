@@ -25,9 +25,6 @@ global:
   # flag to enable debugging - application support required
   debugEnabled: true
 
-annotations: {
-    "helm.sh/resource-policy": keep
-}
 #################################################################
 # Enable/disable and configure helm charts (ie. applications)
 # to customize the TIP-WLAN deployment.
@@ -37,10 +34,6 @@ opensync-gw-static:
 opensync-mqtt-broker:
   enabled: true
   persistence:
-    enabled: true
-    annotations: {
-      volume.beta.kubernetes.io/storage-class: glusterfs-storage,
-      "helm.sh/resource-policy": keep
-    }
+    enabled: false
 nginx-ingress-controller:
   enabled: true

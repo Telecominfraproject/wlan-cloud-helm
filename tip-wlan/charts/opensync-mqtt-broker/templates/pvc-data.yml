@@ -1,4 +1,4 @@
-{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) -}}
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaimData) -}}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -16,6 +16,9 @@ metadata:
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode }}
+{{- if .Values.persistence.volumeNameData }}   
+  volumeName: .Values.persistence.volumeNameData
+{{- end }}
   resources:
     requests:
       storage: {{ .Values.persistence.sizeData }}
