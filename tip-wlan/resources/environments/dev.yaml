@@ -3,6 +3,8 @@
 #
 # It can be tweaked, based on the need to support different
 # dev environments.
+# This file expects to have a GlusterFS storage solution running
+# before "helm install" is performed. 
 #################################################################
 # Global configuration overrides.
 #

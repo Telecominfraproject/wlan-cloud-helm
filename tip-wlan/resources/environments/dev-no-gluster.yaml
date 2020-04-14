@@ -1,8 +1,8 @@
 # This is a development override file.
 # It overrides the default Tip-Wlan parent chart behaviour
 #
-# It can be tweaked, based on the need to support different
-# dev environments.
+# This override file should be used when you don't have any 
+# storage solution for creating persistent volumes.
 #################################################################
 # Global configuration overrides.
 #

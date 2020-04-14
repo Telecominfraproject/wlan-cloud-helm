@@ -2,10 +2,13 @@
 # It overrides the default Tip-Wlan parent chart behaviour
 #
 # This file targets the case where we want to reuse existing
-# PersistentVolumeClaim. Note: for this override file to be used,
-# you should have used the dev.yaml override file to create the 
-# PVC in the first place (which basically annotates PVC and NS with
-#  "helm.sh/resource-policy: keep" annotation)
+# PersistentVolumeClaim. 
+# Note: This file expects:
+# - to have a GlusterFS storage solution running
+#   before "helm install" is performed. 
+# - you should have used the dev.yaml override file to create the 
+#   PVC in the first place (which basically annotates PVC and 
+#   NS with "helm.sh/resource-policy: keep" annotation)
 #
 #################################################################
 # Global configuration overrides.
