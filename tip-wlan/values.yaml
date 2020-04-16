@@ -42,3 +42,7 @@ opensync-mqtt-broker:
   enabled: false
 nginx-ingress-controller:
   enabled: false
+zookeeper:
+  enabled: false
+kafka:
+  enabled: false

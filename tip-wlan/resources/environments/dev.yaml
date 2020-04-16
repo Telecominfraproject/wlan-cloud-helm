@@ -40,9 +40,16 @@ opensync-mqtt-broker:
   enabled: true
   persistence:
     enabled: true
-    annotations: {
-      volume.beta.kubernetes.io/storage-class: glusterfs-storage,
-      "helm.sh/resource-policy": keep
-    }
+    storageClass: "glusterfs-storage"
 nginx-ingress-controller:
   enabled: true
+zookeeper:
+  enabled: true
+  persistence:
+    enabled: true
+    storageClass: "glusterfs-storage"
+kafka:
+  enabled: true
+  persistence:
+    enabled: true
+    storageClass: "glusterfs-storage"
