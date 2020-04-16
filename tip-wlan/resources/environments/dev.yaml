@@ -38,6 +38,7 @@ opensync-gw-static:
   enabled: true
 opensync-mqtt-broker:
   enabled: true
+  replicaCount: 1
   persistence:
     enabled: true
     storageClass: "glusterfs-storage"
@@ -45,11 +46,13 @@ nginx-ingress-controller:
   enabled: true
 zookeeper:
   enabled: true
+  replicaCount: 1
   persistence:
     enabled: true
     storageClass: "glusterfs-storage"
 kafka:
   enabled: true
+  replicaCount: 1
   persistence:
     enabled: true
     storageClass: "glusterfs-storage"
