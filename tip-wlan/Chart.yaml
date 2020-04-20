@@ -43,3 +43,6 @@ dependencies:
   - name: kafka
     version: 0.1.0
     condition: kafka.enabled
+  - name: cassandra
+    version: 0.1.0
+    condition: cassandra.enabled

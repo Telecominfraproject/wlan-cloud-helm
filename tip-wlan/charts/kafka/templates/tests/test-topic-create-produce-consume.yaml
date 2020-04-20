@@ -1,0 +1,26 @@
+{{- if .Values.testsEnabled -}}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "common.fullname" . }}-test-topic-create-produce-consume
+  namespace: {{ include "common.namespace" . }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+  - name: {{ include "common.name" . }}-test-consume
+    image: {{ .Values.image }}:{{ .Values.imageTag }}
+    command:
+    - sh
+    - -c
+    - |
+      # Create the topic
+      kafka-topics --zookeeper {{ include "zookeeper.url" . }} --topic helm-test-topic-create-consume-produce --create --partitions 1 --replication-factor 1 --if-not-exists && \
+      # Create a message
+      MESSAGE="`date -u`" && \
+      # Produce a test message to the topic
+      echo "$MESSAGE" | kafka-console-producer --broker-list {{ include "common.fullname" . }}:9092 --topic helm-test-topic-create-consume-produce && \
+      # Consume a test message from the topic
+      kafka-console-consumer --bootstrap-server {{ include "common.fullname" . }}-headless:9092 --topic helm-test-topic-create-consume-produce --from-beginning --timeout-ms 2000 --max-messages 1 | grep "$MESSAGE"
+  restartPolicy: Never
+{{- end }}

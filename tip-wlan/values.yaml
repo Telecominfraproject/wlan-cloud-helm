@@ -28,7 +28,7 @@ global:
 
   # flag to enable debugging - application support required
   debugEnabled: false
-
+  
 # Namespace related
 createReleaseNamespace: true
 
@@ -45,4 +45,6 @@ nginx-ingress-controller:
 zookeeper:
   enabled: false
 kafka:
+  enabled: false
+cassandra:
   enabled: false
