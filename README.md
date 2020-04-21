@@ -3,7 +3,7 @@ This repository contains helm charts for various deployment types of the tip wla
 
 # Deploying the wlan-cloud deployment
  - Run the following command under tip-wlan-helm directory:
- 	- helm install [installation-name>] tip-wlan/ -n default -f tip-wlan/resources/environments/dev.yaml
+ 	- helm install [installation-name] tip-wlan/ -n default -f tip-wlan/resources/environments/dev.yaml
 	
 	More details can be found here: https://connectustechnologies.atlassian.net/wiki/spaces/TW/pages/96895055/Pre-requisites+before+deploying+Tip-Wlan+solution
 
@@ -24,5 +24,5 @@ This repository contains helm charts for various deployment types of the tip wla
 	- Marking the topic for deletion (to enable us to run the test again)
 
  - Run the following command under tip-wlan-helm directory _after_ the components are running:
- 	- helm test [installation-name>] -n default
+ 	- helm test [installation-name] -n default
 	(For more details add --debug flag to the above command) 
