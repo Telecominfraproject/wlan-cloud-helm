@@ -22,5 +22,9 @@ spec:
       echo "$MESSAGE" | kafka-console-producer --broker-list {{ include "common.fullname" . }}:9092 --topic helm-test-topic-create-consume-produce && \
       # Consume a test message from the topic
       kafka-console-consumer --bootstrap-server {{ include "common.fullname" . }}-headless:9092 --topic helm-test-topic-create-consume-produce --from-beginning --timeout-ms 2000 --max-messages 1 | grep "$MESSAGE"
+      # Delete the messages from topic
+      kafka-configs --zookeeper {{ include "zookeeper.url" . }} --alter --entity-type topics --entity-name helm-test-topic-create-consume-produce --add-config retention.ms=1000
+      # Mark topic for deletion
+      kafka-topics --zookeeper {{ include "zookeeper.url" . }} --delete --topic helm-test-topic-create-consume-produce
   restartPolicy: Never
 {{- end }}
