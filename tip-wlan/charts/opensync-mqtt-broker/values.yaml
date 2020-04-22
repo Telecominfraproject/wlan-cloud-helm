@@ -4,7 +4,9 @@
 
 replicaCount: 1
 
-image: eclipse-mosquitto
+image:
+  name: eclipse-mosquitto
+  tag: latest
 
 nameOverride: ""
 fullnameOverride: ""

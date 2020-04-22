@@ -1,6 +1,6 @@
 apiVersion: v2
-name: tip-wlan
-description: Telecom Infra Platform - Wifi
+name: wlan-cloud-graphql-gw
+description: WLAN Cloud Apollo Server Helm Chart
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -18,34 +18,4 @@ version: 0.1.0
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
-appVersion: 1.16.0
-
-home: https://telecominfraproject.com/wifi/
-sources:
-- https://github.com/Telecominfraproject
-icon: 
-
-dependencies:
-  - name: opensync-gw-static
-    version: 0.1.0
-    condition: opensync-gw-static.enabled
-  - name: opensync-mqtt-broker
-    version: 0.1.0
-    condition: opensync-mqtt-broker.enabled
-  - name: wlan-cloud-graphql-gw
-    version: 0.1.0
-    condition: wlan-cloud-graphql-gw.enabled
-  - name: nginx-ingress
-    version: 0.1.0
-    condition: nginx-ingress-controller.enabled
-  - name: common
-    version: 0.1.0
-  - name: zookeeper
-    version: 0.1.0
-    condition: zookeeper.enabled
-  - name: kafka
-    version: 0.1.0
-    condition: kafka.enabled
-  - name: cassandra
-    version: 0.1.0
-    condition: cassandra.enabled
+appVersion: 0.0.1

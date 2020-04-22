@@ -26,28 +26,9 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ .Values.global.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.global.pullPolicy }}
-          volumeMounts:
-          - mountPath: /opt/tip-wlan/certs/client_keystore.jks
-            name: opensync-gw-static-truststore
-            subPath: client_keystore.jks
-          - mountPath: /opt/tip-wlan/certs/truststore.jks
-            name: opensync-gw-static-truststore
-            subPath: truststore.jks
-          - mountPath: /opt/tip-wlan/certs/server.pkcs12
-            name: opensync-gw-static-truststore
-            subPath: server.pkcs12
-          - mountPath: /opt/tip-wlan/certs/httpClientConfig.json
-            name: opensync-gw-static-truststore
-            subPath: httpClientConfig.json
-          - mountPath: /opt/tip-wlan/certs/ssl.properties
-            name: opensync-gw-static-truststore
-            subPath: ssl.properties
           ports:
-            - name: {{ .Values.service.name1 }}
-              containerPort: {{ .Values.service.port1 }}
-              protocol: TCP
-            - name: {{ .Values.service.name2 }}
-              containerPort: {{ .Values.service.port2 }}
+            - name: {{ .Values.service.name }}
+              containerPort: {{ .Values.service.port }}
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -63,8 +44,3 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-
-      volumes:
-      - name: opensync-gw-static-truststore
-        secret:
-          secretName: opensync-common-certs

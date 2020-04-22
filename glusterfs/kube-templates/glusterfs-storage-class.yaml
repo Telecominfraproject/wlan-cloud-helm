@@ -3,8 +3,9 @@ kind: StorageClass
 metadata:
   name: glusterfs-storage
 provisioner: kubernetes.io/glusterfs
+allowVolumeExpansion: true
+reclaimPolicy: Retain
 parameters:
   resturl: "http://192.168.56.101:31080"
   restuser: "admin"
   restuserkey: "admin"
-reclaimPolicy: Retain 

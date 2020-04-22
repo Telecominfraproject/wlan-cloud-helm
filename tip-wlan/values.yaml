@@ -15,7 +15,7 @@ global:
   # namespace to deploy the release
   nsPrefix: connectus
 
-  repository: docker-repo.lab.connectus.ai:5000
+  repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
   # image pull policy
   pullPolicy: Always
 
@@ -32,6 +32,9 @@ global:
 # Namespace related
 createReleaseNamespace: true
 
+# Docker Registry secret to pull docker images from WLAN repo
+dockerRegistrySecret: dummySecret
+
 # Annotations to add to the namespace
 annotations: {}
 
@@ -39,6 +42,8 @@ annotations: {}
 opensync-gw-static:
   enabled: false
 opensync-mqtt-broker:
+  enabled: false
+wlan-cloud-graphql-gw:
   enabled: false
 nginx-ingress-controller:
   enabled: false
