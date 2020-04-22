@@ -31,8 +31,9 @@ For other issues faced during deployment, see here:
 
 - Deletion:
   ./gk-deploy --admin-key <ADMIN_KEY> --user-key <USER_KEY> --abort -v -n <GLUSTER_NAMESPACE>
-  Note: Gluster-namespace **should** be passed. Also, this won't delete the glusterfs pods. To remove the pods, delete the daemon set, then delete the namespace - 'gluster-ns':
-  Example:
-    - kubectl delete daemonset glusterfs
-    - kubectl delete namespace gluster-ns
+    - Note: 
+     - Gluster-namespace **should** be passed. 
+     - Also, this won't delete the glusterfs pods. To remove the pods, delete the daemon set, then delete the namespace - 'gluster-ns': Example:
+        - kubectl delete daemonset glusterfs
+        - kubectl delete namespace gluster-ns
 
