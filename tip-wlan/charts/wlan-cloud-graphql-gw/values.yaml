@@ -29,6 +29,9 @@ serviceAccount:
 podSecurityContext: {}
   # fsGroup: 2000
 
+# Enable/Disable Helm tests
+testsEnabled: false
+
 securityContext: {}
   # capabilities:
   #   drop:

@@ -1,7 +1,9 @@
+{{- if .Values.testsEnabled -}}
 apiVersion: v1
 kind: Pod
 metadata:
   name: "{{ include "common.fullname" . }}-test-connection"
+  namespace: {{ include "common.namespace" . }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
   annotations:
@@ -11,5 +13,6 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "common.fullname" . }}:{{ .Values.service.port }}']
+      args: ['{{ include "common.fullname" . }}:{{ .Values.service.port1 }}']
   restartPolicy: Never
+{{- end }}

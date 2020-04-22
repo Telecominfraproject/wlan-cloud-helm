@@ -36,6 +36,9 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+# Enable/Disable Helm tests
+testsEnabled: false
+
 service:
   type: ClusterIP
   port1: 6640

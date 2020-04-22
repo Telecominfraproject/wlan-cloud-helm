@@ -36,5 +36,5 @@ Expand wildcard TLS name.
 Expand app name.
 */}}
 {{- define "nginx-ingress.appName" -}}
-{{- default (include "common.name" .) .Values.controller.name -}}
+{{- include "common.fullname" . -}}
 {{- end -}}
