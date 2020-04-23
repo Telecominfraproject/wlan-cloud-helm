@@ -10,7 +10,7 @@
 replicaCount: 1
 
 image: 
-  name: wlan-cloud-graphql-gw
+  name: wlan-cloud-ui
   tag: latest
   pullPolicy: IfNotPresent
 
@@ -42,8 +42,8 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 4000
-  name: graphui
+  port: 80
+  name: portal
 
 ingress:
   enabled: true
@@ -51,7 +51,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: wlan-cloud-graphql-gw.com
+    - host: wlan-cloud-ui.com
       paths: [
          / 
         ]

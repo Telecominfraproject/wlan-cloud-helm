@@ -45,6 +45,8 @@ opensync-mqtt-broker:
   enabled: false
 wlan-cloud-graphql-gw:
   enabled: false
+wlan-cloud-static-portal:
+  enabled: false
 nginx-ingress-controller:
   enabled: false
 zookeeper:
