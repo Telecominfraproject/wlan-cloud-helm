@@ -15,7 +15,7 @@ global:
   # Change to an unused port prefix range to prevent port conflicts
   # with other instances running within the same k8s cluster
   nodePortPrefix: 302
-  nsPrefix: connectus
+  nsPrefix: tip
   # image pull policy
   pullPolicy: Always
 
@@ -49,6 +49,8 @@ opensync-mqtt-broker:
 wlan-cloud-graphql-gw:
   enabled: true
 wlan-cloud-static-portal:
+  enabled: true
+wlan-portal-service:
   enabled: true
 nginx-ingress-controller:
   enabled: true

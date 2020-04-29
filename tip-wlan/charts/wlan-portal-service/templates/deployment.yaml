@@ -36,12 +36,6 @@ spec:
           - mountPath: /opt/tip-wlan/certs/server.pkcs12
             name: certificates
             subPath: server.pkcs12
-          - mountPath: /opt/tip-wlan/certs/httpClientConfig.json
-            name: certificates
-            subPath: httpClientConfig.json
-          - mountPath: /opt/tip-wlan/certs/ssl.properties
-            name: certificates
-            subPath: ssl.properties
           ports:
             - name: {{ .Values.service.name1 }}
               containerPort: {{ .Values.service.port1 }}

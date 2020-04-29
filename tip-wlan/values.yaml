@@ -13,7 +13,7 @@ global:
   # with other instances running within the same k8s cluster
   nodePortPrefix: 302
   # namespace to deploy the release
-  nsPrefix: connectus
+  nsPrefix: tip
 
   repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
   # image pull policy
@@ -46,6 +46,8 @@ opensync-mqtt-broker:
 wlan-cloud-graphql-gw:
   enabled: false
 wlan-cloud-static-portal:
+  enabled: false
+wlan-portal-service:
   enabled: false
 nginx-ingress-controller:
   enabled: false

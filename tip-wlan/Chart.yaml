@@ -38,6 +38,9 @@ dependencies:
   - name: wlan-cloud-static-portal
     version: 0.1.0
     condition: wlan-cloud-static-portal.enabled
+  - name: wlan-portal-service
+    version: 0.1.0
+    condition: wlan-portal-service.enabled
   - name: nginx-ingress
     version: 0.1.0
     condition: nginx-ingress-controller.enabled
