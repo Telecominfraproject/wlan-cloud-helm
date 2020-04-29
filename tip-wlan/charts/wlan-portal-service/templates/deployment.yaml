@@ -26,6 +26,28 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ .Values.global.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.global.pullPolicy }}
+          {{- if .Values.probes.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: {{ .Values.service.port1 }}
+              scheme: {{ .Values.probes.livenessProbe.scheme }}
+            initialDelaySeconds: {{ .Values.probes.livenessProbe.initialDelaySeconds }}  
+            timeoutSeconds: {{ .Values.probes.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.livenessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.probes.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.probes.livenessProbe.successThreshold }}
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: {{ .Values.service.port1 }}
+              scheme: {{ .Values.probes.readinessProbe.scheme }}
+            initialDelaySeconds: {{ .Values.probes.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.probes.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.readinessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.probes.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.probes.readinessProbe.successThreshold }}
+          {{- end }}
           volumeMounts:
           - mountPath: /opt/tip-wlan/certs/client_keystore.jks
             name: certificates
