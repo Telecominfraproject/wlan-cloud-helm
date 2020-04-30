@@ -67,6 +67,36 @@ service:
   name2: secondary-port
   nodePort2: 21
 
+  ## A list of custom ports to expose on the NGINX ingress controller pod. Follows the conventional Kubernetes yaml syntax for container ports.
+portal:
+  env: [
+      {
+        name: "tip.wlan.alarmServiceBaseUrl",
+        value: "scalable-service:9091"
+      },{
+        name: "tip.wlan.clientServiceBaseUrl",
+        value: "scalable-service:9091"
+      },{
+        name: "tip.wlan.cloudEventDispatcherBaseUrl",
+        value: "scalable-service:9091"
+      },{
+        name: "tip.wlan.customerServiceBaseUrl",
+        value: "provisioning-service:9091"
+      },{
+        name: "tip.wlan.firmwareServiceBaseUrl",
+        value: "provisioning-service:9091"
+      },{
+        name: "tip.wlan.locationServiceBaseUrl",
+        value: "provisioning-service:9091"
+      },{
+        name: "tip.wlan.profileServiceBaseUrl",
+        value: "provisioning-service:9091"
+      },{
+        name: "tip.wlan.serviceMetricServiceBaseUrl",
+        value: "provisioning-service:9091"
+      }
+  ]
+
 ingress:
   enabled: false
   annotations: {}
