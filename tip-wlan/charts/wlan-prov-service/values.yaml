@@ -10,7 +10,7 @@
 replicaCount: 1
 
 image:
-  name: wlan-portal-service
+  name: wlan-prov-service
   tag: 0.0.1-SNAPSHOT
 
 nameOverride: ""
@@ -59,13 +59,41 @@ securityContext: {}
 testsEnabled: false
 
 service:
-  type: NodePort
-  port1: 9051
+  type: ClusterIP
+  port1: 9091
   name1: portal
-  nodePort1: 20
-  port2: 9052
+  port2: 9092
   name2: secondary-port
-  nodePort2: 21
+
+  ## A list of custom ports to expose on the NGINX ingress controller pod. Follows the conventional Kubernetes yaml syntax for container ports.
+portal:
+  env: [
+      {
+        name: "tip.wlan.alarmServiceBaseUrl",
+        value: "https://opensync-wifi-controller-wlan-ssc-service:9031"
+      },{
+        name: "tip.wlan.clientServiceBaseUrl",
+        value: "https://opensync-wifi-controller-wlan-ssc-service:9031"
+      },{
+        name: "tip.wlan.cloudEventDispatcherBaseUrl",
+        value: "https://opensync-wifi-controller-wlan-ssc-service:9031"
+      },{
+        name: "tip.wlan.customerServiceBaseUrl",
+        value: "https://opensync-wifi-controller-wlan-prov-service:9091"
+      },{
+        name: "tip.wlan.firmwareServiceBaseUrl",
+        value: "https://opensync-wifi-controller-wlan-prov-service:9091"
+      },{
+        name: "tip.wlan.locationServiceBaseUrl",
+        value: "https://opensync-wifi-controller-wlan-prov-service:9091"
+      },{
+        name: "tip.wlan.profileServiceBaseUrl",
+        value: "https://opensync-wifi-controller-wlan-prov-service:9091"
+      },{
+        name: "tip.wlan.serviceMetricServiceBaseUrl",
+        value: "https://opensync-wifi-controller-wlan-prov-service:9091"
+      }
+  ]
 
 ingress:
   enabled: false

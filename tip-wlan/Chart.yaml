@@ -41,6 +41,12 @@ dependencies:
   - name: wlan-portal-service
     version: 0.1.0
     condition: wlan-portal-service.enabled
+  - name: wlan-prov-service
+    version: 0.1.0
+    condition: wlan-prov-service.enabled
+  - name: wlan-ssc-service
+    version: 0.1.0
+    condition: wlan-ssc-service.enabled
   - name: nginx-ingress
     version: 0.1.0
     condition: nginx-ingress-controller.enabled

@@ -10,7 +10,7 @@
 replicaCount: 1
 
 image:
-  name: wlan-portal-service
+  name: wlan-ssc-service
   tag: 0.0.1-SNAPSHOT
 
 nameOverride: ""
@@ -59,13 +59,11 @@ securityContext: {}
 testsEnabled: false
 
 service:
-  type: NodePort
-  port1: 9051
+  type: ClusterIP
+  port1: 9031
   name1: portal
-  nodePort1: 20
-  port2: 9052
+  port2: 9032
   name2: secondary-port
-  nodePort2: 21
 
 ingress:
   enabled: false

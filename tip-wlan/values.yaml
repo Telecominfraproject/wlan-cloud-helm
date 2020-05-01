@@ -49,6 +49,10 @@ wlan-cloud-static-portal:
   enabled: false
 wlan-portal-service:
   enabled: false
+wlan-prov-service:
+  enabled: false
+wlan-ssc-service:
+  enabled: false  
 nginx-ingress-controller:
   enabled: false
 zookeeper:

@@ -32,7 +32,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /ping
-              port: {{ .Values.service.port1 }}
+              port: {{ .Values.service.port2 }}
               scheme: {{ .Values.probes.livenessProbe.scheme }}
             initialDelaySeconds: {{ .Values.probes.livenessProbe.initialDelaySeconds }}  
             timeoutSeconds: {{ .Values.probes.livenessProbe.timeoutSeconds }}
@@ -42,7 +42,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /ping
-              port: {{ .Values.service.port1 }}
+              port: {{ .Values.service.port2 }}
               scheme: {{ .Values.probes.readinessProbe.scheme }}
             initialDelaySeconds: {{ .Values.probes.readinessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.probes.readinessProbe.timeoutSeconds }}
