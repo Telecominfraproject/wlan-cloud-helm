@@ -29,6 +29,8 @@ global:
   # flag to enable debugging - application support required
   debugEnabled: true
 
+createReleaseNamespace: false
+createDockerRegistrySecret: false
 #################################################################
 # Enable/disable and configure helm charts (ie. applications)
 # to customize the TIP-WLAN deployment.
@@ -37,5 +39,39 @@ opensync-gw-static:
   enabled: false
 opensync-mqtt-broker:
   enabled: false
+  replicaCount: 1
+  persistence:
+    enabled: true
+    storageClass: "glusterfs-storage"
+wlan-cloud-graphql-gw:
+  enabled: false
+wlan-cloud-static-portal:
+  enabled: false
+wlan-portal-service:
+  enabled: false
+wlan-prov-service:
+  enabled: false
+wlan-ssc-service:
+  enabled: false
 nginx-ingress-controller:
   enabled: false
+zookeeper:
+  enabled: false
+  replicaCount: 1
+  persistence:
+    enabled: true
+    storageClass: "glusterfs-storage"
+kafka:
+  enabled: false
+  replicaCount: 1
+  persistence:
+    enabled: true
+    storageClass: "glusterfs-storage"
+cassandra:
+  enabled: false
+  config:
+    cluster_size: 3
+    seed_size: 2
+  persistence:
+    enabled: true
+    storageClass: "glusterfs-storage"

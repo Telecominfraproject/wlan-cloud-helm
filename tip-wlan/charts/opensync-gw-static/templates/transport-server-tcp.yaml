@@ -1,0 +1,35 @@
+apiVersion: k8s.nginx.org/v1alpha1
+kind: TransportServer
+metadata:
+  name: {{ include "common.name" . }}-controller
+  namespace: {{ include "common.namespace" . }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  listener:
+    name: opensync-gw-controller-port-listener
+    protocol: TCP
+  upstreams:
+  - name: {{ include "common.name" . }}
+    service: {{ include "common.fullname" . }}
+    port: {{ .Values.service.port1 }}
+  action:
+    pass: {{ include "common.name" . }}
+---
+apiVersion: k8s.nginx.org/v1alpha1
+kind: TransportServer
+metadata:
+  name: {{ include "common.name" . }}-redirector
+  namespace: {{ include "common.namespace" . }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  listener:
+    name: opensync-gw-redirector-port-listener
+    protocol: TCP
+  upstreams:
+  - name: {{ include "common.name" . }}
+    service: {{ include "common.fullname" . }}
+    port: {{ .Values.service.port2 }}
+  action:
+    pass: {{ include "common.name" . }}

@@ -59,13 +59,11 @@ securityContext: {}
 testsEnabled: false
 
 service:
-  type: NodePort
+  type: ClusterIP
   port1: 9051
   name1: portal
-  nodePort1: 20
   port2: 9052
   name2: secondary-port
-  nodePort2: 21
 
 ingress:
   enabled: false

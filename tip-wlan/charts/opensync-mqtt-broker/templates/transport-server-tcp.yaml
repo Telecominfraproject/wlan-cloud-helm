@@ -1,0 +1,17 @@
+apiVersion: k8s.nginx.org/v1alpha1
+kind: TransportServer
+metadata:
+  name: {{ include "common.name" . }}-mqtt
+  namespace: {{ include "common.namespace" . }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  listener:
+    name: opensync-mqtt-port-listener
+    protocol: TCP
+  upstreams:
+  - name: {{ include "common.name" . }}
+    service: {{ include "common.fullname" . }}
+    port: {{ .Values.service.port1 }}
+  action:
+    pass: {{ include "common.name" . }}

@@ -21,9 +21,6 @@ controller:
   ## A list of custom ports to expose on the NGINX ingress controller pod. Follows the conventional Kubernetes yaml syntax for container ports.
   customPorts: [
       {
-        name: tcp,
-        containerPort: 5353
-      },{
         name: mqtt-tcp,
         containerPort: 1883
       },{
@@ -40,7 +37,7 @@ controller:
     repository: nginx/nginx-ingress
 
     ## The tag of the Ingress controller image.
-    tag: "1.6.3"
+    tag: "1.7.0"
 
     ## The pull policy for the Ingress controller image.
     pullPolicy: IfNotPresent
@@ -134,6 +131,9 @@ controller:
   ## Enable the custom resources.
   enableCustomResources: true
 
+  ## Enable the custom resources.
+  enableTLSPassthrough: true
+  
   ## Add a location based on the value of health-status-uri to the default server. The location responds with the 200 status code for any request.
   ## Useful for external health-checking of the Ingress controller.
   healthStatus: false
@@ -206,12 +206,6 @@ controller:
     ## A list of custom ports to expose through the Ingress controller service. Follows the conventional Kubernetes yaml syntax for service ports.
     customPorts: [
         {
-          name: tcp,
-          port: 5353,
-          targetPort: 5353,
-          nodePort: 30353,
-          protocol: TCP
-        },{
           name: mqtt-tcp,
           port: 1883,
           targetPort: 1883,

@@ -48,6 +48,10 @@ wlan-cloud-graphql-gw:
 wlan-cloud-static-portal:
   enabled: true
 wlan-portal-service:
+  enabled: false
+wlan-prov-service:
+  enabled: true
+wlan-ssc-service:
   enabled: true
 nginx-ingress-controller:
   enabled: true

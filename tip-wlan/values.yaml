@@ -32,6 +32,9 @@ global:
 # Namespace related
 createReleaseNamespace: true
 
+# DockerRegistry Secret
+createDockerRegistrySecret: true
+
 # Docker Registry secret to pull docker images from WLAN repo
 dockerRegistrySecret: dummySecret
 

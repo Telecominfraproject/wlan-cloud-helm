@@ -7,25 +7,3 @@ metadata:
     {{- include "common.labels" . | nindent 4 }}  
 data:
     external-status-address: "192.168.56.101"
-    stream-snippets: |
-      upstream controller-tcp-server {
-          server opensync-wifi-controller-opensync-gw-static:6640;
-      }
-      server {
-          listen 6640;
-          proxy_pass controller-tcp-server;
-      }
-      upstream mqtt-tcp-server {
-          server opensync-wifi-controller-opensync-mqtt-broker:1883;
-      }
-      server {
-          listen 1883;
-          proxy_pass mqtt-tcp-server;
-      }
-      upstream redirector-tcp-server {
-          server opensync-wifi-controller-opensync-gw-static:6643;
-      }
-      server {
-          listen 6643;
-          proxy_pass redirector-tcp-server;
-      }

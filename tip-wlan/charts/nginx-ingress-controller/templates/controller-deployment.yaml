@@ -126,4 +126,6 @@ spec:
           - -enable-prometheus-metrics={{ .Values.prometheus.create }}
           - -prometheus-metrics-listen-port={{ .Values.prometheus.port }}
           - -enable-custom-resources={{ .Values.controller.enableCustomResources }}
+          - -enable-tls-passthrough={{ .Values.controller.enableTLSPassthrough }}
+          - -global-configuration=$(POD_NAMESPACE)/{{ include "common.name" . }}-global-configuration
 {{- end }}
