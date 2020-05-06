@@ -48,7 +48,7 @@ wlan-cloud-graphql-gw:
 wlan-cloud-static-portal:
   enabled: true
 wlan-portal-service:
-  enabled: false
+  enabled: true
 wlan-prov-service:
   enabled: true
 wlan-ssc-service:

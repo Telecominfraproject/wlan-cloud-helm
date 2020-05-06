@@ -80,9 +80,7 @@ controller:
     secret: #<namespace>/<secret_name>
 
   ## The node selector for pod assignment for the Ingress controller pods.
-  nodeSelector: {
-    type: master
-  }
+  nodeSelector: {}
 
   ## The termination grace period of the Ingress controller pod.
   terminationGracePeriodSeconds: 30
