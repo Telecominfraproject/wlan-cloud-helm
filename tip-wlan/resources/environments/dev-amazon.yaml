@@ -1,0 +1,84 @@
+# This is a development override file.
+# It overrides the default Tip-Wlan parent chart behaviour
+#
+# It can be tweaked, based on the need to support different
+# dev environments.
+# This file expects to have a GlusterFS storage solution running
+# before "helm install" is performed. 
+#################################################################
+# Global configuration overrides.
+#
+# These overrides will affect all helm charts (ie. applications)
+# that are listed below and are 'enabled'.
+#################################################################
+global:
+  # Change to an unused port prefix range to prevent port conflicts
+  # with other instances running within the same k8s cluster
+  nodePortPrefix: 302
+  nsPrefix: tip
+  # image pull policy
+  pullPolicy: Always
+
+  repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
+  # override default mount path root directory
+  # referenced by persistent volumes and log files
+  persistence:
+
+  # flag to enable debugging - application support required
+  debugEnabled: true
+
+# Annotations for namespace
+annotations: {
+    "helm.sh/resource-policy": keep
+}
+
+createReleaseNamespace: false
+
+# Docker registry secret
+dockerRegistrySecret: ewogICAgICAgICJhdXRocyI6IHsKICAgICAgICAgICAgICAgICJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICJhdXRoIjogIlluVnBiR1F0Y0dsd1pXeHBibVU2YTNKQlduRTNjelp4ZEhCb1ltWmFkdz09IgogICAgICAgICAgICAgICAgfQogICAgICAgIH0sCiAgICAgICAgIkh0dHBIZWFkZXJzIjogewogICAgICAgICAgICAgICAgIlVzZXItQWdlbnQiOiAiRG9ja2VyLUNsaWVudC8xOS4wMy44IChsaW51eCkiCiAgICAgICAgfQp9
+#################################################################
+# Enable/disable and configure helm charts (ie. applications)
+# to customize the TIP-WLAN deployment.
+#################################################################
+opensync-gw-static:
+  enabled: true
+opensync-mqtt-broker:
+  enabled: true
+  replicaCount: 1
+  persistence:
+    enabled: true
+    storageClass: "glusterfs-storage"
+wlan-cloud-graphql-gw:
+  enabled: true
+wlan-cloud-static-portal:
+  enabled: true
+wlan-portal-service:
+  enabled: true
+wlan-prov-service:
+  enabled: true
+wlan-ssc-service:
+  enabled: true
+nginx-ingress-controller:
+  enabled: true
+  controller:
+    nodeSelector: {}
+zookeeper:
+  enabled: true
+  replicaCount: 1
+  persistence:
+    enabled: true
+    storageClass: "glusterfs-storage"
+kafka:
+  enabled: true
+  replicaCount: 1
+  persistence:
+    enabled: true
+    storageClass: "glusterfs-storage"
+cassandra:
+  enabled: true
+  config:
+    cluster_size: 3
+    seed_size: 2
+  persistence:
+    enabled: true
+    storageClass: "glusterfs-storage"
