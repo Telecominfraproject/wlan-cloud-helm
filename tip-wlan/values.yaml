@@ -64,3 +64,5 @@ kafka:
   enabled: false
 cassandra:
   enabled: false
+postgresql:
+  enabled: false
