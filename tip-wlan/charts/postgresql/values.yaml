@@ -106,7 +106,7 @@ rbac:
   create: false
 
 replication:
-  enabled: true
+  enabled: false
   user: repl_user
   password: repl_password
   slaveReplicas: 1
@@ -130,7 +130,7 @@ postgresqlUsername: postgres
 ## PostgreSQL password
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#setting-the-root-password-on-first-run
 ##
-# postgresqlPassword:
+postgresqlPassword: cG9zdGdyZXMxMjM=
 
 ## PostgreSQL password using existing secret
 ## existingSecret: secret
@@ -227,6 +227,11 @@ extraEnv: []
 ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods
 ##
 # terminationGracePeriodSeconds: 30
+
+## Enable/disable the chart's tests.  Useful if using this chart as a dependency of
+## another chart and you don't want these tests running when trying to develop and
+## test your own chart.
+testsEnabled: true
 
 ## LDAP configuration
 ##

@@ -72,3 +72,10 @@ cassandra:
     seed_size: 2
   persistence:
     enabled: false
+postgresql:
+  enabled: true
+  replication:
+    enabled: false
+    slaveReplicas: 1
+  persistence:
+    enabled: false

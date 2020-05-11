@@ -73,13 +73,25 @@ kafka:
 cassandra:
   enabled: true
   config:
-    cluster_size: 3
-    seed_size: 2
+## NOTE: If we are using glusterfs as Storage class, we don't really need 
+## replication turned on, since the data is anyway replicated on glusterfs nodes
+## Replication is useful when we use HostPath as storage mechanism
+## For Hostpath storage, recommendation is cluster_size: 3 and seed_size: 2
+    cluster_size: 1
+    seed_size: 1
   persistence:
     enabled: true
     storageClass: "glusterfs-storage"
 postgresql:
   enabled: true
+## NOTE: If we are using glusterfs as Storage class, we don't really need 
+## replication turned on, since the data is anyway replicated on glusterfs nodes
+## Replication is useful: 
+## a. When we use HostPath as storage mechanism
+## b. If master goes down and one of the slave is promoted as master
+  replication:
+    enabled: false
+    slaveReplicas: 1
   persistence:
     enabled: true
     storageClass: "glusterfs-storage"

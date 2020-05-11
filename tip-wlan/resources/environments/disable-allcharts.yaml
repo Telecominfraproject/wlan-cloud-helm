@@ -75,3 +75,11 @@ cassandra:
   persistence:
     enabled: true
     storageClass: "glusterfs-storage"
+postgresql:
+  enabled: false
+  replication:
+    enabled: false
+    slaveReplicas: 1
+  persistence:
+    enabled: true
+    storageClass: "glusterfs-storage"
