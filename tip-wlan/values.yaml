@@ -55,7 +55,9 @@ wlan-portal-service:
 wlan-prov-service:
   enabled: false
 wlan-ssc-service:
-  enabled: false  
+  enabled: false
+wlan-integrated-cloud-component-service:
+  enabled: false
 nginx-ingress-controller:
   enabled: false
 zookeeper:

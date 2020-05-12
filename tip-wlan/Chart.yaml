@@ -38,6 +38,10 @@ dependencies:
   - name: wlan-cloud-static-portal
     version: 0.1.0
     condition: wlan-cloud-static-portal.enabled
+## IntegratedCloudComponent should be disabled for distributed deployment
+  - name: wlan-integrated-cloud-component-service
+    version: 0.1.0
+    condition: wlan-integrated-cloud-component-service.enabled
   - name: wlan-portal-service
     version: 0.1.0
     condition: wlan-portal-service.enabled
