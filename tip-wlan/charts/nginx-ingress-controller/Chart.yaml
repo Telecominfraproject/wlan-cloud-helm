@@ -1,4 +1,4 @@
-name: nginx-ingress
+name: nginx-ingress-controller
 version: 0.1.0
 appVersion: edge
 apiVersion: v2

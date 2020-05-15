@@ -1,9 +1,11 @@
 {{- $advertisedListenersOverride := first (pluck "advertised.listeners" .Values.configurationOverrides) }}
+{{- $zk := include "zookeeper.service" . -}}
+{{- $ns := include "common.namespace" . -}}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "common.fullname" . }}
-  namespace: {{ include "common.namespace" . }}
+  namespace: {{ $ns }}
   labels:
   {{- include "kafka.broker.labels" . | nindent 4 }}
 spec:
@@ -53,13 +55,7 @@ spec:
       - name: {{ include "common.name" . }}-readiness
         image: busybox:1.28
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
-        env:
-        - name: NAMESPACE
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: metadata.namespace
-        command: ['sh', '-c', "until nslookup {{ .Values.zookeeper.url }}.$NAMESPACE.svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+        command: ['sh', '-c', "until nslookup {{ $zk }}.{{ $ns }}.svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
       containers:
       - name: {{ include "common.name" . }}-broker
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"

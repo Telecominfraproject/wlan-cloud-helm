@@ -44,7 +44,7 @@ opensync-mqtt-broker:
   enabled: true
   replicaCount: 1
   persistence:
-    enabled: true
+    enabled: false
     storageClass: "glusterfs-storage"
 wlan-cloud-graphql-gw:
   enabled: true
@@ -58,19 +58,17 @@ wlan-ssc-service:
   enabled: true
 nginx-ingress-controller:
   enabled: true
-  controller:
-    nodeSelector: {}
 zookeeper:
   enabled: true
   replicaCount: 1
   persistence:
-    enabled: true
+    enabled: false
     storageClass: "glusterfs-storage"
 kafka:
   enabled: true
   replicaCount: 1
   persistence:
-    enabled: true
+    enabled: false
     storageClass: "glusterfs-storage"
 cassandra:
   enabled: true
@@ -78,7 +76,7 @@ cassandra:
     cluster_size: 3
     seed_size: 2
   persistence:
-    enabled: true
+    enabled: false
     storageClass: "glusterfs-storage"
 postgresql:
   enabled: true
@@ -88,8 +86,8 @@ postgresql:
 ## a. When we use HostPath as storage mechanism
 ## b. If master goes down and one of the slave is promoted as master
   replication:
-    enabled: false
+    enabled: true
     slaveReplicas: 1
   persistence:
-    enabled: true
+    enabled: false
     storageClass: "glusterfs-storage"

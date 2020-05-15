@@ -58,6 +58,10 @@ wlan-ssc-service:
   enabled: true
 nginx-ingress-controller:
   enabled: true
+  controller:
+    nodeSelector: {
+      type: master
+    }
 zookeeper:
   enabled: true
   replicaCount: 1
