@@ -61,3 +61,10 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Expand service name.
+*/}}
+{{- define "common.serviceName" -}}
+{{- default (include "common.name" .) .Values.controller.service.name }}
+{{- end -}}

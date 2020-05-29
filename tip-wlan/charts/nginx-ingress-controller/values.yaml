@@ -50,6 +50,9 @@ controller:
     ## The entries of the ConfigMap for customizing NGINX configuration.
     entries: []
 
+    ## External IP Address
+    externalStatusAddress: "192.168.56.101"
+
   ## It is recommended to use your own TLS certificates and keys
   defaultTLS:
     ## The base64-encoded TLS certificate for the default HTTPS server. If not specified, a pre-generated self-signed certificate is used.

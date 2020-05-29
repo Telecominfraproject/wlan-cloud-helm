@@ -32,6 +32,8 @@ annotations: {
     "helm.sh/resource-policy": keep
 }
 
+createReleaseNamespace: false
+
 # Docker registry secret
 dockerRegistrySecret: ewogICAgICAgICJhdXRocyI6IHsKICAgICAgICAgICAgICAgICJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICJhdXRoIjogIlluVnBiR1F0Y0dsd1pXeHBibVU2YTNKQlduRTNjelp4ZEhCb1ltWmFkdz09IgogICAgICAgICAgICAgICAgfQogICAgICAgIH0sCiAgICAgICAgIkh0dHBIZWFkZXJzIjogewogICAgICAgICAgICAgICAgIlVzZXItQWdlbnQiOiAiRG9ja2VyLUNsaWVudC8xOS4wMy44IChsaW51eCkiCiAgICAgICAgfQp9
 #################################################################
@@ -44,8 +46,8 @@ opensync-mqtt-broker:
   enabled: true
   replicaCount: 1
   persistence:
-    enabled: false
-    storageClass: "glusterfs-storage"
+    enabled: true
+    storageClass: "gp2"
 wlan-cloud-graphql-gw:
   enabled: true
 wlan-cloud-static-portal:
@@ -58,26 +60,32 @@ wlan-ssc-service:
   enabled: true
 nginx-ingress-controller:
   enabled: true
+  controller:
+    nodeSelector: {
+      kubernetes.io/hostname: ip-172-20-54-40.ca-central-1.compute.internal
+    }
+    config:
+      externalStatusAddress: "35.183.7.156"
 zookeeper:
   enabled: true
   replicaCount: 1
   persistence:
-    enabled: false
-    storageClass: "glusterfs-storage"
+    enabled: true
+    storageClass: "gp2"
 kafka:
   enabled: true
   replicaCount: 1
   persistence:
-    enabled: false
-    storageClass: "glusterfs-storage"
+    enabled: true
+    storageClass: "gp2"
 cassandra:
   enabled: true
   config:
     cluster_size: 3
     seed_size: 2
   persistence:
-    enabled: false
-    storageClass: "glusterfs-storage"
+    enabled: true
+    storageClass: "gp2"
 postgresql:
   enabled: true
 ## NOTE: If we are using glusterfs as Storage class, we don't really need 
@@ -89,5 +97,5 @@ postgresql:
     enabled: true
     slaveReplicas: 1
   persistence:
-    enabled: false
-    storageClass: "glusterfs-storage"
+    enabled: true
+    storageClass: "gp2"

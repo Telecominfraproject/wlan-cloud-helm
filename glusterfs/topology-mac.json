@@ -6,48 +6,48 @@
           "node": {
             "hostnames": {
               "manage": [
-                "ip-172-20-34-126.ca-central-1.compute.internal"
+                "rahulk8smaster-virtualbox"
               ],
               "storage": [
-                "172.20.34.126"
+                "192.168.56.101"
               ]
             },
             "zone": 1
           },
           "devices": [
-            "/dev/xvdf"
+            "/dev/sdb"
           ]
         },
         {
           "node": {
             "hostnames": {
               "manage": [
-                "ip-172-20-52-91.ca-central-1.compute.internal"
+                "rahulk8node1-virtualbox"
               ],
               "storage": [
-                "172.20.52.91"
+                "192.168.56.201"
               ]
             },
             "zone": 1
           },
           "devices": [
-            "/dev/xvdf"
+            "/dev/sdb"
           ]
         },
         {
           "node": {
             "hostnames": {
               "manage": [
-                "ip-172-20-54-40.ca-central-1.compute.internal"
+                "rahulk8node2-virtualbox"
               ],
               "storage": [
-                "172.20.54.40"
+                "192.168.56.211"
               ]
             },
             "zone": 1
           },
           "devices": [
-            "/dev/xvdf"
+            "/dev/sdb"
           ]
         }
       ]

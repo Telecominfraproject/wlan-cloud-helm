@@ -6,4 +6,4 @@ metadata:
   labels:
     {{- include "common.labels" . | nindent 4 }}  
 data:
-    external-status-address: "192.168.56.101"
+    external-status-address: {{ .Values.controller.config.externalStatusAddress }}

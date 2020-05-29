@@ -32,6 +32,8 @@ annotations: {
     "helm.sh/resource-policy": keep
 }
 
+createReleaseNamespace: false
+
 # Docker registry secret
 dockerRegistrySecret: ewogICAgICAgICJhdXRocyI6IHsKICAgICAgICAgICAgICAgICJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICJhdXRoIjogIlluVnBiR1F0Y0dsd1pXeHBibVU2YTNKQlduRTNjelp4ZEhCb1ltWmFkdz09IgogICAgICAgICAgICAgICAgfQogICAgICAgIH0sCiAgICAgICAgIkh0dHBIZWFkZXJzIjogewogICAgICAgICAgICAgICAgIlVzZXItQWdlbnQiOiAiRG9ja2VyLUNsaWVudC8xOS4wMy44IChsaW51eCkiCiAgICAgICAgfQp9
 #################################################################
@@ -62,6 +64,8 @@ nginx-ingress-controller:
     nodeSelector: {
       type: master
     }
+    config:
+      externalStatusAddress: "192.168.56.101"
 zookeeper:
   enabled: true
   replicaCount: 1
