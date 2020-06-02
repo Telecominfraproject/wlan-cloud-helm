@@ -54,6 +54,9 @@ wlan-cloud-static-portal:
   enabled: true
 wlan-portal-service:
   enabled: true
+  nodeSelector: {
+    kubernetes.io/hostname: ip-172-20-54-40.ca-central-1.compute.internal
+  }
 wlan-prov-service:
   enabled: true
 wlan-ssc-service:

@@ -59,11 +59,13 @@ securityContext: {}
 testsEnabled: false
 
 service:
-  type: ClusterIP
+  type: NodePort
   port1: 9051
   name1: portal
+  nodePort1: 51
   port2: 9052
   name2: secondary-port
+  nodePort2: 52
 
 ingress:
   enabled: false
@@ -71,14 +73,14 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: portal.k8s.lab.connectus.ai
+    - host: wlan-portal-service.zone3.lab.connectus.ai
       paths: [
          /portal 
         ]
   tls: 
    - secretName: portal-secret
      hosts:
-       - portal.k8s.lab.connectus.ai
+       - wlan-portal-service.zone3.lab.connectus.ai
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
