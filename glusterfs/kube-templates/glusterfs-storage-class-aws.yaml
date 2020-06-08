@@ -6,6 +6,6 @@ provisioner: kubernetes.io/glusterfs
 allowVolumeExpansion: true
 reclaimPolicy: Retain
 parameters:
-  resturl: "http://100.96.2.4:8080"
+  resturl: "http://100.100.244.153:8080"
   restuser: "admin"
   restuserkey: "admin"

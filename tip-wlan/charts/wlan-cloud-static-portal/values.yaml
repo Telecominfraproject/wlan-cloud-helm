@@ -32,6 +32,9 @@ podSecurityContext: {}
 # Enable/Disable Helm tests
 testsEnabled: false
 
+env:
+  graphql: wlan-cloud-graphql-gw:4000
+
 securityContext: {}
   # capabilities:
   #   drop:

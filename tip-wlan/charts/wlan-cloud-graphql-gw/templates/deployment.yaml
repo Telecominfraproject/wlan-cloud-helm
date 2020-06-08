@@ -26,6 +26,9 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ .Values.global.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.global.pullPolicy }}
+          env:
+          - name: API
+            value: {{ .Release.Name }}-{{ .Values.env.portalsvc }}
           ports:
             - name: {{ .Values.service.name }}
               containerPort: {{ .Values.service.port }}

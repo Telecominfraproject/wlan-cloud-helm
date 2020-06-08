@@ -12,5 +12,6 @@ spec:
       targetPort: {{ .Values.service.port }}
       protocol: TCP
       name: {{ .Values.service.name }}
+      nodePort: {{ .Values.global.nodePortPrefix | default .Values.nodePortPrefix }}{{ .Values.service.nodePort }}
   selector:
     {{- include "common.selectorLabels" . | nindent 4 }}

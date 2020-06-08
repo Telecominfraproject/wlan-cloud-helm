@@ -40,10 +40,14 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+env:
+  portalsvc: wlan-portal-service:9051
+
 service:
-  type: ClusterIP
+  type: NodePort
   port: 4000
   name: graphui
+  nodePort: 23
 
 ingress:
   enabled: true

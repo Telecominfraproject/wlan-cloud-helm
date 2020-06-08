@@ -6,10 +6,10 @@
           "node": {
             "hostnames": {
               "manage": [
-                "ip-172-20-34-126.ca-central-1.compute.internal"
+                "ip-172-20-38-193.ca-central-1.compute.internal"
               ],
               "storage": [
-                "172.20.34.126"
+                "172.20.38.193"
               ]
             },
             "zone": 1
@@ -22,10 +22,10 @@
           "node": {
             "hostnames": {
               "manage": [
-                "ip-172-20-52-91.ca-central-1.compute.internal"
+                "ip-172-20-53-70.ca-central-1.compute.internal"
               ],
               "storage": [
-                "172.20.52.91"
+                "172.20.53.70"
               ]
             },
             "zone": 1
@@ -38,10 +38,10 @@
           "node": {
             "hostnames": {
               "manage": [
-                "ip-172-20-54-40.ca-central-1.compute.internal"
+                "ip-172-20-54-74.ca-central-1.compute.internal"
               ],
               "storage": [
-                "172.20.54.40"
+                "172.20.54.74"
               ]
             },
             "zone": 1

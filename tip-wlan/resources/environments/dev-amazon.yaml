@@ -54,9 +54,6 @@ wlan-cloud-static-portal:
   enabled: true
 wlan-portal-service:
   enabled: true
-  nodeSelector: {
-    kubernetes.io/hostname: ip-172-20-54-40.ca-central-1.compute.internal
-  }
 wlan-prov-service:
   enabled: true
 wlan-ssc-service:
@@ -64,11 +61,8 @@ wlan-ssc-service:
 nginx-ingress-controller:
   enabled: true
   controller:
-    nodeSelector: {
-      kubernetes.io/hostname: ip-172-20-54-40.ca-central-1.compute.internal
-    }
     config:
-      externalStatusAddress: "35.183.7.156"
+      externalStatusAddress: "api.wlan.zone3.lab.connectus.ai"
 zookeeper:
   enabled: true
   replicaCount: 1
@@ -88,7 +82,7 @@ cassandra:
     seed_size: 2
   persistence:
     enabled: true
-    storageClass: "gp2"
+    storageClass: "glusterfs-storage"
 postgresql:
   enabled: true
 ## NOTE: If we are using glusterfs as Storage class, we don't really need 
@@ -101,4 +95,4 @@ postgresql:
     slaveReplicas: 1
   persistence:
     enabled: true
-    storageClass: "gp2"
+    storageClass: "glusterfs-storage"

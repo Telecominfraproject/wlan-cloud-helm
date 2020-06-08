@@ -26,6 +26,9 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ .Values.global.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.global.pullPolicy }}
+          env:
+          - name: GRAPHQL_URL
+            value: {{ .Release.Name }}-{{ .Values.env.graphql }}
           ports:
             - name: {{ .Values.service.name }}
               containerPort: {{ .Values.service.port }}

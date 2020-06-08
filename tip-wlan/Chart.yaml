@@ -67,4 +67,4 @@ dependencies:
     condition: cassandra.enabled
   - name: postgresql
     version: 8.9.6
-    condition: postgresql-ha.enabled
+    condition: postgresql.enabled

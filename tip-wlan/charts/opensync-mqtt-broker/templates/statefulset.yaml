@@ -71,12 +71,12 @@ spec:
           - mountPath: /certs/cacert.pem
             name: opensync-mqtt-broker-truststore
             subPath: cacert.pem
-          - mountPath: /certs/servercert.pem
+          - mountPath: /certs/mqttservercert.pem
             name: opensync-mqtt-broker-truststore
-            subPath: servercert.pem
-          - mountPath: /certs/serverkey_dec.pem
+            subPath: mqttservercert.pem
+          - mountPath: /certs/mqttserverkey_dec.pem
             name: opensync-mqtt-broker-truststore
-            subPath: serverkey_dec.pem
+            subPath: mqttserverkey_dec.pem
           - mountPath: /mosquitto/config/mosquitto.conf
             name: opensync-mqtt-broker-conf
             subPath: mosquitto.conf
