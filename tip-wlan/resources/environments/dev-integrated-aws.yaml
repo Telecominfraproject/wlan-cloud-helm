@@ -57,7 +57,7 @@ opensync-mqtt-broker:
 wlan-cloud-graphql-gw:
   enabled: true
   env:
-    portalsvc: wlan-integrated-cloud-component-service:9091
+    portalsvc: wlan-portal-svc.zone3.lab.connectus.ai
 wlan-cloud-static-portal:
   enabled: true
 wlan-integrated-cloud-component-service:
