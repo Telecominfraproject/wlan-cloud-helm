@@ -59,11 +59,13 @@ securityContext: {}
 testsEnabled: false
 
 service:
-  type: ClusterIP
+  type: NodePort
   port1: 9091
   name1: portal
+  nodePort1: 51
   port2: 9092
   name2: secondary-port
+  nodePort2: 52
 
 ingress:
   enabled: false
@@ -79,6 +81,10 @@ ingress:
    - secretName: portal-secret
      hosts:
        - example.com
+
+ # Transport-Server-passthrough properties
+tsp:
+  host: wlan-portal-service.zone3.lab.connectus.ai
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

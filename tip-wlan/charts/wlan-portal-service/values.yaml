@@ -100,6 +100,10 @@ tolerations: []
 
 affinity: {}
 
+# Transport-Server-passthrough properties
+tsp:
+  host: wlan-portal-service.zone3.lab.connectus.ai
+
 env:
   protocol: https
   ssc:

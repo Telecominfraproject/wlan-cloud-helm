@@ -9,7 +9,7 @@ spec:
   listener:
     name: tls-passthrough
     protocol: TLS_PASSTHROUGH
-  host: wlan-portal-service.zone3.lab.connectus.ai
+  host: {{ .Values.tsp.host }}
   upstreams:
     - name: {{ include "common.name" . }}
       service: {{ include "common.fullname" . }}
