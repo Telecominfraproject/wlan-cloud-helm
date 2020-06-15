@@ -28,7 +28,11 @@ spec:
           imagePullPolicy: {{ .Values.global.pullPolicy }}
           env:
           - name: API
+          {{- if .Values.env.localService }}
             value: {{ .Release.Name }}-{{ .Values.env.portalsvc }}
+          {{- else }}
+            value: {{ .Values.env.portalsvc }}
+          {{- end }}
           ports:
             - name: {{ .Values.service.name }}
               containerPort: {{ .Values.service.port }}

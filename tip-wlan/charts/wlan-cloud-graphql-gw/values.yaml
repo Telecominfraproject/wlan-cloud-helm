@@ -40,8 +40,11 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+# If it's a localService, we will prefix ReleaseName to portalsvc, so service
+# is reachable.
 env:
   portalsvc: wlan-portal-service:9051
+  localService: false
 
 service:
   type: NodePort
