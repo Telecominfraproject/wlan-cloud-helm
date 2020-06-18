@@ -38,10 +38,10 @@ tags:
   integrated: true
   distributed: false
 
-createReleaseNamespace: false
+# createReleaseNamespace: false
 
 # Docker registry secret
-dockerRegistrySecret: ewogICAgICAgICJhdXRocyI6IHsKICAgICAgICAgICAgICAgICJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICJhdXRoIjogIlluVnBiR1F0Y0dsd1pXeHBibVU2YTNKQlduRTNjelp4ZEhCb1ltWmFkdz09IgogICAgICAgICAgICAgICAgfQogICAgICAgIH0sCiAgICAgICAgIkh0dHBIZWFkZXJzIjogewogICAgICAgICAgICAgICAgIlVzZXItQWdlbnQiOiAiRG9ja2VyLUNsaWVudC8xOS4wMy44IChsaW51eCkiCiAgICAgICAgfQp9
+dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
 #################################################################
 # Enable/disable and configure helm charts (ie. applications)
 # to customize the TIP-WLAN deployment.

@@ -14,19 +14,6 @@ else use user-provided URL
 {{- end -}}
 
 {{/*
-Form the Zookeeper Service. If zookeeper is installed as part of this chart, use k8s service discovery,
-else use user-provided URL
-*/}}
-{{- define "zookeeper.service" }}
-{{- if .Values.zookeeper.enabled -}}
-{{- printf "%s" (include "kafka.zookeeper.fullname" .) }}
-{{- else -}}
-{{- $zookeeperService := printf "%s-%s" .Release.Name .Values.zookeeper.url }}
-{{- default $zookeeperService }}
-{{- end -}}
-{{- end -}}
-
-{{/*
 Derive offsets.topic.replication.factor in following priority order: configurationOverrides, replicas
 */}}
 {{- define "kafka.replication.factor" }}

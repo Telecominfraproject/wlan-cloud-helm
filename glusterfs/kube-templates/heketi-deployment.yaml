@@ -79,6 +79,8 @@ spec:
           httpGet:
             path: "/hello"
             port: 8080
+      nodeSelector:
+        type: master
       volumes:
       - name: db
         glusterfs:

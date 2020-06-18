@@ -58,42 +58,20 @@ securityContext: {}
 # Enable/Disable Helm tests
 testsEnabled: false
 
+creds:
+  enabled: true
+  postgres:
+    password: DUMMY_POSTGRES_PASSWORD
+  schema_repo:
+    username: DUMMY_SCHEMA_REPO_USERNAME
+    password: DUMMY_SCHEMA_REPO_PASSWORD
+
 service:
   type: ClusterIP
   port1: 9091
   name1: portal
   port2: 9092
   name2: secondary-port
-
-  ## A list of custom ports to expose on the NGINX ingress controller pod. Follows the conventional Kubernetes yaml syntax for container ports.
-portal:
-  env: [
-      {
-        name: "tip.wlan.alarmServiceBaseUrl",
-        value: "https://opensync-wifi-controller-wlan-ssc-service:9031"
-      },{
-        name: "tip.wlan.clientServiceBaseUrl",
-        value: "https://opensync-wifi-controller-wlan-ssc-service:9031"
-      },{
-        name: "tip.wlan.cloudEventDispatcherBaseUrl",
-        value: "https://opensync-wifi-controller-wlan-ssc-service:9031"
-      },{
-        name: "tip.wlan.customerServiceBaseUrl",
-        value: "https://opensync-wifi-controller-wlan-prov-service:9091"
-      },{
-        name: "tip.wlan.firmwareServiceBaseUrl",
-        value: "https://opensync-wifi-controller-wlan-prov-service:9091"
-      },{
-        name: "tip.wlan.locationServiceBaseUrl",
-        value: "https://opensync-wifi-controller-wlan-prov-service:9091"
-      },{
-        name: "tip.wlan.profileServiceBaseUrl",
-        value: "https://opensync-wifi-controller-wlan-prov-service:9091"
-      },{
-        name: "tip.wlan.serviceMetricServiceBaseUrl",
-        value: "https://opensync-wifi-controller-wlan-prov-service:9091"
-      }
-  ]
 
 ingress:
   enabled: false
@@ -127,6 +105,10 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+postgresql:
+  url: postgresql
+  port: 5432
 
 env:
   protocol: https
