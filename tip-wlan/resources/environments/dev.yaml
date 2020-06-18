@@ -41,6 +41,8 @@ dockerRegistrySecret: ewogICAgICAgICJhdXRocyI6IHsKICAgICAgICAgICAgICAgICJ0aXAtdG
 # to customize the TIP-WLAN deployment.
 #################################################################
 opensync-gw-static:
+  enabled: false
+opensync-gw-cloud:
   enabled: true
 opensync-mqtt-broker:
   enabled: true

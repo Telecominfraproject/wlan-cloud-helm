@@ -29,6 +29,9 @@ dependencies:
   - name: opensync-gw-static
     version: 0.1.0
     condition: opensync-gw-static.enabled
+  - name: opensync-gw-cloud
+    version: 0.1.0
+    condition: opensync-gw-cloud.enabled
   - name: opensync-mqtt-broker
     version: 0.1.0
     condition: opensync-mqtt-broker.enabled

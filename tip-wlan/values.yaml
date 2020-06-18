@@ -44,6 +44,8 @@ annotations: {}
 # Enabling components under Tip-wlan
 opensync-gw-static:
   enabled: false
+opensync-gw-cloud:
+  enabled: false
 opensync-mqtt-broker:
   enabled: false
 wlan-cloud-graphql-gw:

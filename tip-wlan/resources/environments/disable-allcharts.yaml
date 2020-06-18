@@ -37,6 +37,8 @@ createDockerRegistrySecret: false
 #################################################################
 opensync-gw-static:
   enabled: false
+opensync-gw-cloud:
+  enabled: false
 opensync-mqtt-broker:
   enabled: false
   replicaCount: 1
