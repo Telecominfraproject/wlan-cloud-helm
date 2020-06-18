@@ -10,8 +10,21 @@ This repository contains helm charts for various deployment types of the tip wla
 # Deleting the wlan-cloud deployment:
 - Run the following command:
 	- helm del tip-wlan -n default
-	(Note: this would not delete the Tip namespace and any PVC/PV/Endpoints under this namespace. These are needed so we can reuse the same PVC mount when the pods are restarted.)
 	
+	(Note: this would not delete the tip namespace and any PVC/PV/Endpoints under this namespace. These are needed so we can reuse the same PVC mount when the pods are restarted.)
+	
+	To get rid of them (PVC/PV/Endpoints), you can use the following script (expects that you are in the `tip` namespace or add `-n tip` to the below set of commands):
+	```
+	#!/bin/bash
+	# Usage: ./cleanup-pvc-gluster-resources.sh <namespace to delete>
+	# script to remove gluster-dynamic-endpointsm, gluster-dynamic-svc and pvc that are retained after
+	# helm del of the release.
+	# NOTE: we are not deleting the namespace, to avoid deletion of any resource by mistake.
+	kubectl get endpoints --no-headers -o custom-columns=":metadata.name"  | xargs kubectl delete endpoints
+	kubectl get svc --no-headers -o custom-columns=":metadata.name"  | xargs kubectl delete svc
+	kubectl get pvc --no-headers -o custom-columns=":metadata.name"  | xargs kubectl delete pvc
+	kubectl get pv --no-headers -o custom-columns=":metadata.name"  | xargs kubectl delete pv
+	```
 
 # Running tests under wlan-cloud deployment
  Currently we have tests for:
