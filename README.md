@@ -7,6 +7,12 @@ This repository contains helm charts for various deployment types of the tip wla
 	
 	More details can be found here: https://telecominfraproject.atlassian.net/wiki/spaces/WIFI/pages/262176803/Pre-requisites+before+deploying+Tip-Wlan+solution
 
+# Deleting the wlan-cloud deployment:
+- Run the following command:
+	- helm del tip-wlan -n default
+	(Note: this would not delete the Tip namespace and any PVC/PV/Endpoints under this namespace. These are needed so we can reuse the same PVC mount when the pods are restarted.)
+	
+
 # Running tests under wlan-cloud deployment
  Currently we have tests for:
  - Cassandra: Test that verifies the following in a running Cassandra cluster:
