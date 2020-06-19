@@ -63,6 +63,18 @@ service:
   port2: 6643
   name2: redirector
 
+integratedcloudcomponent:
+  url: wlan-integrated-cloud-component-service
+  port: 9091
+
+prov:
+  url: wlan-prov-service
+  port: 9091
+
+ssc:
+  url: wlan-ssc-service
+  port: 9031
+
 ingress:
   enabled: false
   annotations: {}

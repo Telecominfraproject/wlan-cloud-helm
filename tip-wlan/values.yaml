@@ -28,6 +28,10 @@ global:
 
   # flag to enable debugging - application support required
   debugEnabled: false
+
+  # Integrated Deployment which deploys Prov Service, Portal Service and 
+  # SSC Service in a single docker image 
+  integratedDeployment: false  
   
 # Namespace related
 createReleaseNamespace: true

@@ -106,9 +106,8 @@ tolerations: []
 
 affinity: {}
 
-postgresql:
-  url: postgresql
-  port: 5432
+postgresql: 
+  url: postgresql-headless
 
 env:
   protocol: https

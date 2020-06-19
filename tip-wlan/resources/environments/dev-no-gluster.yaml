@@ -53,6 +53,13 @@ wlan-portal-service:
   enabled: true
 wlan-prov-service:
   enabled: true
+  creds:
+    enabled: true
+    postgres:
+      password: cG9zdGdyZXMxMjM=
+    schema_repo:
+      username: tip-read
+      password: tip-read
 wlan-ssc-service:
   enabled: true
 nginx-ingress-controller:
@@ -61,6 +68,8 @@ nginx-ingress-controller:
     nodeSelector: {
       type: master
     }
+    config:
+      externalStatusAddress: "192.168.56.101"
 zookeeper:
   enabled: true
   replicaCount: 1
@@ -80,6 +89,7 @@ cassandra:
     enabled: false
 postgresql:
   enabled: true
+  postgresqlPassword: cG9zdGdyZXMxMjM=
   replication:
     enabled: false
     slaveReplicas: 1

@@ -27,16 +27,14 @@ global:
   # flag to enable debugging - application support required
   debugEnabled: true
 
+  # Integrated Deployment which deploys Prov Service, Portal Service and 
+  # SSC Service in a single docker image 
+  integratedDeployment: true
+
 # Annotations for namespace
 annotations: {
     "helm.sh/resource-policy": keep
 }
-
-# Integrated Deployment which deploys Prov Service, Portal Service and 
-# SSC Service in a single docker image 
-tags:
-  integrated: true
-  distributed: false
 
 # createReleaseNamespace: false
 
@@ -64,6 +62,16 @@ wlan-cloud-static-portal:
   enabled: true
 wlan-integrated-cloud-component-service:
   enabled: true
+  image:
+    name: wlan-integrated-cloud-component-service-persistence
+    tag: 0.0.1-SNAPSHOT
+  creds:
+    enabled: true
+    postgres:
+      password: cG9zdGdyZXMxMjM=
+    schema_repo:
+      username: tip-read
+      password: tip-read
 nginx-ingress-controller:
   enabled: true
   controller:
@@ -91,6 +99,7 @@ cassandra:
     storageClass: "glusterfs-storage"
 postgresql:
   enabled: true
+  postgresqlPassword: cG9zdGdyZXMxMjM=
 ## NOTE: If we are using glusterfs as Storage class, we don't really need 
 ## replication turned on, since the data is anyway replicated on glusterfs nodes
 ## Replication is useful: 

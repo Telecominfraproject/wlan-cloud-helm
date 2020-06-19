@@ -1,3 +1,4 @@
+{{- if .Values.global.integratedDeployment }}
 apiVersion: k8s.nginx.org/v1alpha1
 kind: TransportServer
 metadata:
@@ -16,3 +17,4 @@ spec:
       port: {{ .Values.service.port1 }}
   action:
     pass: {{ include "common.name" . }}
+{{- end }}

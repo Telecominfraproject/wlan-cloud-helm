@@ -27,18 +27,16 @@ global:
   # flag to enable debugging - application support required
   debugEnabled: true
 
+  # Integrated Deployment which deploys Prov Service, Portal Service and 
+  # SSC Service in a single docker image 
+  integratedDeployment: true
+
 # Annotations for namespace
 annotations: {
     "helm.sh/resource-policy": keep
 }
 
-# Integrated Deployment which deploys Prov Service, Portal Service and 
-# SSC Service in a single docker image 
-tags:
-  integrated: true
-  distributed: false
-
-# createReleaseNamespace: false
+createReleaseNamespace: false
 
 # Docker registry secret
 dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
@@ -57,31 +55,43 @@ opensync-mqtt-broker:
     enabled: true
     storageClass: "glusterfs-storage"
 wlan-cloud-graphql-gw:
-  enabled: true
+  enabled: false
 wlan-cloud-static-portal:
-  enabled: true
+  enabled: false
 wlan-integrated-cloud-component-service:
   enabled: true
+  image:
+    name: wlan-integrated-cloud-component-service-persistence
+    tag: 0.0.1-SNAPSHOT
+  creds:
+    enabled: true
+    postgres:
+      password: cG9zdGdyZXMxMjM=
+    schema_repo:
+      username: tip-read
+      password: tip-read
 nginx-ingress-controller:
   enabled: true
   controller:
     nodeSelector: {
       type: master
     }
+    config:
+      externalStatusAddress: "192.168.56.101"
 zookeeper:
-  enabled: true
+  enabled: false
   replicaCount: 1
   persistence:
     enabled: true
     storageClass: "glusterfs-storage"
 kafka:
-  enabled: true
+  enabled: false
   replicaCount: 1
   persistence:
     enabled: true
     storageClass: "glusterfs-storage"
 cassandra:
-  enabled: true
+  enabled: false
   config:
 ## NOTE: If we are using glusterfs as Storage class, we don't really need 
 ## replication turned on, since the data is anyway replicated on glusterfs nodes
@@ -94,6 +104,7 @@ cassandra:
     storageClass: "glusterfs-storage"
 postgresql:
   enabled: true
+  postgresqlPassword: cG9zdGdyZXMxMjM=
 ## NOTE: If we are using glusterfs as Storage class, we don't really need 
 ## replication turned on, since the data is anyway replicated on glusterfs nodes
 ## Replication is useful: 

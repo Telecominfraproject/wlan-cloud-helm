@@ -58,6 +58,14 @@ securityContext: {}
 # Enable/Disable Helm tests
 testsEnabled: false
 
+creds:
+  enabled: true
+  postgres:
+    password: DUMMY_POSTGRES_PASSWORD
+  schema_repo:
+    username: DUMMY_SCHEMA_REPO_USERNAME
+    password: DUMMY_SCHEMA_REPO_PASSWORD
+
 service:
   type: NodePort
   port1: 9091
@@ -66,6 +74,9 @@ service:
   port2: 9092
   name2: secondary-port
   nodePort2: 52
+
+postgresql: 
+  url: postgresql-headless
 
 ingress:
   enabled: false

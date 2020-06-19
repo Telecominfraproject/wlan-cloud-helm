@@ -58,6 +58,13 @@ wlan-portal-service:
   enabled: true
 wlan-prov-service:
   enabled: true
+  creds:
+    enabled: true
+    postgres:
+      password: cG9zdGdyZXMxMjM=
+    schema_repo:
+      username: tip-read
+      password: tip-read
 wlan-ssc-service:
   enabled: true
 nginx-ingress-controller:
@@ -87,6 +94,7 @@ cassandra:
     storageClass: "glusterfs-storage"
 postgresql:
   enabled: true
+  postgresqlPassword: cG9zdGdyZXMxMjM=
 ## NOTE: If we are using glusterfs as Storage class, we don't really need 
 ## replication turned on, since the data is anyway replicated on glusterfs nodes
 ## Replication is useful: 
