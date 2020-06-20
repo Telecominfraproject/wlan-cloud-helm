@@ -69,11 +69,11 @@ integratedcloudcomponent:
 
 prov:
   url: wlan-prov-service
-  port: 9091
+  port: 9092
 
 ssc:
   url: wlan-ssc-service
-  port: 9031
+  port: 9032
 
 ingress:
   enabled: false
