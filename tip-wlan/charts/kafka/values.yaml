@@ -256,15 +256,19 @@ configJob:
 ##
 ## Note: To increase the 'replicationFactor' of a topic, 'reassignPartitions' must be set to true (see above).
 ##
-topics: []
+topics:
   # - name: myExistingTopicConfig
   #   config: "cleanup.policy=compact,delete.retention.ms=604800000"
   # - name: myExistingTopicReassignPartitions
   #   partitions: 8
   #   replicationFactor: 5
   #   reassignPartitions: true
-  # - name: myExistingTopicPartitions
-  #   partitions: 8
+  - name: wlan_service_metrics
+    partitions: 1
+    replicationFactor: 1
+  - name: system_events
+    partitions: 1
+    replicationFactor: 1
   # - name: myNewTopicWithConfig
   #   partitions: 8
   #   replicationFactor: 3
