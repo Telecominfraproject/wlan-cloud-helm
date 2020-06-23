@@ -3,30 +3,44 @@ name: Helm CI - TIP WLAN Cloud Master
 on: 
   push:
     branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
         with:
           ssh-key: ${{ secrets.GH_AUTOMATION_KEY }}
           submodules: true
-      - name: Login to TIP Docker registry 
-        uses: azure/docker-login@v1
-        with:
-          login-server: tip-tip-wlan-cloud-docker-repo.jfrog.io
-          username: build-pipeline
-          password: ${{ secrets.DOCKER_REPO_PASSWORD }}
-      - name: Login to TIP Helm chart registry
-        run: helm repo add tip-wlan-cloud-helm-virtual-repo https://tip.jfrog.io/artifactory/tip-wlan-cloud-helm-virtual-repo --username build-pipeline --password ${{ secrets.HELM_REPO_PASSWORD }}
-      - name: Build tip-wlan chart file
-        run: tar -czf tip-wlan.tgz tip-wlan
-      - name: Upload tip-wlan chart to the TIP helm registry
-        run: curl -ubuild-pipeline:${{ secrets.HELM_REPO_PASSWORD }} -T tip-wlan.tgz "https://tip.jfrog.io/artifactory/tip-wlan-cloud-helm-repo/tip-wlan.tgz"
-      - name: Verify that chart was uploaded successfully
+      - name: Validators setup
+        working-directory: /tmp
+        env:
+          KUBESCORE_VERSON: 1.7.1
         run: |
-          helm repo update
-          helm search repo tip
+          echo "::debug::Setup kubeval https://www.kubeval.com"
+          curl -LO https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz
+          tar xf kubeval-linux-amd64.tar.gz
+          cp kubeval /usr/local/bin
 
+          echo "::debug::Setup kubescore https://kube-score.com"
+          curl -LO https://github.com/zegl/kube-score/releases/download/v${{ env.KUBESCORE_VERSON }}/kube-score_${{ env.KUBESCORE_VERSON }}_linux_amd64.tar.gz
+          
+
+      # - name: Login to TIP Docker registry 
+      #   uses: azure/docker-login@v1
+      #   with:
+      #     login-server: tip-tip-wlan-cloud-docker-repo.jfrog.io
+      #     username: build-pipeline
+      #     password: ${{ secrets.DOCKER_REPO_PASSWORD }}
+      # - name: Login to TIP Helm chart registry
+      #   run: helm repo add tip-wlan-cloud-helm-virtual-repo https://tip.jfrog.io/artifactory/tip-wlan-cloud-helm-virtual-repo --username build-pipeline --password ${{ secrets.HELM_REPO_PASSWORD }}
+      # - name: Build tip-wlan chart file
+      #   run: tar -czf tip-wlan.tgz tip-wlan
+      # - name: Upload tip-wlan chart to the TIP helm registry
+      #   run: curl -ubuild-pipeline:${{ secrets.HELM_REPO_PASSWORD }} -T tip-wlan.tgz "https://tip.jfrog.io/artifactory/tip-wlan-cloud-helm-repo/tip-wlan.tgz"
+      # - name: Verify that chart was uploaded successfully
+      #   run: |
+      #     helm repo update
+      #     helm search repo tip
