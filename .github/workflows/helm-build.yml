@@ -32,7 +32,7 @@ jobs:
           rm -f kube-score_${{ env.KUBESCORE_VERSON }}_linux_amd64.tar.gz
           mv kube-score /tmp/k8s-validators/
           
-          echo "::debug::Check"
+          ::debug::Check
           ls -l /tmp/k8s-validators
       - name: Cache Maven packages
         uses: actions/cache@v1
