@@ -43,8 +43,8 @@ jobs:
       - name: Test glusterfs
         working-directory: glusterfs/kube-templates
         run: |
-          kubeval *
-          kube-score score *
+          kubeval *.yaml
+          kube-score score *.yaml
 
       # - name: Login to TIP Docker registry 
       #   uses: azure/docker-login@v1
