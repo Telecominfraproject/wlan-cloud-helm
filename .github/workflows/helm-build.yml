@@ -40,6 +40,14 @@ jobs:
         with:
           path: /tmp/k8s-validators
           key: ${{ runner.os }}-k8s-validators
+      - name: Test tip-wlan
+        working-directory: tip-wlan
+        run: |
+          echo "Kubeval test"
+          helm template -f values-test.yaml | kubeval --ignore-missing-schemas
+
+          echo "Kube-score test"
+          helm template -f values-test.yaml | kube-score score -
       - name: Test glusterfs
         working-directory: glusterfs/kube-templates
         run: |

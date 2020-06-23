@@ -1,0 +1,76 @@
+# Default values for Tip-Wlan
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+#################################################################
+# Global configuration overrides.
+#
+# These overrides will affect all helm charts (ie. applications)
+# that are listed below and are 'enabled'.
+#################################################################
+global:
+  # Change to an unused port prefix range to prevent port conflicts
+  # with other instances running within the same k8s cluster
+  nodePortPrefix: 302
+  # namespace to deploy the release
+  nsPrefix: tip
+
+  repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
+  # image pull policy
+  pullPolicy: Always
+
+  # default mount path root directory referenced
+  # by persistent volumes and log files
+  persistence:
+
+  # override default resource limit flavor for all charts
+  flavor: unlimited
+
+  # flag to enable debugging - application support required
+  debugEnabled: false
+
+  # Integrated Deployment which deploys Prov Service, Portal Service and 
+  # SSC Service in a single docker image 
+  integratedDeployment: false  
+  
+# Namespace related
+createReleaseNamespace: true
+
+# DockerRegistry Secret
+createDockerRegistrySecret: true
+
+# Docker Registry secret to pull docker images from WLAN repo
+dockerRegistrySecret: dummySecret
+
+# Annotations to add to the namespace
+annotations: {}
+
+# Enabling components under Tip-wlan
+opensync-gw-static:
+  enabled: true
+opensync-gw-cloud:
+  enabled: true
+opensync-mqtt-broker:
+  enabled: true
+wlan-cloud-graphql-gw:
+  enabled: true
+wlan-cloud-static-portal:
+  enabled: true
+wlan-portal-service:
+  enabled: true
+wlan-prov-service:
+  enabled: true
+wlan-ssc-service:
+  enabled: true
+wlan-integrated-cloud-component-service:
+  enabled: true
+nginx-ingress-controller:
+  enabled: true
+zookeeper:
+  enabled: true
+kafka:
+  enabled: true
+cassandra:
+  enabled: true
+postgresql:
+  enabled: true
