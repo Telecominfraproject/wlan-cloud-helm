@@ -33,8 +33,6 @@ jobs:
           tar xf helm-v3.2.4-linux-amd64.tar.gz
           mv linux-amd64/helm .
           rm -fr helm-v3.2.4-linux-amd64.tar.gz linux-amd64
-
-          echo "::add-path::/tmp/k8s-validators/"
       - name: Cache validators
         uses: actions/cache@v1
         with:
@@ -44,15 +42,15 @@ jobs:
         working-directory: tip-wlan
         run: |
           echo "Kubeval test"
-          helm template -f values-test.yaml . | kubeval --ignore-missing-schemas
+          helm template -f values-test.yaml . | /tmp/k8s-validators/kubeval --ignore-missing-schemas
 
           echo "Kube-score test"
-          helm template -f values-test.yaml . | kube-score score -
+          helm template -f values-test.yaml . | /tmp/k8s-validators/kube-score score -
       - name: Test glusterfs
         working-directory: glusterfs/kube-templates
         run: |
           echo "Kubeval test"
-          kubeval *.yaml
+          /tmp/k8s-validators/kubeval *.yaml
 
           echo "Kube-score test"
-          kube-score score *.yaml
+          /tmp/k8s-validators/kube-score score *.yaml
