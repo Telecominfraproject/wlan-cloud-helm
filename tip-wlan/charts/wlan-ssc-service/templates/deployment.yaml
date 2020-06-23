@@ -1,3 +1,5 @@
+{{- $kafka := include "kafka.service" . -}}
+{{- $ns := include "common.namespace" . -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,6 +22,11 @@ spec:
       serviceAccountName: {{ include "common.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: {{ include "common.name" . }}-readiness
+          image: busybox:1.28
+          imagePullPolicy: {{ .Values.global.pullPolicy }}
+          command: ['sh', '-c', "until nslookup {{ $kafka }}.{{ $ns }}.svc.cluster.local; do echo waiting for Kafka; sleep 2; done"]
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -27,7 +34,36 @@ spec:
           image: {{ .Values.global.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.global.pullPolicy }}
           env:
-            {{- include "common.env" . | nindent 12 }}  
+            {{- include "common.env" . | nindent 12 }}
+            - name: tip.wlan.kafka.bootstrapServers
+              value: {{ .Release.Name }}-kafka-headless:9093
+            - name: tip.wlan.kafka.sslKeyPassword
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "common.fullname" . }}-creds
+                  key: sslKeyPassword
+            - name: tip.wlan.kafka.sslKeystoreLocation
+              value: /opt/tip-wlan/certs/kafka-server.pkcs12
+            - name: tip.wlan.kafka.sslKeystorePassword
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "common.fullname" . }}-creds
+                  key: sslKeystorePassword
+            - name: tip.wlan.kafka.sslKeystoreType
+              value: PKCS12
+            - name: tip.wlan.kafka.sslTruststoreLocation
+              value: /opt/tip-wlan/certs/truststore.jks
+            - name: tip.wlan.kafka.sslTruststorePassword
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "common.fullname" . }}-creds
+                  key: sslTruststorePassword
+            - name: tip.wlan.kafka.sslTruststoreType
+              value: JKS
+            - name: tip.wlan.kafka.securityProtocol
+              value: SSL
+            - name: tip.wlan.kafka.sslEndpointIdentificationAlgorithm
+              value: ''
           {{- if .Values.probes.enabled }}
           livenessProbe:
             httpGet:
@@ -60,6 +96,9 @@ spec:
           - mountPath: /opt/tip-wlan/certs/server.pkcs12
             name: certificates
             subPath: server.pkcs12
+          - mountPath: /opt/tip-wlan/certs/kafka-server.pkcs12
+            name: certificates
+            subPath: kafka-server.pkcs12
           ports:
             - name: {{ .Values.service.name1 }}
               containerPort: {{ .Values.service.port1 }}

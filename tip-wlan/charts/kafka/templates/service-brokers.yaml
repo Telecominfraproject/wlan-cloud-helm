@@ -8,7 +8,7 @@ metadata:
 spec:
   ports:
   - name: broker
-    port: 9092
+    port: {{ .Values.headless.sslPort }}
     targetPort: kafka
   selector:
   {{- include "kafka.broker.matchLabels" . | nindent 4 }}

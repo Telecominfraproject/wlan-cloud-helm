@@ -12,10 +12,15 @@ metadata:
 {{- end }}
 spec:
   ports:
+#   - name: broker
+#     port: {{ .Values.headless.port }}
+# {{- if .Values.headless.targetPort }}
+#     targetPort: {{ .Values.headless.targetPort }}
+# {{- end }}
   - name: broker
-    port: {{ .Values.headless.port }}
-{{- if .Values.headless.targetPort }}
-    targetPort: {{ .Values.headless.targetPort }}
+    port: {{ .Values.headless.sslPort }}
+{{- if .Values.headless.targetSslPort }}
+    targetPort: {{ .Values.headless.targetSslPort }}
 {{- end }}
   clusterIP: None
   selector:

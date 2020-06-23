@@ -91,7 +91,7 @@ spec:
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
         ports:
-        - containerPort: 9092
+        - containerPort: {{ .Values.headless.sslPort }}
           name: kafka
         {{- if .Values.external.enabled }}
           {{- $replicas := .Values.replicas | int }}
@@ -135,6 +135,8 @@ spec:
         - name: {{ printf "KAFKA_%s" $key | replace "." "_" | upper | quote }}
           value: {{ $value | quote }}
         {{- end }}
+        - name: KAFKA_ADVERTISED__LISTENERS
+          value: SSL://{{ .Release.Name }}-kafka-headless:9093 
         {{- range $secret := .Values.secrets }}
           {{- if not $secret.mountPath }}
             {{- range $key := $secret.keys }}
@@ -170,6 +172,24 @@ spec:
           {{- end }}
           exec /etc/confluent/docker/run
         volumeMounts:
+        - mountPath: /etc/kafka/secrets/truststore.jks
+          name: kafka-certificates
+          subPath: truststore.jks
+        - mountPath: /etc/kafka/secrets/kafka-server.pkcs12
+          name: kafka-certificates
+          subPath: kafka-server.pkcs12
+        - mountPath: /etc/kafka/secrets/key_creds
+          name: kafka-certificates
+          subPath: key_creds
+        - mountPath: /etc/kafka/secrets/keystore_creds
+          name: kafka-certificates
+          subPath: keystore_creds
+        - mountPath: /etc/kafka/secrets/truststore_creds
+          name: kafka-certificates
+          subPath: truststore_creds
+        - mountPath: /etc/kafka/admin-client.properties
+          name: kafka-client-config
+          subPath: admin-client.properties
         - name: datadir
           mountPath: {{ .Values.persistence.mountPath | quote }}
         {{- range $secret := .Values.secrets }}
@@ -189,6 +209,12 @@ spec:
           {{- end }}
         {{- end }}
       volumes:
+      - name: kafka-certificates
+        secret:
+          secretName: {{ include "common.fullname" . }}-certs
+      - name: kafka-client-config
+        configMap:
+            name: {{ include "common.fullname" . }}-clientconfig
       {{- if not .Values.persistence.enabled }}
       - name: datadir
         emptyDir: {}

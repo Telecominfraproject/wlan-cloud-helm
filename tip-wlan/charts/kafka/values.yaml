@@ -135,6 +135,7 @@ headless:
   # annotations:
   # targetPort:
   port: 9092
+  sslPort: 9093
 
 ## External access.
 ##
@@ -182,6 +183,21 @@ configurationOverrides:
   # "auto.create.topics.enable": true
   # "controlled.shutdown.enable": true
   # "controlled.shutdown.max.retries": 100
+  # "ssl.secret.dir": "/opt/tip-wlan/certs"
+  # "ssl.keystore.filename": "kafka-server.pkcs12"
+  # "ssl.key.credentials": "mypassword"
+  # "ssl.truststore.filename": "kafka_server_keystore.jks"
+  # "ssl.truststore.credentials": "mypassword"
+  ssl.client.auth: required
+  ssl.endpoint.identification.algorithm: ""
+  security.inter.broker.protocol: SSL
+  ssl.key.credentials: "key_creds"
+  ssl.keystore.filename: "kafka-server.pkcs12"
+  ssl.keystore.credentials: "keystore_creds"
+  ssl.keystore.type: "PKCS12"
+  ssl.truststore.filename: "truststore.jks"
+  ssl.truststore.credentials: "truststore_creds"
+  ssl.truststore.type: "JKS"
 
   ## Options required for external access via NodePort
   ## ref:

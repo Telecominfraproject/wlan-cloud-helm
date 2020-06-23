@@ -19,6 +19,13 @@ else use user-provided URL
 {{- end -}}  
 
 {{/*
+  Resolve the Kafka service-name to apply to a chart. 
+*/}}
+{{- define "kafka.service" -}}
+{{- printf "%s-%s" .Release.Name .Values.kafka.url | trunc 63 -}}
+{{- end -}}
+
+{{/*
   Resolve the integratedcloudcomponent service-name to apply to a chart. 
 */}}
 {{- define "integratedcloudcomponent.service" -}}
