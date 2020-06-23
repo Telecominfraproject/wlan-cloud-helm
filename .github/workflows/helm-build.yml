@@ -44,10 +44,10 @@ jobs:
         working-directory: tip-wlan
         run: |
           echo "Kubeval test"
-          helm template -f values-test.yaml | kubeval --ignore-missing-schemas
+          helm template -f values-test.yaml . | kubeval --ignore-missing-schemas
 
           echo "Kube-score test"
-          helm template -f values-test.yaml | kube-score score -
+          helm template -f values-test.yaml . | kube-score score -
       - name: Test glusterfs
         working-directory: glusterfs/kube-templates
         run: |
