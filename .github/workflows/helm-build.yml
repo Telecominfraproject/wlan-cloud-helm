@@ -7,7 +7,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
         with:
@@ -29,4 +28,3 @@ jobs:
         run: |
           helm repo update
           helm search repo tip
-
