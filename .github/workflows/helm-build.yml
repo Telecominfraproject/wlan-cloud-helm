@@ -19,14 +19,26 @@ jobs:
         env:
           KUBESCORE_VERSON: 1.7.1
         run: |
+          mkdir /tmp/k8s-validators
           echo "::debug::Setup kubeval https://www.kubeval.com"
           curl -LO https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz
           tar xf kubeval-linux-amd64.tar.gz
-          cp kubeval /usr/local/bin
+          rm -f kubeval-linux-amd64.tar.gz
+          mv kubeval /tmp/k8s-validators/
 
           echo "::debug::Setup kubescore https://kube-score.com"
           curl -LO https://github.com/zegl/kube-score/releases/download/v${{ env.KUBESCORE_VERSON }}/kube-score_${{ env.KUBESCORE_VERSON }}_linux_amd64.tar.gz
+          tar xf kube-score_${{ env.KUBESCORE_VERSON }}_linux_amd64.tar.gz
+          rm -f kube-score_${{ env.KUBESCORE_VERSON }}_linux_amd64.tar.gz
+          mv kube-score /tmp/k8s-validators/
           
+          echo "::debug::Check"
+          ls -l /tmp/k8s-validators
+      - name: Cache Maven packages
+        uses: actions/cache@v1
+        with:
+          path: /tmp/k8s-validators
+          key: ${{ runner.os }}-k8s-validators
 
       # - name: Login to TIP Docker registry 
       #   uses: azure/docker-login@v1
