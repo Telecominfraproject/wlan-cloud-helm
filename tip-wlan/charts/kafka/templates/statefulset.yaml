@@ -135,8 +135,6 @@ spec:
         - name: {{ printf "KAFKA_%s" $key | replace "." "_" | upper | quote }}
           value: {{ $value | quote }}
         {{- end }}
-        - name: KAFKA_ADVERTISED__LISTENERS
-          value: SSL://{{ .Release.Name }}-kafka-headless:9093 
         {{- range $secret := .Values.secrets }}
           {{- if not $secret.mountPath }}
             {{- range $key := $secret.keys }}

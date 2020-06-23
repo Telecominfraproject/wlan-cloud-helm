@@ -188,6 +188,7 @@ configurationOverrides:
   # "ssl.key.credentials": "mypassword"
   # "ssl.truststore.filename": "kafka_server_keystore.jks"
   # "ssl.truststore.credentials": "mypassword"
+  advertised.listeners: SSL://tip-wlan-kafka-headless:9093
   ssl.client.auth: required
   ssl.endpoint.identification.algorithm: ""
   security.inter.broker.protocol: SSL
