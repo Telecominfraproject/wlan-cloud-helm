@@ -33,8 +33,6 @@ jobs:
           tar xf helm-v3.2.4-linux-amd64.tar.gz
           mv linux-amd64/helm .
           rm -fr helm-v3.2.4-linux-amd64.tar.gz linux-amd64
-
-          ls -l /tmp/k8s-validators/
       - name: Cache validators
         uses: actions/cache@v1
         with:
