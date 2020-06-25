@@ -132,7 +132,15 @@ spec:
             failureThreshold: {{ .Values.probes.readinessProbe.failureThreshold }}
             periodSeconds: {{ .Values.probes.readinessProbe.periodSeconds }}
             successThreshold: {{ .Values.probes.readinessProbe.successThreshold }}
-          {{- end }}       
+          {{- end }}
+          env:
+            {{- include "common.env" . | nindent 12 }}
+            - name: BACKEND_SERVER
+              value: {{ .Release.Name }}-{{ .Values.externalhostaddress.cloudserver }}
+            - name: OVSDB_MANAGER
+              value: {{ .Values.externalhostaddress.ovsdb }}
+            - name: MQTT_SERVER
+              value: {{ .Values.externalhostaddress.mqtt }}
           volumeMounts:
           - mountPath: /opt/tip-wlan/certs/client_keystore.jks
             name: certificates

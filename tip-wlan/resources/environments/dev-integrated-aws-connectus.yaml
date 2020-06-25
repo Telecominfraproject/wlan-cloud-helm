@@ -48,6 +48,17 @@ opensync-gw-static:
   enabled: false
 opensync-gw-cloud:
   enabled: true
+  externalhostaddress:
+    ovsdb: "15.222.171.117"
+    mqtt: "3.96.17.34"
+  env:
+    protocol: https
+    ssc:
+      service: wlan-integrated-cloud-component-service
+      port: 9092
+    prov:
+      service: wlan-integrated-cloud-component-service
+      port: 9092
 opensync-mqtt-broker:
   enabled: true
   replicaCount: 1
@@ -72,6 +83,8 @@ wlan-integrated-cloud-component-service:
     schema_repo:
       username: tip-read
       password: tip-read
+  integratedWithPersistence:
+    enabled: true
 nginx-ingress-controller:
   enabled: true
   controller:

@@ -78,6 +78,9 @@ service:
 postgresql: 
   url: postgresql-headless
 
+integratedWithPersistence:
+  enabled: false
+
 ingress:
   enabled: false
   annotations: {}

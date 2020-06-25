@@ -28,6 +28,7 @@ spec:
           image: busybox:1.28
           imagePullPolicy: {{ .Values.global.pullPolicy }}
           command: ['sh', '-c', "until nslookup {{ $pg }}.{{ $ns }}.svc.cluster.local; do echo waiting for POSTGRES; sleep 2; done"]
+        {{- if .Values.integratedWithPersistence.enabled }}
         - name: {{ include "common.name" . }}-create-db-schema
           env:
           - name: POSTGRESQL_PORT_NUMBER
@@ -80,12 +81,16 @@ spec:
             name: dshm
           - mountPath: /bitnami/postgresql
             name: data
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ .Values.global.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.global.pullPolicy }}
+          env:
+            - name: BACKEND_SERVER
+              value: {{ .Release.Name }}-{{ .Chart.Name }}
           {{- if .Values.probes.enabled }}
           livenessProbe:
             httpGet:

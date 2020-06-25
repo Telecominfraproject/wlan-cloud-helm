@@ -36,7 +36,7 @@ annotations: {
     "helm.sh/resource-policy": keep
 }
 
-createReleaseNamespace: false
+# createReleaseNamespace: false
 
 # Docker registry secret
 dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
@@ -48,6 +48,9 @@ opensync-gw-static:
   enabled: false
 opensync-gw-cloud:
   enabled: true
+  externalhostaddress:
+    ovsdb: "44.232.238.155"
+    mqtt: "54.245.117.210"
   env:
     protocol: https
     ssc:
@@ -61,57 +64,49 @@ opensync-mqtt-broker:
   replicaCount: 1
   persistence:
     enabled: true
-    storageClass: "glusterfs-storage"
+    storageClass: "gp2"
 wlan-cloud-graphql-gw:
   enabled: true
+  env:
+    portalsvc: wlan-portal-svc.tip.lab.connectus.ai
 wlan-cloud-static-portal:
   enabled: true
+  image:
+    name: wlan-cloud-ui
+    tag: tip
+  ingress:
+    hosts:
+      - host: wlan-ui.tip.lab.connectus.ai
+        paths: [
+           /
+          ]
 wlan-integrated-cloud-component-service:
   enabled: true
-  image:
-    name: wlan-integrated-cloud-component-service-persistence
-    tag: 0.0.1-SNAPSHOT
-  creds:
-    enabled: true
-    postgres:
-      password: cG9zdGdyZXMxMjM=
-    schema_repo:
-      username: tip-read
-      password: tip-read
-  integratedWithPersistence:
-    enabled: true
 nginx-ingress-controller:
   enabled: true
   controller:
-    nodeSelector: {
-      type: master
-    }
     config:
-      externalStatusAddress: "192.168.56.101"
+      externalStatusAddress: "api.uswest2.tip.lab.connectus.ai"
 zookeeper:
   enabled: true
   replicaCount: 1
   persistence:
     enabled: true
-    storageClass: "glusterfs-storage"
+    storageClass: "gp2"
 kafka:
   enabled: true
   replicaCount: 1
   persistence:
     enabled: true
-    storageClass: "glusterfs-storage"
+    storageClass: "gp2"
 cassandra:
   enabled: true
   config:
-## NOTE: If we are using glusterfs as Storage class, we don't really need 
-## replication turned on, since the data is anyway replicated on glusterfs nodes
-## Replication is useful when we use HostPath as storage mechanism
-## For Hostpath storage, recommendation is cluster_size: 3 and seed_size: 2
-    cluster_size: 1
-    seed_size: 1
+    cluster_size: 3
+    seed_size: 2
   persistence:
     enabled: true
-    storageClass: "glusterfs-storage"
+    storageClass: "gp2"
 postgresql:
   enabled: true
   postgresqlPassword: cG9zdGdyZXMxMjM=
@@ -121,8 +116,8 @@ postgresql:
 ## a. When we use HostPath as storage mechanism
 ## b. If master goes down and one of the slave is promoted as master
   replication:
-    enabled: false
+    enabled: true
     slaveReplicas: 1
   persistence:
     enabled: true
-    storageClass: "glusterfs-storage"
+    storageClass: "gp2"
