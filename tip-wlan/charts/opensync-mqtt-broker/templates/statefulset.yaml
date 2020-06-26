@@ -43,6 +43,21 @@ spec:
       serviceAccountName: {{ include "common.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: {{ include "common.name" . }}-init-dir-ownership-change
+          image: alpine:3.6
+          # Change ownership to `mosquitto` user for a mounted volume
+          command:
+          - sh
+          - -c
+          - |
+            chown -R 1883:1883 /mosquitto/data
+            chown -R 1883:1883 /mosquitto/db
+          volumeMounts:
+          - name: data
+            mountPath: /mosquitto/data
+          - name: db
+            mountPath: /mosquitto/db
       containers:
         - name: {{ .Chart.Name }}
           securityContext:

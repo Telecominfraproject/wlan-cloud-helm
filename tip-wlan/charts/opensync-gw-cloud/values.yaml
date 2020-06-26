@@ -75,10 +75,14 @@ ssc:
   url: wlan-ssc-service
   port: 9032
 
+ # These are list of external HostAddresses for cloudserver, ovsdb, mqtt. 
+ # This is especially important for ovsdb and mqtt since 
+ # that's what AP sees. Please make sure to override
+ # them in dev override file for your respective environments.
 externalhostaddress:
   cloudserver: wlan-integrated-cloud-component-service
-  ovsdb: "44.232.238.155"
-  mqtt: "54.245.117.210"
+  ovsdb: opensync-gw-cloud
+  mqtt: opensync-mqtt-broker
 
 ingress:
   enabled: false
