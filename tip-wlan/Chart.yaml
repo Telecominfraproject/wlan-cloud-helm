@@ -54,6 +54,9 @@ dependencies:
   - name: wlan-ssc-service
     version: 0.1.0
     condition: wlan-ssc-service.enabled
+  - name: wlan-spc-service
+    version: 0.1.0
+    condition: wlan-spc-service.enabled
   - name: nginx-ingress-controller
     version: 0.1.0
     condition: nginx-ingress-controller.enabled

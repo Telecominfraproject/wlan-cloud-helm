@@ -62,6 +62,8 @@ wlan-prov-service:
   enabled: false
 wlan-ssc-service:
   enabled: false
+wlan-spc-service:
+  enabled: false
 wlan-integrated-cloud-component-service:
   enabled: false
 nginx-ingress-controller:
