@@ -26,6 +26,43 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
+        - name: {{ include "common.name" . }}-mqtt-readiness
+          image: eclipse-mosquitto:latest
+          imagePullPolicy: {{ .Values.global.pullPolicy }}
+          command:
+          - sh
+          - -c
+          - |
+            mosquitto_pub -h {{ $mqtt }} -p 1883 --cafile /certs/cacert.pem --cert /certs/clientcert.pem --key /certs/clientkey.pem --insecure -t "/ap/test" -q 0 -m "CheckingMQTTAliveness"
+            status=$(echo $?)
+            echo mosquitto_pub response of the request = $status
+            counter=0
+            while [ $counter -lt 10 ] && [ $status -ne 0 ]
+            do
+              echo {{ $mqtt }} service isnt ready. Tried $counter times
+              sleep 2
+              counter=`expr $counter + 1`
+              mosquitto_pub -h {{ $mqtt }} -p 1883 --cafile /certs/cacert.pem --cert /certs/clientcert.pem --key /certs/clientkey.pem --insecure -t "/ap/test" -q 0 -m "CheckingMQTTAliveness"
+              status=$(echo $?)
+              echo mosquitto_pub response of the request = $status
+            done
+            if [ $status -eq 0 ]
+            then
+              echo {{ $mqtt }} service is ready!
+            else
+              echo {{ $mqtt }} service failed to respond after 20 secs
+              exit 1
+            fi
+          volumeMounts:
+          - mountPath: /certs/cacert.pem
+            name: certificates
+            subPath: cacert.pem
+          - mountPath: /certs/clientcert.pem
+            name: certificates
+            subPath: clientcert.pem
+          - mountPath: /certs/clientkey.pem
+            name: certificates
+            subPath: clientkey.pem
       {{- if .Values.global.integratedDeployment }}
         - name: {{ include "common.name" . }}-readiness-int-cloud
           image: alpine
@@ -110,10 +147,6 @@ spec:
               exit 1
             fi        
       {{- end }}
-        - name: {{ include "common.name" . }}-mqtt-readiness
-          image: busybox:1.28
-          imagePullPolicy: {{ .Values.global.pullPolicy }}
-          command: ['sh', '-c', "until nslookup {{ $mqtt }}.{{ $ns }}.svc.cluster.local; do echo waiting for Kafka; sleep 2; done"]      
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
