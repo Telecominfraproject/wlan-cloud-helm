@@ -26,6 +26,13 @@ else use user-provided URL
 {{- end -}}
 
 {{/*
+  Resolve the MQTT service-name to apply to a chart. 
+*/}}
+{{- define "mqtt.service" -}}
+{{- printf "%s-%s" .Release.Name .Values.mqtt.url | trunc 63 -}}
+{{- end -}}
+
+{{/*
   Resolve the integratedcloudcomponent service-name to apply to a chart. 
 */}}
 {{- define "integratedcloudcomponent.service" -}}

@@ -1,6 +1,7 @@
 {{- $icc := include "integratedcloudcomponent.service" . -}}
 {{- $prov := include "prov.service" . -}}
 {{- $ssc := include "ssc.service" . -}}
+{{- $mqtt := include "mqtt.service" . -}}
 {{- $ns := include "common.namespace" . -}}
 apiVersion: apps/v1
 kind: Deployment
@@ -109,6 +110,10 @@ spec:
               exit 1
             fi        
       {{- end }}
+        - name: {{ include "common.name" . }}-mqtt-readiness
+          image: busybox:1.28
+          imagePullPolicy: {{ .Values.global.pullPolicy }}
+          command: ['sh', '-c', "until nslookup {{ $mqtt }}.{{ $ns }}.svc.cluster.local; do echo waiting for Kafka; sleep 2; done"]      
       containers:
         - name: {{ .Chart.Name }}
           securityContext:

@@ -57,11 +57,13 @@ probes:
 testsEnabled: false
 
 service:
-  type: ClusterIP
+  type: NodePort
   port1: 6640
+  nodePort1: 29
   name1: controller
   port2: 6643
   name2: redirector
+  nodePort2: 30
 
 integratedcloudcomponent:
   url: wlan-integrated-cloud-component-service
@@ -74,6 +76,9 @@ prov:
 ssc:
   url: wlan-ssc-service
   port: 9032
+
+mqtt:
+  url: opensync-mqtt-broker
 
  # These are list of external HostAddresses for cloudserver, ovsdb, mqtt. 
  # This is especially important for ovsdb and mqtt since 

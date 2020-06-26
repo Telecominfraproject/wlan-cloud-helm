@@ -54,11 +54,13 @@ probes:
 testsEnabled: false
 
 service:
-  type: ClusterIP
+  type: NodePort
   port1: 1883
   name1: listener
+  nodePort1: 31
   port2: 9001
   name2: debug
+  nodePort2: 32
 
 ingress:
   enabled: false

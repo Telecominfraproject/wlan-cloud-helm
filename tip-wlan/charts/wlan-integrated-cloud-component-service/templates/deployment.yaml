@@ -23,12 +23,12 @@ spec:
       serviceAccountName: {{ include "common.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if .Values.integratedWithPersistence.enabled }}
       initContainers:
         - name: {{ include "common.name" . }}-readiness
           image: busybox:1.28
           imagePullPolicy: {{ .Values.global.pullPolicy }}
           command: ['sh', '-c', "until nslookup {{ $pg }}.{{ $ns }}.svc.cluster.local; do echo waiting for POSTGRES; sleep 2; done"]
-        {{- if .Values.integratedWithPersistence.enabled }}
         - name: {{ include "common.name" . }}-create-db-schema
           env:
           - name: POSTGRESQL_PORT_NUMBER
@@ -81,7 +81,7 @@ spec:
             name: dshm
           - mountPath: /bitnami/postgresql
             name: data
-        {{- end }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
