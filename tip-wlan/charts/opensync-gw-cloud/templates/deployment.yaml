@@ -179,6 +179,8 @@ spec:
               value: {{ .Values.externalhostaddress.ovsdb }}
             - name: MQTT_SERVER
               value: {{ .Values.externalhostaddress.mqtt }}
+            - name: DEFAULT_LAN
+              value: {{ .Values.ethernetType.lan }}
           volumeMounts:
           - mountPath: /opt/tip-wlan/certs/client_keystore.jks
             name: certificates

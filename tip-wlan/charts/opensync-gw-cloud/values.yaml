@@ -89,6 +89,9 @@ externalhostaddress:
   ovsdb: opensync-gw-cloud
   mqtt: opensync-mqtt-broker
 
+ethernetType:
+  lan: "bridge"
+
 ingress:
   enabled: false
   annotations: {}
