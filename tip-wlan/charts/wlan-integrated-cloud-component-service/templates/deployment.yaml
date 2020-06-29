@@ -123,6 +123,9 @@ spec:
           - mountPath: /opt/tip-wlan/certs/server.pkcs12
             name: certificates
             subPath: server.pkcs12
+          - mountPath: /app/intcloudcomp/logback.xml
+            name: logback-config
+            subPath: logback.xml
           ports:
             - name: {{ .Values.service.name1 }}
               containerPort: {{ .Values.service.port1 }}
@@ -149,6 +152,9 @@ spec:
       - name: certificates
         secret:
           secretName: {{ include "common.fullname" . }}-certs
+      - name: logback-config
+        configMap:
+            name: {{ include "common.fullname" . }}-log-config
       - name: data
         emptyDir: {}
       - name: dshm

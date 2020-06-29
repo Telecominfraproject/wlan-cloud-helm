@@ -179,8 +179,12 @@ spec:
               value: {{ .Values.externalhostaddress.ovsdb }}
             - name: MQTT_SERVER
               value: {{ .Values.externalhostaddress.mqtt }}
-            - name: DEFAULT_LAN
-              value: {{ .Values.ethernetType.lan }}
+            - name: DEFAULT_LAN_NAME
+              value: {{ .Values.ethernetType.lanName }}
+            - name: DEFAULT_LAN_TYPE
+              value: {{ .Values.ethernetType.lanType }}
+            - name: DEFAULT_WAN_TYPE
+              value: {{ .Values.ethernetType.wanType }}
           volumeMounts:
           - mountPath: /opt/tip-wlan/certs/client_keystore.jks
             name: certificates
@@ -197,6 +201,9 @@ spec:
           - mountPath: /opt/tip-wlan/certs/ssl.properties
             name: certificates
             subPath: ssl.properties
+          - mountPath: /app/opensync/logback.xml
+            name: logback-config
+            subPath: logback.xml
           ports:
             - name: {{ .Values.service.name1 }}
               containerPort: {{ .Values.service.port1 }}
@@ -223,3 +230,6 @@ spec:
       - name: certificates
         secret:
           secretName: {{ include "common.fullname" . }}-certs
+      - name: logback-config
+        configMap:
+            name: {{ include "common.fullname" . }}-log-config

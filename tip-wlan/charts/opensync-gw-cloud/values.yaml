@@ -90,7 +90,9 @@ externalhostaddress:
   mqtt: opensync-mqtt-broker
 
 ethernetType:
-  lan: "bridge"
+  lanName: "lan"
+  lanType: "bridge"
+  wanType: "eth"
 
 ingress:
   enabled: false
