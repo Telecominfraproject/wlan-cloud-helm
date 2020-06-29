@@ -177,6 +177,10 @@ spec:
               value: {{ .Release.Name }}-{{ .Values.externalhostaddress.cloudserver }}
             - name: OVSDB_MANAGER
               value: {{ .Values.externalhostaddress.ovsdb }}
+            - name: OVSDB_MANAGER_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
             - name: MQTT_SERVER
               value: {{ .Values.externalhostaddress.mqtt }}
             - name: DEFAULT_LAN_NAME
