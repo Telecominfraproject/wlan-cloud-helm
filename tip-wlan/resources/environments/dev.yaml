@@ -77,6 +77,12 @@ wlan-ssc-service:
     sslKeyPassword: mypassword
     sslKeystorePassword: mypassword
     sslTruststorePassword: mypassword
+    cassandra:
+      tip_user: tip_user
+      tip_password: tip_password 
+    schema_repo:
+      username: tip-read
+      password: tip-read
 wlan-spc-service:
   enabled: true
   creds:
@@ -105,13 +111,13 @@ kafka:
     storageClass: "glusterfs-storage"
 cassandra:
   enabled: true
-  config:
+  cluster:
 ## NOTE: If we are using glusterfs as Storage class, we don't really need 
 ## replication turned on, since the data is anyway replicated on glusterfs nodes
 ## Replication is useful when we use HostPath as storage mechanism
 ## For Hostpath storage, recommendation is cluster_size: 3 and seed_size: 2
-    cluster_size: 1
-    seed_size: 1
+    replicaCount: 3
+    seedCount: 2
   persistence:
     enabled: true
     storageClass: "glusterfs-storage"

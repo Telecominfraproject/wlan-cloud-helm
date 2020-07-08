@@ -1,35 +1,65 @@
-Cassandra CQL can be accessed via port {{ .Values.config.ports.cql }} on the following DNS name from within your cluster:
-Cassandra Thrift can be accessed via port {{ .Values.config.ports.thrift }} on the following DNS name from within your cluster:
+** Please be patient while the chart is being deployed **
 
-If you want to connect to the remote instance with your local Cassandra CQL cli. To forward the API port to localhost:9042 run the following:
-- kubectl port-forward --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ include "common.name" . }},release={{ .Release.Name }} -o jsonpath='{ .items[0].metadata.name }') 9042:{{ .Values.config.ports.cql }}
+Cassandra can be accessed through the following URLs from within the cluster:
 
-If you want to connect to the Cassandra CQL run the following:
+  - CQL: {{ template "common.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.cluster.domain }}:{{ .Values.service.port }}
+  - Thrift: {{ template "common.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.cluster.domain }}:{{ .Values.service.thriftPort }}
+
+To get your password run:
+
+   export CASSANDRA_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "common.fullname" . }} -o jsonpath="{.data.cassandra-password}" | base64 --decode)
+
+Check the cluster status by running:
+
+   kubectl exec -it --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "common.name" . }},release={{ .Release.Name }} -o jsonpath='{.items[0].metadata.name}') nodetool status
+
+To connect to your Cassandra cluster using CQL:
+
+1. Run a Cassandra pod that you can use as a client:
+
+   kubectl run --namespace {{ .Release.Namespace }} {{ template "common.fullname" . }}-client --rm --tty -i --restart='Never' \
+   --env CASSANDRA_PASSWORD=$CASSANDRA_PASSWORD \
+   {{ if and (.Values.networkPolicy.enabled) (not .Values.networkPolicy.allowExternal) }}--labels="{{ template "common.name" . }}-client=true"{{ end }} \
+   --image {{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }} -- bash
+
+2. Connect using the cqlsh client:
+
+   cqlsh -u {{ .Values.dbUser.user }} -p $CASSANDRA_PASSWORD {{ template "common.fullname" . }}
+
+{{ if and (.Values.networkPolicy.enabled) (not .Values.networkPolicy.allowExternal) }}
+Note: Since NetworkPolicy is enabled, only pods with label
+"{{ template "common.fullname" . }}-client=true"
+will be able to connect to Cassandra.
+{{- else -}}
+
+To connect to your database from outside the cluster execute the following commands:
+
 {{- if contains "NodePort" .Values.service.type }}
-- export CQL_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "common.fullname" . }})
-- export CQL_HOST=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-- cqlsh $CQL_HOST $CQL_PORT
+
+   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "common.fullname" . }})
+
+   cqlsh -u {{ .Values.dbUser.user }} -p $CASSANDRA_PASSWORD $NODE_IP $NODE_PORT
 
 {{- else if contains "LoadBalancer" .Values.service.type }}
-  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ include "common.fullname" . }}'
-- export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "common.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-- echo cqlsh $SERVICE_IP
+
+   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "common.fullname" . }}'
+
+   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "common.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+   cqlsh -u {{ .Values.dbUser.user }} -p $CASSANDRA_PASSWORD $SERVICE_IP
+
 {{- else if contains "ClusterIP" .Values.service.type }}
-- kubectl port-forward --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ include "common.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}") 9042:{{ .Values.config.ports.cql }}
-  echo cqlsh 127.0.0.1 9042
+
+   kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "common.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }} &
+   cqlsh -u {{ .Values.dbUser.user }} -p $CASSANDRA_PASSWORD 127.0.0.1 {{ .Values.service.port }}
+
+{{- end }}
 {{- end }}
 
-You can also see the cluster status by run the following:
-- kubectl exec -it --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ include "common.name" . }},release={{ .Release.Name }} -o jsonpath='{.items[0].metadata.name}') nodetool status
+{{- if and (contains "bitnami/" .Values.image.repository) (not (.Values.image.tag | toString | regexFind "-r\\d+$|sha256:")) }}
 
-To tail the logs for the Cassandra pod run the following:
-- kubectl logs -f --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ include "common.name" . }},release={{ .Release.Name }} -o jsonpath='{ .items[0].metadata.name }')
+WARNING: Rolling tag detected ({{ .Values.image.repository }}:{{ .Values.image.tag }}), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://docs.bitnami.com/containers/how-to/understand-rolling-tags-containers/
 
-{{- if not .Values.persistence.enabled }}
-
-Note that the cluster is running with node-local storage instead of PersistentVolumes. In order to prevent data loss,
-pods will be decommissioned upon termination. Decommissioning may take some time, so you might also want to adjust the
-pod termination gace period, which is currently set to {{ .Values.podSettings.terminationGracePeriodSeconds }} seconds.
-
-{{- end}}
+{{- end }}

@@ -26,6 +26,13 @@ else use user-provided URL
 {{- end -}}
 
 {{/*
+  Resolve the Cassandra service-name to apply to a chart. 
+*/}}
+{{- define "cassandra.service" -}}
+{{- printf "%s-%s" .Release.Name .Values.cassandra.url | trunc 63 -}}
+{{- end -}}
+
+{{/*
   Resolve the MQTT service-name to apply to a chart. 
 */}}
 {{- define "mqtt.service" -}}
