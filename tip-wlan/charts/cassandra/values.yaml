@@ -46,7 +46,7 @@ image:
 ## volumePermissions: Change the owner and group of the persistent volume mountpoint to runAsUser:fsGroup values from the securityContext section.
 ##
 volumePermissions:
-  enabled: false
+  enabled: true
   image:
     registry: docker.io
     repository: bitnami/minideb
@@ -284,6 +284,11 @@ networkPolicy:
   ## (with the correct destination port).
   ##
   # allowExternal: true
+
+## Enable/disable the chart's tests.  Useful if using this chart as a dependency of
+## another chart and you don't want these tests running when trying to develop and
+## test your own chart.
+testsEnabled: true
 
 ## Cassandra Prometheus exporter configuration
 ## ref: https://hub.docker.com/r/bitnami/cassandra-exporter/tags/

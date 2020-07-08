@@ -1,0 +1,53 @@
+{{- if .Values.testsEnabled -}}
+# NOTE: For the test to work, make sure that the cluster-size remains the same
+# if you are doing helm-del and then helm-install with existing pvc.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "common.fullname" . }}-test-insertion-deletion
+  namespace: {{ include "common.namespace" . }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+  - name: {{ include "common.name" . }}-test-cassandra-basic
+    image: {{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}
+    command:
+    - sh
+    - -c
+    - |
+      cqlsh --cqlshrc /bitnami/cassandra/conf/cqlshrc.tip-wlan -e \
+      "CREATE KEYSPACE MYDB WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 }; \
+      use MYDB; \
+      CREATE TABLE BOOKS (id int PRIMARY KEY, title text, year text); \
+      INSERT INTO BOOKS (id, title, year) VALUES (1, 'Power Of Now', '1994'); \
+      SELECT * FROM BOOKS; \
+      DELETE FROM BOOKS WHERE id=1; \
+      SELECT * FROM BOOKS; \
+      DROP TABLE BOOKS; \
+      DROP KEYSPACE MYDB;"
+    volumeMounts:
+      {{ if .Values.existingConfiguration }}
+      - name: configurations
+        mountPath: /bitnami/cassandra/conf
+      {{- end }}
+      - mountPath: /opt/tip-wlan/certs/cacert.pem
+        name: cassandra-client-certificates
+        subPath: cacert.pem
+      - mountPath: /opt/tip-wlan/certs/cassandraservercert.pem
+        name: cassandra-client-certificates
+        subPath: cassandraservercert.pem
+      - mountPath: /opt/tip-wlan/certs/cassandraserverkey_dec.pem
+        name: cassandra-client-certificates
+        subPath: cassandraserverkey_dec.pem   
+  restartPolicy: Never
+  volumes:
+  {{- if .Values.existingConfiguration }}
+  - name: configurations
+    configMap:
+      name: {{ tpl .Values.existingConfiguration $ }}
+  {{- end }}
+  - name: cassandra-client-certificates
+    secret:
+      secretName: {{ include "common.fullname" . }}-client-certs
+{{- end }}

@@ -53,14 +53,14 @@ spec:
           - -c
           - |
             echo "151.101.112.249 dl-cdn.alpinelinux.org" >> /etc/hosts
-            echo "34.214.79.168 tip.jfrog.io" >> /etc/hosts
+            echo "34.223.150.107 tip-tip-wlan-cloud-docker-repo.jfrog.io" >> /etc/hosts
             echo "151.101.128.204 security.debian.org" >> /etc/hosts
             echo "151.101.126.133 deb.debian.org" >> /etc/hosts
             echo "147.75.85.69 apt.postgresql.org" >> /etc/hosts
             apt update
             apt -y install curl
             echo "***** Fetching cloud-sdk-schema-postgresql.sql from JFrog *****"
-            curl -u$SCHEMA_REPO_USER:$SCHEMA_REPO_PASSWORD -O "https://tip.jfrog.io/artifactory/tip-wlan-cloud-schemas/0.0.1-SNAPSHOT/sql/cloud-sdk-schema-postgresql.sql"
+            curl --insecure -u$SCHEMA_REPO_USER:$SCHEMA_REPO_PASSWORD -O "https://tip-tip-wlan-cloud-docker-repo.jfrog.io/artifactory/tip-wlan-cloud-schemas/0.0.1-SNAPSHOT/sql/cloud-sdk-schema-postgresql.sql"
             echo "***** Now executing cloud-sdk-schema-postgresql.sql and creating/updating schema on Postgres instance *****"
             PGPASSWORD=$POSTGRES_PASSWORD psql -h tip-wlan-postgresql-headless -U postgres -f cloud-sdk-schema-postgresql.sql
             exit
