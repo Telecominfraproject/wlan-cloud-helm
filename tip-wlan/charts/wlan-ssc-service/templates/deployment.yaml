@@ -91,7 +91,7 @@ spec:
           terminationMessagePolicy: File
           volumeMounts:
           - mountPath: /opt/tip-wlan/cqlshrc.tip-wlan
-            name: cassandra-cqlsh
+            name: ssc-configurations
             subPath: cqlshrc.tip-wlan
           - mountPath: /opt/tip-wlan/certs/cassandraservercert.pem
             name: certificates
@@ -190,8 +190,11 @@ spec:
             name: certificates
             subPath: cassandra_server_keystore.jks
           - mountPath: /app/ssc/logback.xml
-            name: logback-config
+            name: ssc-configurations
             subPath: logback.xml
+          - mountPath: /app/ssc/cassandra-application.conf
+            name: ssc-configurations
+            subPath: cassandra-application.conf
           ports:
             - name: {{ .Values.service.name1 }}
               containerPort: {{ .Values.service.port1 }}
@@ -218,9 +221,6 @@ spec:
       - name: certificates
         secret:
           secretName: {{ include "common.fullname" . }}-certs
-      - name: logback-config
+      - name: ssc-configurations
         configMap:
-            name: {{ include "common.fullname" . }}-log-config
-      - name: cassandra-cqlsh
-        configMap:
-            name: {{ include "common.fullname" . }}-cassandra-cql
+            name: {{ include "common.fullname" . }}-ssc-config
