@@ -13,7 +13,7 @@
 - name: {{ .Values.env.url.alarm }}
   value: "{{ .Values.env.protocol }}://{{ .Release.Name }}-{{ .Values.env.ssc.service }}:{{ .Values.env.ssc.port}}"
 - name: {{ .Values.env.url.client }}
-  value: "{{ .Values.env.protocol }}://{{ .Release.Name }}-{{ .Values.env.ssc.service }}:{{ .Values.env.ssc.port}}"
+  value: "{{ .Values.env.protocol }}://{{ .Release.Name }}-{{ .Values.env.prov.service }}:{{ .Values.env.prov.port}}"
 - name: {{ .Values.env.url.cloudEventDispatcher }}
   value: "{{ .Values.env.protocol }}://{{ .Release.Name }}-{{ .Values.env.ssc.service }}:{{ .Values.env.ssc.port}}"
 - name: {{ .Values.env.url.customer }}
@@ -23,7 +23,7 @@
 - name: {{ .Values.env.url.location }}
   value: "{{ .Values.env.protocol }}://{{ .Release.Name }}-{{ .Values.env.prov.service }}:{{ .Values.env.prov.port}}"
 - name: {{ .Values.env.url.profile }}
-  value: "{{ .Values.env.protocol }}://{{ .Release.Name }}-{{ .Values.env.ssc.service }}:{{ .Values.env.ssc.port}}"
+  value: "{{ .Values.env.protocol }}://{{ .Release.Name }}-{{ .Values.env.prov.service }}:{{ .Values.env.prov.port}}"
 - name: {{ .Values.env.url.serviceMetrics }}
   value: "{{ .Values.env.protocol }}://{{ .Release.Name }}-{{ .Values.env.prov.service }}:{{ .Values.env.prov.port}}"
 - name: {{ .Values.env.url.equipment }}
