@@ -173,8 +173,6 @@ spec:
           {{- end }}
           env:
             {{- include "common.env" . | nindent 12 }}
-            - name: BACKEND_SERVER
-              value: {{ .Release.Name }}-{{ .Values.externalhostaddress.cloudserver }}
             - name: OVSDB_MANAGER
               value: {{ .Values.externalhostaddress.ovsdb }}
             - name: OVSDB_MANAGER_IP
@@ -183,6 +181,15 @@ spec:
                   fieldPath: status.podIP
             - name: MQTT_SERVER
               value: {{ .Values.externalhostaddress.mqtt }}
+            {{- if .Values.global.integratedDeployment }}
+            - name: INTEGRATED_SERVER
+              value: {{ .Release.Name }}-{{ .Values.externalhostaddress.integrated }}
+            {{- else }}
+            - name: PROV_SERVER
+              value: {{ .Release.Name }}-{{ .Values.externalhostaddress.prov }}
+            - name: SSC_SERVER
+              value: {{ .Release.Name }}-{{ .Values.externalhostaddress.ssc }}
+            {{- end }}
             - name: DEFAULT_LAN_NAME
               value: {{ .Values.ethernetType.lanName }}
             - name: DEFAULT_LAN_TYPE

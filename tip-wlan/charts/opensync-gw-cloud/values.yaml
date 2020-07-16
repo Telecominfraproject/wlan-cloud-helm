@@ -85,7 +85,9 @@ mqtt:
  # that's what AP sees. Please make sure to override
  # them in dev override file for your respective environments.
 externalhostaddress:
-  cloudserver: wlan-integrated-cloud-component-service
+  integrated: wlan-integrated-cloud-component-service
+  prov: wlan-prov-service
+  ssc: wlan-ssc-service
   ovsdb: opensync-gw-cloud
   mqtt: opensync-mqtt-broker
 
