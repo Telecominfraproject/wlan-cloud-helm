@@ -186,9 +186,9 @@ spec:
               value: {{ .Release.Name }}-{{ .Values.externalhostaddress.integrated }}
             {{- else }}
             - name: PROV_SERVER
-              value: {{ .Release.Name }}-{{ .Values.externalhostaddress.prov }}
+              value: {{ .Release.Name }}-{{ .Values.env.prov.service }}
             - name: SSC_SERVER
-              value: {{ .Release.Name }}-{{ .Values.externalhostaddress.ssc }}
+              value: {{ .Release.Name }}-{{ .Values.env.ssc.service }}
             {{- end }}
             - name: DEFAULT_LAN_NAME
               value: {{ .Values.ethernetType.lanName }}

@@ -119,18 +119,3 @@ env:
   prov:
     service: wlan-prov-service
     port: 9091
-  url:
-    alarm: tip.wlan.alarmServiceBaseUrl
-    client: tip.wlan.clientServiceBaseUrl
-    cloudEventDispatcher: tip.wlan.cloudEventDispatcherBaseUrl
-    customer: tip.wlan.customerServiceBaseUrl
-    firmware: tip.wlan.firmwareServiceBaseUrl
-    location: tip.wlan.locationServiceBaseUrl
-    profile: tip.wlan.profileServiceBaseUrl
-    serviceMetrics: tip.wlan.serviceMetricServiceBaseUrl
-    equipment: tip.wlan.equipmentServiceBaseUrl
-    manufacturer: tip.wlan.manufacturerServiceBaseUrl
-    portalUser: tip.wlan.portalUserServiceBaseUrl
-    routing: tip.wlan.routingServiceBaseUrl
-    status: tip.wlan.statusServiceBaseUrl
-    systemEvent: tip.wlan.systemEventServiceBaseUrl
