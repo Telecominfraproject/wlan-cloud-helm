@@ -109,6 +109,8 @@ kafka:
 
 env:
   protocol: https
+  ssc_url: SSC_RELEASE_URL
+  prov_url: PROV_RELEASE_URL
   ssc:
     service: wlan-ssc-service
     port: 9031
