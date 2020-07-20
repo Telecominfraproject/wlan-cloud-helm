@@ -75,6 +75,25 @@ spec:
       {{- end }}
       {{- if or .Values.master.extraInitContainers (and .Values.volumePermissions.enabled (or .Values.persistence.enabled (and .Values.shmVolume.enabled .Values.shmVolume.chmod.enabled))) }}
       initContainers:
+        - image: busybox:latest
+          imagePullPolicy: Always
+          name: setup-configs
+          command:
+          - sh
+          - -c
+          - |
+            echo "Setting Config Maps"
+            cd /tmp/certs
+            cp * /opt/tip-wlan/certs/
+            chmod 0600 /opt/tip-wlan/certs/postgresclientkey_dec.pem /opt/tip-wlan/certs/serverkey_dec.pem
+            chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /opt/tip-wlan/certs/*.*
+            echo "copied all the certs, updated the permissions and ownership. here are the contents of /opt/tip-wlan/certs folder"
+            ls -lrt /opt/tip-wlan/certs/
+          volumeMounts:
+          - mountPath: /tmp/certs/
+            name: postgresql-certs
+          - mountPath: /opt/tip-wlan/certs
+            name: postgresql-certs-transfer
       {{- if and .Values.volumePermissions.enabled (or .Values.persistence.enabled (and .Values.shmVolume.enabled .Values.shmVolume.chmod.enabled)) }}
         - name: init-chmod-data
           image: {{ template "postgresql.volumePermissions.image" . }}
@@ -209,7 +228,23 @@ spec:
                   name: {{ template "postgresql.secretName" . }}
                   key: postgresql-password
             {{- end }}
-            {{- if (include "postgresql.database" .) }}
+            - name: PGSSLMODE
+              value: "verify-ca"
+            - name: PGSSLCERT
+              value: "/opt/tip-wlan/certs/postgresclientcert.pem"
+            - name: PGSSLKEY
+              value: "/opt/tip-wlan/certs/postgresclientkey_dec.pem"
+            - name: PGSSLROOTCERT
+              value: "/opt/tip-wlan/certs/cacert.pem"
+            - name: POSTGRESQL_ENABLE_TLS
+              value: "yes"              
+            - name: POSTGRESQL_TLS_CERT_FILE
+              value: "/opt/tip-wlan/certs/servercert.pem"
+            - name: POSTGRESQL_TLS_KEY_FILE
+              value: "/opt/tip-wlan/certs/serverkey_dec.pem"
+            - name: POSTGRESQL_TLS_CA_FILE
+              value: "/opt/tip-wlan/certs/cacert.pem"
+              {{- if (include "postgresql.database" .) }}
             - name: POSTGRES_DB
               value: {{ (include "postgresql.database" .) | quote }}
             {{- end }}
@@ -320,6 +355,8 @@ spec:
             - name: postgresql-config
               mountPath: /bitnami/postgresql/conf
             {{- end }}
+            - mountPath: /opt/tip-wlan/certs
+              name: postgresql-certs-transfer
             {{- if .Values.master.extraVolumeMounts }}
             {{- toYaml .Values.master.extraVolumeMounts | nindent 12 }}
             {{- end }}
@@ -396,6 +433,11 @@ spec:
           configMap:
             name: {{ template "postgresql.configurationCM" . }}
         {{- end }}
+        - name: postgresql-certs
+          secret:
+            secretName: {{ include "common.fullname" . }}-certs
+        - name: postgresql-certs-transfer
+          emptyDir: {}
         {{- if or (.Files.Glob "files/conf.d/*.conf") .Values.postgresqlExtendedConf .Values.extendedConfConfigMap }}
         - name: postgresql-extended-config
           configMap:

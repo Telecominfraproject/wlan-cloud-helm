@@ -60,8 +60,12 @@ testsEnabled: false
 
 creds:
   enabled: true
-  postgres:
-    password: DUMMY_POSTGRES_PASSWORD
+  db:
+    postgresUser:
+      password: DUMMY_POSTGRES_PASSWORD
+    tipUser:
+      password: DUMMY_TIPUSER_PASSWORD
+    
   schema_repo:
     username: DUMMY_SCHEMA_REPO_USERNAME
     password: DUMMY_SCHEMA_REPO_PASSWORD
@@ -107,7 +111,7 @@ tolerations: []
 affinity: {}
 
 postgresql: 
-  url: postgresql-headless
+  url: postgresql
 
 env:
   protocol: https

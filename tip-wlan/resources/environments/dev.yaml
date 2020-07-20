@@ -61,13 +61,13 @@ wlan-portal-service:
   enabled: true
 wlan-prov-service:
   enabled: true
-  image:
-    name: wlan-prov-service
-    tag: 0.0.1-SNAPSHOT
   creds:
     enabled: true
-    postgres:
-      password: cG9zdGdyZXMxMjM=
+    db:
+      postgresUser:
+        password: postgres
+      tipUser:
+        password: tip_password
     schema_repo:
       username: tip-read
       password: tip-read
@@ -123,14 +123,14 @@ cassandra:
     storageClass: "glusterfs-storage"
 postgresql:
   enabled: true
-  postgresqlPassword: cG9zdGdyZXMxMjM=
+  postgresqlPassword: postgres
 ## NOTE: If we are using glusterfs as Storage class, we don't really need 
 ## replication turned on, since the data is anyway replicated on glusterfs nodes
 ## Replication is useful: 
 ## a. When we use HostPath as storage mechanism
 ## b. If master goes down and one of the slave is promoted as master
   replication:
-    enabled: false
+    enabled: true
     slaveReplicas: 1
   persistence:
     enabled: true

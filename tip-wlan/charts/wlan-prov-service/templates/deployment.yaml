@@ -36,6 +36,11 @@ spec:
               secretKeyRef:
                 name: {{ include "common.fullname" . }}-creds
                 key: postgresql-password
+          - name: TIPUSER_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "common.fullname" . }}-creds
+                key: tipuser-password
           - name: SCHEMA_REPO_USER
             valueFrom:
               secretKeyRef:
@@ -59,10 +64,35 @@ spec:
             echo "147.75.85.69 apt.postgresql.org" >> /etc/hosts
             apt update
             apt -y install curl
-            echo "***** Fetching cloud-sdk-schema-postgresql.sql from JFrog *****"
-            curl --insecure -u$SCHEMA_REPO_USER:$SCHEMA_REPO_PASSWORD -O "https://tip-tip-wlan-cloud-docker-repo.jfrog.io/artifactory/tip-wlan-cloud-schemas/0.0.1-SNAPSHOT/sql/cloud-sdk-schema-postgresql.sql"
-            echo "***** Now executing cloud-sdk-schema-postgresql.sql and creating/updating schema on Postgres instance *****"
-            PGPASSWORD=$POSTGRES_PASSWORD psql -h tip-wlan-postgresql-headless -U postgres -f cloud-sdk-schema-postgresql.sql
+            echo "***** Fetching latest cloud-sdk-schema-postgresql for DB and Tables sql from JFrog *****"
+            curl --insecure -u$SCHEMA_REPO_USER:$SCHEMA_REPO_PASSWORD -O "https://tip-tip-wlan-cloud-docker-repo.jfrog.io/artifactory/tip-wlan-cloud-schemas/0.0.1-SNAPSHOT/sql/cloud-sdk-schema-postgresql-db-user.sql"
+            curl --insecure -u$SCHEMA_REPO_USER:$SCHEMA_REPO_PASSWORD -O "https://tip-tip-wlan-cloud-docker-repo.jfrog.io/artifactory/tip-wlan-cloud-schemas/0.0.1-SNAPSHOT/sql/cloud-sdk-schema-postgresql-tables.sql"
+            echo "***** Now executing cloud-sdk-schema-postgresql-db-user.sql on host {{ $pg }} and creating db prov_db and user tip_user using User Postgres. This uses full client-cert authentication *****"
+            ### Observed that PSQL was unable to resolve the Postgres-service host because the postgres service wasnt 
+            ### really ready when running Postgres in Master-Slave config... hence the below retry-logic
+            psql 'host={{ $pg }} port=5432 user=postgres sslmode=verify-ca sslcert=/opt/tip-wlan/certs/postgresclientcert.pem sslkey=/opt/tip-wlan/certs/postgresclientkey_dec.pem sslrootcert=/opt/tip-wlan/certs/cacert.pem' -f cloud-sdk-schema-postgresql-db-user.sql
+            status=$(echo $?)
+            echo psql response of the request = $status
+            counter=0
+            while [ $counter -lt 3 ] && [ $status -ne 0 ]
+            do
+              echo {{ $pg }} service isnt ready. Tried $counter times
+              sleep 2
+              counter=`expr $counter + 1`
+              psql 'host={{ $pg }} port=5432 user=postgres sslmode=verify-ca sslcert=/opt/tip-wlan/certs/postgresclientcert.pem sslkey=/opt/tip-wlan/certs/postgresclientkey_dec.pem sslrootcert=/opt/tip-wlan/certs/cacert.pem' -f cloud-sdk-schema-postgresql-db-user.sql
+              status=$(echo $?)
+              echo psql response of the request = $status
+            done
+            if [ $status -eq 0 ]
+            then
+              echo "Prov_db, role created, continuing with other schema"
+            else
+              echo {{ $pg }} service failed to respond after 3 retries
+              exit 1
+            fi
+            echo "***** Now executing cloud-sdk-schema-postgresql-tables.sql and creating/updating tables inside prov_db using user tip_user. This user would use md5 authentication with client certs *****"
+            PGPASSWORD=$TIPUSER_PASSWORD psql 'host={{ $pg }} port=5432 dbname=prov_db user=tip_user sslmode=verify-ca sslcert=/opt/tip-wlan/certs/postgresclientcert.pem sslkey=/opt/tip-wlan/certs/postgresclientkey_dec.pem sslrootcert=/opt/tip-wlan/certs/cacert.pem' -f cloud-sdk-schema-postgresql-tables.sql
+            echo "***** SCHEMA Created/Updated in Postgres *****"
             exit
           ports:
           - containerPort: 5432
@@ -79,6 +109,15 @@ spec:
             name: dshm
           - mountPath: /bitnami/postgresql
             name: data
+          - mountPath: /opt/tip-wlan/certs/cacert.pem
+            name: certificates
+            subPath: cacert.pem
+          - mountPath: /opt/tip-wlan/certs/postgresclientcert.pem
+            name: certificates
+            subPath: postgresclientcert.pem
+          - mountPath: /opt/tip-wlan/certs/postgresclientkey_dec.pem
+            name: certificates
+            subPath: postgresclientkey_dec.pem
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -86,7 +125,7 @@ spec:
           image: {{ .Values.global.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.global.pullPolicy }}
           env:
-            {{- include "common.env" . | nindent 12 }}  
+            {{- include "common.env" . | nindent 12 }}
           {{- if .Values.probes.enabled }}
           livenessProbe:
             httpGet:
@@ -119,6 +158,15 @@ spec:
           - mountPath: /opt/tip-wlan/certs/server.pkcs12
             name: certificates
             subPath: server.pkcs12
+          - mountPath: /opt/tip-wlan/certs/cacert.pem
+            name: certificates
+            subPath: cacert.pem
+          - mountPath: /opt/tip-wlan/certs/postgresclientcert.pem
+            name: certificates
+            subPath: postgresclientcert.pem
+          - mountPath: /opt/tip-wlan/certs/postgresclient.p12
+            name: certificates
+            subPath: postgresclient.p12
           - mountPath: /app/prov/logback.xml
             name: logback-config
             subPath: logback.xml
@@ -150,6 +198,7 @@ spec:
       - name: certificates
         secret:
           secretName: {{ include "common.fullname" . }}-certs
+          defaultMode: 0400
       - name: logback-config
         configMap:
             name: {{ include "common.fullname" . }}-log-config
