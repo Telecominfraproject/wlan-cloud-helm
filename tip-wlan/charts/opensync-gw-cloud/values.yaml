@@ -80,12 +80,11 @@ ssc:
 mqtt:
   url: opensync-mqtt-broker
 
- # These are list of external HostAddresses for cloudserver, ovsdb, mqtt. 
- # This is especially important for ovsdb and mqtt since 
+ # These are list of external HostAddresses for ovsdb, mqtt. 
+ # This is important for ovsdb and mqtt since 
  # that's what AP sees. Please make sure to override
  # them in dev override file for your respective environments.
 externalhostaddress:
-  integrated: wlan-integrated-cloud-component-service
   ovsdb: opensync-gw-cloud
   mqtt: opensync-mqtt-broker
 

@@ -179,16 +179,18 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-            - name: MQTT_SERVER
+            - name: MQTT_SERVER_INTERNAL
+              value: {{ .Release.Name }}-{{ .Values.mqtt.url }}
+            - name: MQTT_SERVER_EXTERNAL
               value: {{ .Values.externalhostaddress.mqtt }}
             {{- if .Values.global.integratedDeployment }}
             - name: INTEGRATED_SERVER
-              value: {{ .Release.Name }}-{{ .Values.externalhostaddress.integrated }}
+              value: {{ .Release.Name }}-{{ .Values.integratedcloudcomponent.url }}
             {{- else }}
             - name: PROV_SERVER
-              value: {{ .Release.Name }}-{{ .Values.env.prov.service }}
+              value: {{ .Release.Name }}-{{ .Values.prov.url }}
             - name: SSC_SERVER
-              value: {{ .Release.Name }}-{{ .Values.env.ssc.service }}
+              value: {{ .Release.Name }}-{{ .Values.ssc.url }}
             {{- end }}
             - name: DEFAULT_LAN_NAME
               value: {{ .Values.ethernetType.lanName }}

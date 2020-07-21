@@ -39,6 +39,9 @@ opensync-gw-static:
   enabled: false
 opensync-gw-cloud:
   enabled: false
+  externalhostaddress:
+    ovsdb: tip-wlan-opensync-gw-cloud
+    mqtt: tip-wlan-opensync-mqtt-broker
 opensync-mqtt-broker:
   enabled: false
   replicaCount: 1
@@ -53,14 +56,42 @@ wlan-portal-service:
   enabled: false
 wlan-prov-service:
   enabled: false
+  creds:
+    enabled: true
+    db:
+      postgresUser:
+        password: postgres
+      tipUser:
+        password: tip_password
+    schema_repo:
+      username: tip-read
+      password: tip-read
 wlan-ssc-service:
   enabled: false
+  creds:
+    sslKeyPassword: mypassword
+    sslKeystorePassword: mypassword
+    sslTruststorePassword: mypassword
+    cassandra:
+      tip_user: tip_user
+      tip_password: tip_password 
+    schema_repo:
+      username: tip-read
+      password: tip-read
+wlan-spc-service:
+  enabled: false
+  creds:
+    sslKeyPassword: mypassword
+    sslKeystorePassword: mypassword
+    sslTruststorePassword: mypassword
 nginx-ingress-controller:
   enabled: false
   controller:
     nodeSelector: {
       type: master
     }
+    config:
+      externalStatusAddress: "192.168.56.101"
 zookeeper:
   enabled: false
   replicaCount: 1
@@ -75,16 +106,26 @@ kafka:
     storageClass: "glusterfs-storage"
 cassandra:
   enabled: false
-  config:
-    cluster_size: 3
-    seed_size: 2
+  cluster:
+## NOTE: If we are using glusterfs as Storage class, we don't really need 
+## replication turned on, since the data is anyway replicated on glusterfs nodes
+## Replication is useful when we use HostPath as storage mechanism
+## For Hostpath storage, recommendation is cluster_size: 3 and seed_size: 2
+    replicaCount: 3
+    seedCount: 2
   persistence:
     enabled: true
     storageClass: "glusterfs-storage"
 postgresql:
   enabled: false
+  postgresqlPassword: postgres
+## NOTE: If we are using glusterfs as Storage class, we don't really need 
+## replication turned on, since the data is anyway replicated on glusterfs nodes
+## Replication is useful: 
+## a. When we use HostPath as storage mechanism
+## b. If master goes down and one of the slave is promoted as master
   replication:
-    enabled: false
+    enabled: true
     slaveReplicas: 1
   persistence:
     enabled: true
