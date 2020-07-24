@@ -1,0 +1,5 @@
+*.pem
+*.jks
+*.pkcs12
+*.p12
+*.DS_Store
