@@ -61,6 +61,7 @@ wlan-portal-service:
   enabled: false
   persistence:
     enabled: true
+    storageClass: "glusterfs-storage"
 wlan-prov-service:
   enabled: false
   creds:
