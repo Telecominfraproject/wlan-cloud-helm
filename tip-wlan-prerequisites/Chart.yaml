@@ -1,0 +1,32 @@
+apiVersion: v2
+name: tip-wlan-prerequisites
+description: Charts to deploy before Tip-Wlan release deployment.
+
+# This chart will generate artifacts that would be needed by Tip-wlan charts.
+#
+# For now, it creates:
+# - Tip Namespace 
+# - PersistentVolume and PersistentVolumeClaim for "FileStorage" that we want to 
+# deploy before the tip-wlan charts are deployed.
+type: application
+
+# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+version: 0.1.0
+
+# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application.
+appVersion: 1.16.0
+
+home: https://telecominfraproject.com/wifi/
+sources:
+- https://github.com/Telecominfraproject
+icon:
+
+dependencies:
+  - name: common
+    version: 0.1.0
+  - name: volumes
+    version: 0.1.0
+    condition: volumes.enabled
+    

@@ -59,3 +59,17 @@ else use user-provided URL
 {{- define "ssc.service" -}}
   {{- printf "%s-%s:%.f" .Release.Name .Values.ssc.url .Values.ssc.port | trunc 63 -}}
 {{- end -}}
+
+{{/*
+  Resolve the pvc name that's would mounted to 2 charts - Portal and Opensync-gw 
+*/}}
+{{- define "pvc.name" -}}
+{{- printf "%s-%s" .Values.persistence.pvc.prerequisiteReleaseName .Values.persistence.pvc.name | trunc 63 -}}
+{{- end -}}
+
+{{/*
+  Resolve the filestore-directory name that's would mounted to 2 charts - Portal and Opensync-gw 
+*/}}
+{{- define "filestore.dir.name" -}}
+  {{- printf "%s" .Values.filestore.internal | trunc 63 -}}
+{{- end -}}

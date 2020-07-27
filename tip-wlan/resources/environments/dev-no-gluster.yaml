@@ -25,13 +25,6 @@ global:
   # flag to enable debugging - application support required
   debugEnabled: true
 
-# Annotations for namespace
-annotations: {
-    "helm.sh/resource-policy": keep
-}
-
-createReleaseNamespace: false
-
 # Docker registry secret
 dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
 #################################################################
@@ -45,6 +38,10 @@ opensync-gw-cloud:
   externalhostaddress:
     ovsdb: tip-wlan-opensync-gw-cloud
     mqtt: tip-wlan-opensync-mqtt-broker
+  persistence:
+    enabled: true
+  filestore:
+    url: "https://tip-wlan-opensync-gw-cloud:9096"
 opensync-mqtt-broker:
   enabled: true
   replicaCount: 1
@@ -56,6 +53,8 @@ wlan-cloud-static-portal:
   enabled: true
 wlan-portal-service:
   enabled: true
+  persistence:
+    enabled: true 
 wlan-prov-service:
   enabled: true
   creds:

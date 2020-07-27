@@ -1,0 +1,57 @@
+# Values for Volumes chart
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+#################################################################
+# Global configuration overrides.
+#
+# These overrides will affect all helm charts (ie. applications)
+# that are listed below and are 'enabled'.
+#################################################################
+global:
+  # namespace to deploy the release
+  nsPrefix: tip
+
+#################################################################
+
+persistence:
+  enabled: false
+
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+
+  ## If defined, PVC must be created manually before volume will be bound
+  ## existingClaim: tip-wlan-filestore-dir-pvc
+
+  ## If you want to bind to an existing PV, uncomment below with the pv name 
+  ## and comment storageClass and belowannotation
+  ## volumeName: tip-wlan-filestore-dir-pv
+
+  ## database data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  storageClass: "-"
+  accessMode: ReadWriteOnce
+  annotations: {}
+  ## Size of Data PVC
+  filestoreSize: 1Gi
+  pv:
+    # true when we use static provisioning in Gluster
+    # See example here: https://docs.openshift.com/container-platform/3.9/install_config/storage_examples/gluster_example.html#static-provisioning
+    enabled: false 
+    name: filestore-dir-pv
+  pvc:
+    name: filestore-dir-pvc
+
+  ## For AWS: awsElasticBlockStore
+  ## For Gluster: glusterfs
+  storageType: glusterfs
+  ## Gluster related parameters:
+  gluster:
+    endpoints: glusterfs-volume-for-filestore
+    endpoint1: 192.168.56.101
+    endpoint2: 192.168.56.201
+    endpoint3: 192.168.56.211

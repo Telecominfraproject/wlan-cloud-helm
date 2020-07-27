@@ -18,5 +18,15 @@ spec:
       protocol: TCP
       name: {{ .Values.service.name2 }}
       nodePort: {{ .Values.global.nodePortPrefix }}{{ .Values.service.nodePort2 }}
+    - port: {{ .Values.service.port3 }}
+      targetPort: {{ .Values.service.port3 }}
+      protocol: TCP
+      name: {{ .Values.service.name3 }}
+      nodePort: {{ .Values.global.nodePortPrefix }}{{ .Values.service.nodePort3 }}
+    - port: {{ .Values.service.port4 }}
+      targetPort: {{ .Values.service.port4 }}
+      protocol: TCP
+      name: {{ .Values.service.name4 }}
+      nodePort: {{ .Values.global.nodePortPrefix }}{{ .Values.service.nodePort4 }}
   selector:
     {{- include "common.selectorLabels" . | nindent 4 }}

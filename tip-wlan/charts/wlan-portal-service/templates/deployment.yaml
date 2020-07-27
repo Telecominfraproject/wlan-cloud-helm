@@ -1,3 +1,4 @@
+{{- $file_store_path := include "filestore.dir.name" . -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -27,7 +28,9 @@ spec:
           image: {{ .Values.global.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.global.pullPolicy }}
           env:
-            {{- include "common.env" . | nindent 12 }}  
+            {{- include "common.env" . | nindent 12 }}
+            - name: FILE_STORE_DIRECTORY_INTERNAL
+              value: {{ $file_store_path }}
           {{- if .Values.probes.enabled }}
           livenessProbe:
             httpGet:
@@ -62,7 +65,9 @@ spec:
             subPath: server.pkcs12
           - mountPath: /app/portal/logback.xml
             name: logback-config
-            subPath: logback.xml            
+            subPath: logback.xml
+          - mountPath: {{ $file_store_path }}
+            name: file-store-data
           ports:
             - name: {{ .Values.service.name1 }}
               containerPort: {{ .Values.service.port1 }}
@@ -92,3 +97,10 @@ spec:
       - name: logback-config
         configMap:
             name: {{ include "common.fullname" . }}-log-config
+      - name: file-store-data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "pvc.name" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}

@@ -94,6 +94,12 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
+persistence:
+  enabled: false
+  pvc:
+    prerequisiteReleaseName: tip-wlan-prerequisites
+    name: filestore-dir-pvc
+
 nodeSelector: {}
 
 tolerations: []
@@ -114,3 +120,8 @@ env:
   prov:
     service: wlan-prov-service
     port: 9091
+
+# the filestore internal: location of the folder where UI files will be stored
+# on the PV
+filestore:
+  internal: "/tmp/filestore"

@@ -64,6 +64,32 @@ service:
   port2: 6643
   name2: redirector
   nodePort2: 30
+  port3: 9096
+  name3: server
+  nodePort3: 27
+  port4: 9097
+  name4: internal
+  nodePort4: 28
+
+persistence:
+  enabled: false
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+
+  ## If defined, PVC must be created manually before volume will be bound
+  ## existingClaim: tip-wlan-filestore-dir-pvc
+  pvc:
+    prerequisiteReleaseName: tip-wlan-prerequisites
+    name: filestore-dir-pvc
+
+# the filestore internal: location of the folder where UI files will be stored
+# on the PV
+# the filestore url: externally reachable URL i.e.; reachable from AP, where it 
+# can download the files from. Override this value (url) to the configured
+# HTTP server in your system 
+filestore:
+  internal: "/tmp/filestore"
+  url: DUMMY_FILESTORE_HTTPS_URL
 
 integratedcloudcomponent:
   url: wlan-integrated-cloud-component-service

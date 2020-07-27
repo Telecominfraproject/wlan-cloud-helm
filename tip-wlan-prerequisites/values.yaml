@@ -1,0 +1,28 @@
+# Default values for Tip-Wlan
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+#################################################################
+# Global configuration overrides.
+#
+# These overrides will affect all helm charts (ie. applications)
+# that are listed below and are 'enabled'.
+#################################################################
+global:
+  # namespace to deploy the release
+  nsPrefix: tip
+
+  # Deployment is on AWS using AWS own storage class or Locally using Gluster
+  # NOTE: This should be set to False even if the deployment is on AWS and you want
+  # to use Gluster storage class in AWS
+  awsDeployment: false
+
+# Namespace related
+createReleaseNamespace: false
+
+# Annotations to add to the namespace
+annotations: {}
+
+# Enabling components under Tip-wlan-pre-requisites
+volumes:
+  enabled: false

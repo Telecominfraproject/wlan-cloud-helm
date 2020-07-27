@@ -29,7 +29,6 @@ global:
   # flag to enable debugging - application support required
   debugEnabled: true
 
-createReleaseNamespace: false
 createDockerRegistrySecret: false
 #################################################################
 # Enable/disable and configure helm charts (ie. applications)
@@ -42,6 +41,10 @@ opensync-gw-cloud:
   externalhostaddress:
     ovsdb: tip-wlan-opensync-gw-cloud
     mqtt: tip-wlan-opensync-mqtt-broker
+  persistence:
+    enabled: true
+  filestore:
+    url: "https://tip-wlan-opensync-gw-cloud:9096"
 opensync-mqtt-broker:
   enabled: false
   replicaCount: 1
@@ -54,6 +57,8 @@ wlan-cloud-static-portal:
   enabled: false
 wlan-portal-service:
   enabled: false
+  persistence:
+    enabled: true
 wlan-prov-service:
   enabled: false
   creds:
