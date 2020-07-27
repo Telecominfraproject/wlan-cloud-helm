@@ -63,8 +63,8 @@ else use user-provided URL
 {{/*
   Resolve the pvc name that's would mounted to 2 charts - Portal and Opensync-gw 
 */}}
-{{- define "pvc.name" -}}
-{{- printf "%s-%s" .Values.persistence.pvc.prerequisiteReleaseName .Values.persistence.pvc.name | trunc 63 -}}
+{{- define "portal.sharedPvc.name" -}}
+{{- printf "%s-%s-%s-%.f" .Values.portal.sharedPvc.name .Release.Name .Values.portal.url .Values.portal.sharedPvc.ordinal | trunc 63 -}}
 {{- end -}}
 
 {{/*

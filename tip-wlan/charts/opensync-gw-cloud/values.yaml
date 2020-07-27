@@ -76,12 +76,6 @@ persistence:
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
 
-  ## If defined, PVC must be created manually before volume will be bound
-  ## existingClaim: tip-wlan-filestore-dir-pvc
-  pvc:
-    prerequisiteReleaseName: tip-wlan-prerequisites
-    name: filestore-dir-pvc
-
 # the filestore internal: location of the folder where UI files will be stored
 # on the PV
 # the filestore url: externally reachable URL i.e.; reachable from AP, where it 
@@ -105,6 +99,12 @@ ssc:
 
 mqtt:
   url: opensync-mqtt-broker
+
+portal:
+  url: wlan-portal-service
+  sharedPvc:
+      name: file-store-data
+      ordinal: 0
 
  # These are list of external HostAddresses for ovsdb, mqtt. 
  # This is important for ovsdb and mqtt since 

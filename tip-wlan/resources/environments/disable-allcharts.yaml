@@ -29,6 +29,8 @@ global:
   # flag to enable debugging - application support required
   debugEnabled: true
 
+createReleaseNamespace: false
+
 createDockerRegistrySecret: false
 #################################################################
 # Enable/disable and configure helm charts (ie. applications)

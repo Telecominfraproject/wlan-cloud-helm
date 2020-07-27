@@ -262,7 +262,7 @@ spec:
       - name: file-store-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "pvc.name" .) }}
+          claimName: {{ include "portal.sharedPvc.name" . }}
       {{- else }}
         emptyDir: {}
       {{- end }}

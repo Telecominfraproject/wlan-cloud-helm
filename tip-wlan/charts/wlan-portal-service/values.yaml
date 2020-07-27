@@ -96,9 +96,14 @@ resources: {}
 
 persistence:
   enabled: false
-  pvc:
-    prerequisiteReleaseName: tip-wlan-prerequisites
-    name: filestore-dir-pvc
+  storageClass: "-"
+  accessMode: ReadWriteOnce
+  annotations: {}
+  ## Size of Filestore PVC
+  filestoreSize: 1Gi
+
+  sharedPvc:
+    name: file-store-data
 
 nodeSelector: {}
 
