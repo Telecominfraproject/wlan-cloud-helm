@@ -53,6 +53,9 @@ controller:
     ## External IP Address
     externalStatusAddress: "192.168.56.101"
 
+    ## Max message size coming from the Client
+    clientMaxBodySize: "20m"
+
   ## It is recommended to use your own TLS certificates and keys
   defaultTLS:
     ## The base64-encoded TLS certificate for the default HTTPS server. If not specified, a pre-generated self-signed certificate is used.
