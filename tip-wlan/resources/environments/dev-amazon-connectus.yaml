@@ -67,7 +67,8 @@ wlan-portal-service:
   enabled: true
   persistence:
     enabled: true
-    storageClass: "gp2"
+    storageClass: "glusterfs-storage"
+    filestoreSize: 10Gi
 wlan-prov-service:
   enabled: true
   creds:
