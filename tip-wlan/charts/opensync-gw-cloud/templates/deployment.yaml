@@ -203,6 +203,8 @@ spec:
               value: {{ .Values.ethernetType.lanType }}
             - name: DEFAULT_WAN_TYPE
               value: {{ .Values.ethernetType.wanType }}
+            - name: DEFAULT_WAN_NAME
+              value: {{ .Values.ethernetType.wanName }}
           volumeMounts:
           - mountPath: /opt/tip-wlan/certs/client_keystore.jks
             name: certificates
