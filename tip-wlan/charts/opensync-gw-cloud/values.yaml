@@ -115,10 +115,10 @@ externalhostaddress:
   mqtt: opensync-mqtt-broker
 
 ethernetType:
-  lanName: "br-lan"
+  lanName: "lan"
   lanType: "bridge"
   wanType: "bridge"
-  wanName: "br-wan"
+  wanName: "wan"
 
 ingress:
   enabled: false
