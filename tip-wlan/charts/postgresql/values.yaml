@@ -258,13 +258,14 @@ ldap:
 service:
   ## PosgresSQL service type
   type: ClusterIP
+  # type: NodePort
   # clusterIP: None
   port: 5432
 
   ## Specify the nodePort value for the LoadBalancer and NodePort service types.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
   ##
-  # nodePort:
+  ## nodePort: 30010
 
   ## Provide any additional annotations which may be required. Evaluated as a template.
   ##
@@ -427,8 +428,9 @@ slave:
   ## Override the service configuration for slave
   ##
   service: {}
+  # service:
   # type:
-  # nodePort:
+  #  nodePort: 30011
   # clusterIP:
 
 ## Configure resource requests and limits
