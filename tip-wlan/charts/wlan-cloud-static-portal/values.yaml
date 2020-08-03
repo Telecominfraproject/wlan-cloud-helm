@@ -33,7 +33,7 @@ podSecurityContext: {}
 testsEnabled: false
 
 env:
-  graphql: wlan-cloud-graphql-gw:4000
+  graphql: tip-wlan-wlan-cloud-graphql-gw:4000
 
 securityContext: {}
   # capabilities:

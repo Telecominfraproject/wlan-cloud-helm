@@ -63,6 +63,8 @@ wlan-cloud-graphql-gw:
     portalsvc: wlan-portal-svc.zone3.lab.connectus.ai
 wlan-cloud-static-portal:
   enabled: true
+  env:
+    graphql: https://wlan-graphql.zone3.lab.connectus.ai
 wlan-portal-service:
   enabled: true
   persistence:

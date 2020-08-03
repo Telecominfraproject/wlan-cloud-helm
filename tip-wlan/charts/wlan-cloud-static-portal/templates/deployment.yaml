@@ -27,8 +27,8 @@ spec:
           image: {{ .Values.global.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.global.pullPolicy }}
           env:
-          - name: GRAPHQL_URL
-            value: {{ .Release.Name }}-{{ .Values.env.graphql }}
+          - name: API
+            value: {{ .Values.env.graphql }}
           ports:
             - name: {{ .Values.service.name }}
               containerPort: {{ .Values.service.port }}
