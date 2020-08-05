@@ -1,0 +1,6 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .Values.provisioner.storageClass }}
+provisioner: {{ .Values.provisioner.provisionerName }}
+allowVolumeExpansion: true

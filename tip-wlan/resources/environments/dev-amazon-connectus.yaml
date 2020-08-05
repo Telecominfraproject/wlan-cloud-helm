@@ -42,6 +42,14 @@ dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLX
 #################################################################
 opensync-gw-static:
   enabled: false
+common:
+  efs-provisioner:
+    enabled: true
+    provisioner:
+      efsFileSystemId: fs-8a3fa867
+      awsRegion: ca-central-1
+      efsDnsName: fs-8a3fa867.efs.ca-central-1.amazonaws.com
+      storageClass: aws-efs
 opensync-gw-cloud:
   enabled: true
   externalhostaddress:
@@ -69,7 +77,7 @@ wlan-portal-service:
   enabled: true
   persistence:
     enabled: true
-    storageClass: "glusterfs-storage"
+    storageClass: aws-efs
     filestoreSize: 10Gi
 wlan-prov-service:
   enabled: true

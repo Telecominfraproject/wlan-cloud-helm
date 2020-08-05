@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "common.fullname" . }}
+  namespace: {{ include "common.namespace" . }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.provisioner.replicaCount }}
+  strategy: 
+    type: {{ .Values.provisioner.strategyType }}
+  selector:
+    matchLabels:
+      {{- include "common.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "common.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "common.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.provisioner.image.name }}:{{ .Values.provisioner.image.tag }}
+          imagePullPolicy: {{ .Values.global.pullPolicy }}
+          env:
+          - name: FILE_SYSTEM_ID
+            value: {{ .Values.provisioner.efsFileSystemId }}
+          - name: AWS_REGION
+            value: {{ .Values.provisioner.awsRegion }}
+          - name: DNS_NAME
+            value: {{ .Values.provisioner.dnsName }}
+          - name: PROVISIONER_NAME
+            value: {{ .Values.provisioner.provisionerName }}
+          volumeMounts:
+          - name: pv-volume
+            mountPath: /persistentvolumes
+      volumes:
+        - name: pv-volume
+          nfs:
+            server: {{ .Values.provisioner.efsDnsName }}
+            path: /

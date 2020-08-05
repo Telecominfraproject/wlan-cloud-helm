@@ -2,3 +2,7 @@
 # Global configuration default values that can be inherited by
 # all subcharts.
 #################################################################
+
+# Enabling common components
+efs-provisioner:
+  enabled: false

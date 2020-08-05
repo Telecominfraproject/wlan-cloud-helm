@@ -1,0 +1,28 @@
+#################################################################
+# Global configuration default values that can be inherited by
+# all subcharts.
+#################################################################
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: efs-provisioner
+
+## EFS Provisioner related properties
+provisioner:
+  nameExtension: efs-provisioner
+  replicaCount: 1
+  strategyType: Recreate
+  image:
+    name: quay.io/external_storage/efs-provisioner
+    tag: latest
+  efsFileSystemId: fs-8a3fa867
+  awsRegion: ca-central-1
+  dnsName: ""
+  provisionerName: shared-provisioner
+  efsDnsName: fs-8a3fa867.efs.ca-central-1.amazonaws.com
+  storageClass: aws-efs
