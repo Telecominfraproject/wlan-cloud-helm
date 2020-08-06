@@ -238,7 +238,12 @@ spec:
               protocol: TCP
             - name: {{ .Values.service.name4 }}
               containerPort: {{ .Values.service.port4 }}
-              protocol: TCP            
+              protocol: TCP
+            {{- if .Values.debug.enabled }}
+            - name: {{ .Values.service.name5 }}
+              containerPort: {{ .Values.service.port5 }}
+              protocol: TCP
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

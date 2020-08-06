@@ -272,6 +272,13 @@ rbac:
   ## Configures RBAC.
   create: true
 
+  ## This property will prevent exposing TCP ports for passthrough connections
+  ## Instead we are opening up these services as NodePorts
+  ## We were seeing issues with AP <-- --> MQTT connecitivity when using NGINX 
+  ## as passthrough for TCP Connections
+byPassNginxForTcpConnections:
+  enabled: true
+
 prometheus:
   ## Expose NGINX or NGINX Plus metrics in the Prometheus format.
   create: false

@@ -56,7 +56,7 @@ spec:
           containerPort: 80
         - name: https
           containerPort: 443
-{{ if .Values.controller.customPorts }}
+{{ if and (.Values.controller.customPorts) (not .Values.byPassNginxForTcpConnections.enabled )}}
 {{ toYaml .Values.controller.customPorts | indent 8 }}
 {{ end }}
 {{- if .Values.prometheus.create }}
@@ -127,5 +127,7 @@ spec:
           - -prometheus-metrics-listen-port={{ .Values.prometheus.port }}
           - -enable-custom-resources={{ .Values.controller.enableCustomResources }}
           - -enable-tls-passthrough={{ .Values.controller.enableTLSPassthrough }}
+    {{- if not .Values.byPassNginxForTcpConnections.enabled }}
           - -global-configuration=$(POD_NAMESPACE)/{{ include "common.name" . }}-global-configuration
+    {{- end}}
 {{- end }}

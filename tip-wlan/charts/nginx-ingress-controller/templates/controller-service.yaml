@@ -27,7 +27,7 @@ spec:
 {{- end }}
   type: {{ .Values.controller.service.type }}
   ports:
-{{- if .Values.controller.service.customPorts }}
+{{- if and (.Values.controller.service.customPorts) (not .Values.byPassNginxForTcpConnections.enabled )}}
 {{ toYaml .Values.controller.service.customPorts | indent 2 }}
 {{ end }}
 {{- if .Values.controller.service.httpPort.enable }}

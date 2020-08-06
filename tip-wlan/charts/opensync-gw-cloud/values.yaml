@@ -56,6 +56,10 @@ probes:
 # Enable/Disable Helm tests
 testsEnabled: false
 
+# Enable/Disable Remote debugging
+debug: 
+  enabled: false
+
 service:
   type: NodePort
   port1: 6640
@@ -70,6 +74,9 @@ service:
   port4: 9097
   name4: internal
   nodePort4: 28
+  port5: 5005
+  name5: debug
+  nodePort5: 26
 
 persistence:
   enabled: false

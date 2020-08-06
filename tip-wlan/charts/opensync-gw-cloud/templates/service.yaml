@@ -28,5 +28,12 @@ spec:
       protocol: TCP
       name: {{ .Values.service.name4 }}
       nodePort: {{ .Values.global.nodePortPrefix }}{{ .Values.service.nodePort4 }}
+    {{- if .Values.debug.enabled }}
+    - port: {{ .Values.service.port5 }}
+      targetPort: {{ .Values.service.port5 }}
+      protocol: TCP
+      name: {{ .Values.service.name5 }}
+      nodePort: {{ .Values.global.nodePortPrefix }}{{ .Values.service.nodePort5 }}
+    {{- end }}
   selector:
     {{- include "common.selectorLabels" . | nindent 4 }}
