@@ -73,6 +73,17 @@ spec:
             done
             if [ $status -eq 0 ]
             then
+              ##  TW-892: get tip_user from user table
+              cqlsh --cqlshrc /opt/tip-wlan/cqlshrc.tip-wlan -e "list roles of 'tip_user';"
+              # if tip_user does not exists, status would be non-zero (generally 2)
+              status=$(echo $?)
+              if [ $status -eq 0 ]
+              then
+                echo 'tip_user exists'
+              else
+                ## tip_user does not exist; run the CQL again to create it
+                cqlsh --cqlshrc /opt/tip-wlan/cqlshrc.tip-wlan -f /cloud-sdk-schema-cassandra.cql
+              fi
               echo DB-Schema has been created/updated in Cassandra
             else
               echo Failed to create/update schema in Cassandra after 100 secs.
