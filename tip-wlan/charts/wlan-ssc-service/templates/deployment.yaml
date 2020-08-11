@@ -1,6 +1,7 @@
 {{- $kafka := include "kafka.service" . -}}
 {{- $cassandra := include "cassandra.service" . -}}
 {{- $ns := include "common.namespace" . -}}
+{{- $cloudeployment := .Values.global.isCloudDeployment -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -52,9 +53,13 @@ spec:
           - sh
           - -c
           - |
-            echo "91.189.88.152 security.ubuntu.com" >> /etc/hosts
-            echo "34.223.150.107 tip-tip-wlan-cloud-docker-repo.jfrog.io" >> /etc/hosts
-            echo "91.189.88.142 archive.ubuntu.com" >> /etc/hosts
+            if [ {{ $cloudeployment }} = false ]
+            then
+              echo "91.189.88.152 security.ubuntu.com" >> /etc/hosts
+              echo "34.215.47.158 tip-tip-wlan-cloud-docker-repo.jfrog.io" >> /etc/hosts
+              echo "91.189.88.142 archive.ubuntu.com" >> /etc/hosts
+              echo "Added name-resolution for local deployments"
+            fi
             apt update
             apt -y install curl
             echo "***** Fetching cloud-sdk-schema-cassandra.cql from JFrog *****"

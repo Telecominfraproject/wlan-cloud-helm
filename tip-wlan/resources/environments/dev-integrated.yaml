@@ -30,7 +30,8 @@ global:
   # Integrated Deployment which deploys Prov Service, Portal Service and 
   # SSC Service in a single docker image 
   integratedDeployment: true
-
+  # Is the Cluster deployed in Cloud
+  isCloudDeployment: false
 # Annotations for namespace
 annotations: {
     "helm.sh/resource-policy": keep

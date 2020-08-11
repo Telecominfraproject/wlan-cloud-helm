@@ -1,5 +1,6 @@
 {{- $pg := include "postgresql.service" . -}}
 {{- $ns := include "common.namespace" . -}}
+{{- $cloudeployment := .Values.global.isCloudDeployment -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -57,11 +58,15 @@ spec:
           - sh
           - -c
           - |
-            echo "151.101.112.249 dl-cdn.alpinelinux.org" >> /etc/hosts
-            echo "34.223.150.107 tip-tip-wlan-cloud-docker-repo.jfrog.io" >> /etc/hosts
-            echo "151.101.128.204 security.debian.org" >> /etc/hosts
-            echo "151.101.126.133 deb.debian.org" >> /etc/hosts
-            echo "147.75.85.69 apt.postgresql.org" >> /etc/hosts
+            if [ {{ $cloudeployment }} = false ]
+            then
+              echo "151.101.112.249 dl-cdn.alpinelinux.org" >> /etc/hosts
+              echo "34.215.47.158 tip-tip-wlan-cloud-docker-repo.jfrog.io" >> /etc/hosts
+              echo "151.101.128.204 security.debian.org" >> /etc/hosts
+              echo "151.101.126.133 deb.debian.org" >> /etc/hosts
+              echo "147.75.85.69 apt.postgresql.org" >> /etc/hosts
+              echo "Added name-resolution for local deployments"
+            fi            
             apt update
             apt -y install curl
             echo "***** Fetching latest cloud-sdk-schema-postgresql for DB and Tables sql from JFrog *****"

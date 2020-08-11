@@ -31,7 +31,10 @@ global:
 
   # Integrated Deployment which deploys Prov Service, Portal Service and 
   # SSC Service in a single docker image 
-  integratedDeployment: false  
+  integratedDeployment: false
+
+  # Is the Cluster deployed in Cloud
+  isCloudDeployment: true
   
 # Namespace related
 createReleaseNamespace: true
