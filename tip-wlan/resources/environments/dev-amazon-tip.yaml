@@ -32,7 +32,7 @@ annotations: {
     "helm.sh/resource-policy": keep
 }
 
-#createReleaseNamespace: false
+# createReleaseNamespace: false
 
 # Docker registry secret
 dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
@@ -53,12 +53,12 @@ common:
 opensync-gw-cloud:
   enabled: true
   externalhostaddress:
-    ovsdb: opensync-controller.demo.lab.wlan.tip.build
-    mqtt: opensync-mqtt-broker.demo.lab.wlan.tip.build
+    ovsdb: opensync-controller.cicd.lab.wlan.tip.build
+    mqtt: opensync-mqtt-broker.cicd.lab.wlan.tip.build
   persistence:
     enabled: false
   filestore:
-    url: "https://wlan-filestore.demo.lab.wlan.tip.build"
+    url: "https://wlan-filestore.cicd.lab.wlan.tip.build"
 opensync-mqtt-broker:
   enabled: true
   replicaCount: 1
@@ -68,14 +68,14 @@ opensync-mqtt-broker:
 wlan-cloud-graphql-gw:
   enabled: true
   env:
-    portalsvc: wlan-portal-svc.demo.lab.wlan.tip.build
+    portalsvc: wlan-portal-svc.cicd.lab.wlan.tip.build
 wlan-cloud-static-portal:
   enabled: true
   env:
-    graphql: https://wlan-graphql.demo.lab.wlan.tip.build
+    graphql: https://wlan-graphql.cicd.lab.wlan.tip.build
   ingress:
     hosts:
-      - host: wlan-ui.demo.lab.wlan.tip.build
+      - host: wlan-ui.cicd.lab.wlan.tip.build
         paths: [
            /
           ]
@@ -116,10 +116,10 @@ wlan-spc-service:
     sslKeystorePassword: mypassword
     sslTruststorePassword: mypassword
 nginx-ingress-controller:
-  enabled: true
+  enabled: false
   controller:
     config:
-      externalStatusAddress: "api.wlan.demo.lab.wlan.tip.build"
+      externalStatusAddress: "api.wlan.testdeployment.lab.wlan.tip.build"
 zookeeper:
   enabled: true
   replicaCount: 1
