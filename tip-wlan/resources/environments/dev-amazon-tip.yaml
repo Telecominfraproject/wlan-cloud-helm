@@ -42,15 +42,23 @@ dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLX
 #################################################################
 opensync-gw-static:
   enabled: false
+common:
+  efs-provisioner:
+    enabled: true
+    provisioner:
+      efsFileSystemId: fs-49a5104c
+      awsRegion: us-west-2
+      efsDnsName: fs-49a5104c.efs.us-west-2.amazonaws.com
+      storageClass: aws-efs  
 opensync-gw-cloud:
   enabled: true
   externalhostaddress:
-    ovsdb: opensync-controller.tip.lab.connectus.ai
-    mqtt: opensync-mqtt-broker.tip.lab.connectus.ai
+    ovsdb: opensync-controller.demo.lab.wlan.tip.build
+    mqtt: opensync-mqtt-broker.demo.lab.wlan.tip.build
   persistence:
     enabled: false
   filestore:
-    url: "https://wlan-filestore.tip.lab.connectus.ai"
+    url: "https://wlan-filestore.demo.lab.wlan.tip.build"
 opensync-mqtt-broker:
   enabled: true
   replicaCount: 1
@@ -60,22 +68,22 @@ opensync-mqtt-broker:
 wlan-cloud-graphql-gw:
   enabled: true
   env:
-    portalsvc: wlan-portal-svc.tip.lab.connectus.ai
+    portalsvc: wlan-portal-svc.demo.lab.wlan.tip.build
 wlan-cloud-static-portal:
   enabled: true
   env:
-    graphql: https://wlan-graphql.tip.lab.connectus.ai
+    graphql: https://wlan-graphql.demo.lab.wlan.tip.build
   ingress:
     hosts:
-      - host: wlan-ui.tip.lab.connectus.ai
+      - host: wlan-ui.demo.lab.wlan.tip.build
         paths: [
            /
           ]
 wlan-portal-service:
   enabled: true
   persistence:
-    enabled: false
-    storageClass: "glusterfs-storage"
+    enabled: true
+    storageClass: aws-efs
     filestoreSize: 10Gi
 wlan-prov-service:
   enabled: true
@@ -111,7 +119,7 @@ nginx-ingress-controller:
   enabled: true
   controller:
     config:
-      externalStatusAddress: "api.wlan.tip.lab.connectus.ai"
+      externalStatusAddress: "api.wlan.demo.lab.wlan.tip.build"
 zookeeper:
   enabled: true
   replicaCount: 1
