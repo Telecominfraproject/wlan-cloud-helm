@@ -45,12 +45,12 @@ opensync-gw-static:
 opensync-gw-cloud:
   enabled: true
   externalhostaddress:
-    ovsdb: opensync-controller.testdeployment.lab.wlan.tip.build
-    mqtt: opensync-mqtt-broker.testdeployment.lab.wlan.tip.build
+    ovsdb: opensync-controller.cicd.lab.wlan.tip.build
+    mqtt: opensync-mqtt-broker.cicd.lab.wlan.tip.build
   persistence:
     enabled: false
   filestore:
-    url: "https://wlan-filestore.testdeployment.lab.wlan.tip.build"
+    url: "https://wlan-filestore.cicd.lab.wlan.tip.build"
 opensync-mqtt-broker:
   enabled: true
   replicaCount: 1
@@ -60,14 +60,14 @@ opensync-mqtt-broker:
 wlan-cloud-graphql-gw:
   enabled: true
   env:
-    portalsvc: wlan-portal-svc.testdeployment.lab.wlan.tip.build
+    portalsvc: wlan-portal-svc.cicd.lab.wlan.tip.build
 wlan-cloud-static-portal:
   enabled: true
   env:
-    graphql: https://wlan-graphql.testdeployment.lab.wlan.tip.build
+    graphql: https://wlan-graphql.cicd.lab.wlan.tip.build
   ingress:
     hosts:
-      - host: wlan-ui.testdeployment.lab.wlan.tip.build
+      - host: wlan-ui.cicd.lab.wlan.tip.build
         paths: [
            /
           ]
@@ -111,7 +111,7 @@ nginx-ingress-controller:
   enabled: true
   controller:
     config:
-      externalStatusAddress: "api.wlan.testdeployment.lab.wlan.tip.build"
+      externalStatusAddress: "api.wlan.cicd.lab.wlan.tip.build"
 zookeeper:
   enabled: true
   replicaCount: 1
