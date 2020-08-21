@@ -140,6 +140,13 @@ cassandra:
   persistence:
     enabled: true
     storageClass: "gp2"
+  resources:
+    requests:
+      cpu: 500m
+      memory: 2Gi
+    limits:
+      cpu: 1000m
+      memory: 4Gi
 postgresql:
   enabled: true
   postgresqlPassword: postgres
