@@ -58,6 +58,10 @@ securityContext: {}
 # Enable/Disable Helm tests
 testsEnabled: false
 
+# Enable/Disable Remote debugging
+debug: 
+  enabled: false
+
 service:
   type: NodePort
   port1: 9051
@@ -66,6 +70,9 @@ service:
   port2: 9052
   name2: secondary-port
   nodePort2: 52
+  port3: 5006
+  name3: debug
+  nodePort3: 15  
 
 ingress:
   enabled: false

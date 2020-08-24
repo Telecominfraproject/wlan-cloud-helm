@@ -70,12 +70,18 @@ creds:
     username: DUMMY_SCHEMA_REPO_USERNAME
     password: DUMMY_SCHEMA_REPO_PASSWORD
 
+# Enable/Disable Remote debugging
+debug: 
+  enabled: false
+
 service:
   type: ClusterIP
   port1: 9091
   name1: portal
   port2: 9092
   name2: secondary-port
+  port3: 5007
+  name3: debug
 
 ingress:
   enabled: false

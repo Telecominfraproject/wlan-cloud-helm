@@ -185,6 +185,11 @@ spec:
             - name: {{ .Values.service.name2 }}
               containerPort: {{ .Values.service.port2 }}
               protocol: TCP
+            {{- if .Values.debug.enabled }}
+            - name: {{ .Values.service.name3 }}
+              containerPort: {{ .Values.service.port3 }}
+              protocol: TCP
+            {{- end }}              
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

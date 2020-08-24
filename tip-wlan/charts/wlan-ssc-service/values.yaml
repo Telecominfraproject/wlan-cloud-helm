@@ -58,12 +58,18 @@ securityContext: {}
 # Enable/Disable Helm tests
 testsEnabled: false
 
+# Enable/Disable Remote debugging
+debug: 
+  enabled: false
+
 service:
   type: ClusterIP
   port1: 9031
   name1: portal
   port2: 9032
   name2: secondary-port
+  port3: 5008
+  name3: debug
 
 ingress:
   enabled: false
