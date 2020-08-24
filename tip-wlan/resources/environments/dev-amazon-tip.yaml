@@ -108,7 +108,7 @@ wlan-spc-service:
     sslKeystorePassword: mypassword
     sslTruststorePassword: mypassword
 nginx-ingress-controller:
-  enabled: true
+  enabled: false
   controller:
     config:
       externalStatusAddress: "api.wlan.cicd.lab.wlan.tip.build"
