@@ -61,6 +61,14 @@ else use user-provided URL
 {{- end -}}
 
 {{/*
+  Resolve the Opensync-gw service-name to apply to a chart. 
+*/}}
+{{- define "opensyncgw.service" -}}
+  {{- printf "%s-%s:%.f" .Release.Name .Values.opensyncgw.url .Values.opensyncgw.port | trunc 63 -}}
+{{- end -}}
+
+
+{{/*
   Resolve the pvc name that's would mounted to 2 charts - Portal and Opensync-gw 
 */}}
 {{- define "portal.sharedPvc.name" -}}

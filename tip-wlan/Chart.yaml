@@ -57,6 +57,9 @@ dependencies:
   - name: wlan-spc-service
     version: 0.1.0
     condition: wlan-spc-service.enabled
+  - name: wlan-port-forwarding-gateway-service
+    version: 0.1.0
+    condition: wlan-port-forwarding-gateway-service.enabled
   - name: nginx-ingress-controller
     version: 0.1.0
     condition: nginx-ingress-controller.enabled

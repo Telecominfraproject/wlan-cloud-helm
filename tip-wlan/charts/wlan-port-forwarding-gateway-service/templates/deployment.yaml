@@ -1,0 +1,135 @@
+{{- $cloudeployment := .Values.global.isCloudDeployment -}}
+{{- $opensyncgw := include "opensyncgw.service" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "common.fullname" . }}
+  namespace: {{ include "common.namespace" . }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "common.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "common.selectorLabels" . | nindent 8 }}
+    spec:
+      imagePullSecrets:
+        - name: "{{ include "common.namespace" . }}-docker-registry-key"
+      serviceAccountName: {{ include "common.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: {{ include "common.name" . }}-readiness-opensync-gw
+          image: alpine
+          imagePullPolicy: {{ .Values.global.pullPolicy }}
+          command:
+          - sh
+          - -c
+          - |
+            if [ {{ $cloudeployment }} = false ]
+            then          
+              echo "151.101.112.249 dl-cdn.alpinelinux.org" >> /etc/hosts
+              echo "Added name-resolution for local deployments"
+            fi
+            apk add curl
+            url=https://{{ $opensyncgw }}/ping
+            counter=0
+            status=$(curl --insecure --head --location --connect-timeout 5 --write-out %{http_code} --silent --output /dev/null ${url});
+            while [ $counter -lt 30 ] && [ $status -ne 200 ]
+            do
+              echo ${url} service isnt ready. Tried $counter times
+              sleep 5
+              counter=`expr $counter + 1`
+              status=$(curl --insecure --head --location --connect-timeout 5 --write-out %{http_code} --silent --output /dev/null ${url});
+              echo Http Response code of ping request = $status
+            done
+            if [ $status -eq 200 ]
+            then
+              echo ${url} service is ready!
+            else
+              echo ${url} service failed to respond after 50 secs
+              exit 1
+            fi        
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: {{ .Values.global.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.global.pullPolicy }}
+          env:
+            {{- include "common.env" . | nindent 12 }}
+            - name: PF_GATEWAY_RELEASE_URL
+              value: {{ .Values.env.protocol }}://{{ .Release.Name }}-{{ .Values.env.pfGateway.service }}:{{ .Values.env.pfGateway.port }}
+            - name: PF_GATEWAY_RELEASE_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "common.fullname" . }}-creds
+                  key: websocketSessionTokenEncKey
+          {{- if .Values.probes.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: {{ .Values.service.port2 }}
+              scheme: {{ .Values.probes.livenessProbe.scheme }}
+            initialDelaySeconds: {{ .Values.probes.livenessProbe.initialDelaySeconds }}  
+            timeoutSeconds: {{ .Values.probes.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.livenessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.probes.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.probes.livenessProbe.successThreshold }}
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: {{ .Values.service.port2 }}
+              scheme: {{ .Values.probes.readinessProbe.scheme }}
+            initialDelaySeconds: {{ .Values.probes.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.probes.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.readinessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.probes.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.probes.readinessProbe.successThreshold }}
+          {{- end }}
+          volumeMounts:
+          - mountPath: /opt/tip-wlan/certs/client_keystore.jks
+            name: certificates
+            subPath: client_keystore.jks
+          - mountPath: /opt/tip-wlan/certs/truststore.jks
+            name: certificates
+            subPath: truststore.jks
+          - mountPath: /opt/tip-wlan/certs/server.pkcs12
+            name: certificates
+            subPath: server.pkcs12
+          - mountPath: /app/port-forwarding-gateway/logback.xml
+            name: logback-config
+            subPath: logback.xml
+          ports:
+            - name: {{ .Values.service.name1 }}
+              containerPort: {{ .Values.service.port1 }}
+              protocol: TCP
+            - name: {{ .Values.service.name2 }}
+              containerPort: {{ .Values.service.port2 }}
+              protocol: TCP         
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      volumes:
+      - name: certificates
+        secret:
+          secretName: {{ include "common.fullname" . }}-certs
+          defaultMode: 0400
+      - name: logback-config
+        configMap:
+            name: {{ include "common.fullname" . }}-log-config

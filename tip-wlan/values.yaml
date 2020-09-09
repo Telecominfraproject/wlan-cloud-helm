@@ -12,6 +12,7 @@ global:
   # Change to an unused port prefix range to prevent port conflicts
   # with other instances running within the same k8s cluster
   nodePortPrefix: 302
+  nodePortPrefixExt: 304
   # namespace to deploy the release
   nsPrefix: tip
 
@@ -66,6 +67,8 @@ wlan-prov-service:
 wlan-ssc-service:
   enabled: false
 wlan-spc-service:
+  enabled: false
+wlan-port-forwarding-gateway-service:
   enabled: false
 wlan-integrated-cloud-component-service:
   enabled: false

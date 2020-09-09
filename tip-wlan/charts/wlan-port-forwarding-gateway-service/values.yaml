@@ -1,0 +1,131 @@
+# Default values for opensync-gw.
+# This is a YAML-formatted file.
+
+#################################################################
+# Application configuration defaults.
+#################################################################
+
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  name: wlan-port-forwarding-gateway-service
+  tag: 0.0.1-SNAPSHOT
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+# Reserving hundred nodeports (30400 - 30499) for this service (using different NodePortPrefix)
+# Expectation is we allow multiple APs to be debugged at the same time
+nodePortPrefixExt: 304
+
+## Liveness and Readiness probe values.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
+probes:
+  enabled: true
+  livenessProbe:
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3
+    scheme: HTTPS
+  readinessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 30
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3
+    scheme: HTTPS
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# Enable/Disable Helm tests
+testsEnabled: false
+
+# Enable/Disable Remote debugging
+debug: 
+  enabled: false
+
+service:
+  type: NodePort
+  port1: 7070
+  name1: server
+  nodePort1: '01'
+  port2: 7072
+  name2: secondary-port
+  nodePort2: '02'
+
+creds:
+  enabled: true
+  websocketSessionTokenEncKey: DUMMY_ENC_KEY
+
+opensyncgw:
+  url: opensync-gw-cloud
+  port: 9097
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: example.com
+      paths: [
+         /portal 
+        ]
+  tls: 
+   - secretName: portal-secret
+     hosts:
+       - example.com
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+env:
+  protocol: https
+  ssc_url: SSC_RELEASE_URL
+  prov_url: PROV_RELEASE_URL
+  ssc:
+    service: wlan-ssc-service
+    port: 9031
+  prov:
+    service: wlan-prov-service
+    port: 9091
+  pfGateway:
+    service: wlan-port-forwarding-gateway-service
+    port: 7070
