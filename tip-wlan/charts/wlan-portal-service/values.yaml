@@ -75,19 +75,19 @@ service:
   nodePort3: 15  
 
 ingress:
-  enabled: false
+  enabled: true
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: wlan-portal-service.zone3.lab.connectus.ai
+    - host: wlan-portal-svc-nginx.zone3.lab.connectus.ai
       paths: [
-         /portal 
+         /
         ]
-  tls: 
-   - secretName: portal-secret
-     hosts:
-       - wlan-portal-service.zone3.lab.connectus.ai
+  tls: [] 
+  # - secretName: portal-secret
+  #   hosts:
+  #     - wlan-portal-service.zone3.lab.connectus.ai
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
