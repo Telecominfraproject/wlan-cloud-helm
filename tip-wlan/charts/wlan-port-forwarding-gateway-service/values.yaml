@@ -51,7 +51,8 @@ probes:
     failureThreshold: 3
     scheme: HTTPS
 
-securityContext: {}
+securityContext:
+  privileged: true
   # capabilities:
   #   drop:
   #   - ALL
@@ -74,6 +75,46 @@ service:
   port2: 7072
   name2: secondary-port
   nodePort2: '02'
+  port3: 5010
+  name3: debug-appl
+  nodePort3: '03'
+
+# The below ports are the ports that Java would choose as Local ports whenever it opens up
+# a developer session for debug.
+# These ports are therefore assigned as container ports (in the deployment.yaml), so we 
+# can reach them from inside the cluster.
+# Also, we open equivalent NodePorts on the Kubernetes cluster (see service.yaml), so a developer
+# can connect to it to debug an AP.
+# NOTE: Another way to reach these container ports without opening NodePorts was to use 
+# kubectl port forwarding. However, we dont want the developer to install kubectl.
+
+debugPorts:
+  - 30410
+  - 30411
+  - 30412
+  - 30413
+  - 30414
+  - 30415
+  - 30416
+  - 30417
+  - 30418
+  - 30419
+  - 30420
+  - 30421
+  - 30422
+  - 30423
+  - 30424
+  - 30425
+  - 30426
+  - 30427
+  - 30428
+  - 30429
+  - 30430
+  - 30431
+  - 30432
+  - 30433
+  - 30434
+  - 30435
 
 creds:
   enabled: true

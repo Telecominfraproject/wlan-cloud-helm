@@ -102,15 +102,24 @@ spec:
             name: certificates
             subPath: server.pkcs12
           - mountPath: /app/port-forwarding-gateway/logback.xml
-            name: logback-config
+            name: configuration
             subPath: logback.xml
+          - mountPath: /app/run.sh
+            name: configuration
+            subPath: run.sh
           ports:
             - name: {{ .Values.service.name1 }}
               containerPort: {{ .Values.service.port1 }}
               protocol: TCP
             - name: {{ .Values.service.name2 }}
               containerPort: {{ .Values.service.port2 }}
-              protocol: TCP         
+              protocol: TCP
+            {{- if .Values.debug.enabled }}
+            - name: {{ .Values.service.name3 }}
+              containerPort: {{ .Values.service.port3 }}
+              protocol: TCP
+            {{- end }}
+            {{- include "container.dev.debugport" . | nindent 10 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -130,6 +139,7 @@ spec:
         secret:
           secretName: {{ include "common.fullname" . }}-certs
           defaultMode: 0400
-      - name: logback-config
+      - name: configuration
         configMap:
-            name: {{ include "common.fullname" . }}-log-config
+            name: {{ include "common.fullname" . }}-config
+            defaultMode: 0755

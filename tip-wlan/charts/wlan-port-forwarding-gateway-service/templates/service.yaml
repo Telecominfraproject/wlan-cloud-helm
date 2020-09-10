@@ -21,6 +21,16 @@ spec:
       name: {{ .Values.service.name2 }}
       {{- if eq .Values.service.type "NodePort" }}
       nodePort: {{ .Values.global.nodePortPrefixExt | default .Values.nodePortPrefixExt }}{{ .Values.service.nodePort2 }}
-      {{- end }}   
+      {{- end }}
+    {{- if .Values.debug.enabled }}
+    - port: {{ .Values.service.port3 }}
+      targetPort: {{ .Values.service.port3 }}
+      protocol: TCP
+      name: {{ .Values.service.name3 }}
+      {{- if eq .Values.service.type "NodePort" }}
+      nodePort: {{ .Values.global.nodePortPrefixExt | default .Values.nodePortPrefixExt }}{{ .Values.service.nodePort3 }}
+      {{- end }}
+    {{- end }}      
+    {{- include "service.dev.debugport" . | nindent 2 }}
   selector:
     {{- include "common.selectorLabels" . | nindent 4 }}
