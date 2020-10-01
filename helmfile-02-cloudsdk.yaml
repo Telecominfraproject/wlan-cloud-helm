@@ -1,0 +1,184 @@
+bases:
+- helmfile-environment.yaml
+- helmfile-defaults.yaml
+---
+
+releases:
+- name: postgres-{{ .Environment.Values.namespace }}
+  namespace: {{ .Environment.Values.namespace }}
+  chart: bitnami/postgresql
+  condition: postgres.enabled
+  labels:
+    role: prerequisites
+    app: postgres
+  values:
+  - postgresqlDatabase: tip
+    image:
+      tag: 11.8.0-debian-10-r58
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        namespace: {{ .Environment.Values.monitoring.namespace }}
+        additionalLabels:
+          release: prometheus-operator
+    postgresqlPassword: postgres
+    replication:
+      enabled: true
+      slaveReplicas: 1
+    persistence:
+      enabled: true
+      storageClass: {{ .Environment.Values.storageClass }}
+
+- name: zookeeper-{{ .Environment.Values.namespace }}
+  namespace: {{ .Environment.Values.namespace }}
+  chart: incubator/zookeeper
+  condition: zookeeper.enabled
+  labels:
+    role: prerequisites
+    app: zookeeper
+  values:
+  - persistence:
+      enabled: true
+      storageClass: {{ .Environment.Values.storageClass }}
+    replicaCount: 1
+
+- name: kafka-{{ .Environment.Values.namespace }}
+  namespace: {{ .Environment.Values.namespace }}
+  chart: incubator/kafka
+  condition: kafka.enabled
+  labels:
+    role: prerequisites
+    app: kafka
+  values:
+  - replicas: 1
+    persistence:
+      enabled: true
+      storageClass: {{ .Environment.Values.storageClass }}
+    operator:
+      enabled: true
+      serviceMonitor:
+        namespace: {{ .Environment.Values.namespace }}
+        selector:
+          release: prometheus-operator
+    zookeeper:
+      enabled: false
+      url: {{ .Environment.Values.namespace }}-zookeeper
+
+- name: cassandra-{{ .Environment.Values.namespace }}
+  namespace: {{ .Environment.Values.namespace }}
+  chart: incubator/cassandra
+  condition: cassandra.enabled
+  labels:
+    role: prerequisites
+    app: cassandra
+  values:
+  - persistence:
+      enabled: true
+      storageClass: {{ .Environment.Values.storageClass }}
+    ## NOTE: If we are using glusterfs as Storage class, we don't really need
+    ## replication turned on, since the data is anyway replicated on glusterfs nodes
+    ## Replication is useful when we use HostPath as storage mechanism
+    ## For Hostpath storage, recommendation is cluster_size: 3 and seed_size: 2
+    cluster:
+      replicaCount: 3
+      seedCount: 2
+    exporter:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        additionalLabels:
+          release: prometheus-operator
+
+- name: tip-{{ .Environment.Values.namespace }}
+  namespace: {{ .Environment.Values.namespace }}
+  chart: tip-wlan
+  labels:
+    role: payload
+    app: cloudsdk
+  values:
+  - global:
+      nodePortPrefix: 311
+      nodePortPrefixExt: 311
+      nsPrefix: {{ .Environment.Values.namespace }}
+      pullPolicy: Always
+      repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
+      debugEnabled: true
+      isCloudDeployment: true
+  - createReleaseNamespace: false
+  - annotations:
+      "helm.sh/resource-policy": keep
+  - dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
+    # Is the Cluster deployed in Cloud
+  - wlan-cloud-graphql-gw:
+      enabled: true
+      env:
+        portalsvc: graphql.{{ .Environment.Values.domain }}
+      ingress:
+        hosts:
+        - host: graphql.{{ .Environment.Values.domain }}
+          paths:
+          - "/"
+  - wlan-cloud-static-portal:
+      enabled: true
+      ingress:
+        hosts:
+        - host: portal.{{ .Environment.Values.domain }}
+          paths:
+          - "/"
+  - opensync-gw-static:
+      enabled: true
+  - wlan-ssc-service:
+      enabled: true
+      creds:
+        sslKeyPassword: mypassword
+        sslKeystorePassword: mypassword
+        sslTruststorePassword: mypassword
+        cassandra:
+          tip_user: tip_user
+          tip_password: tip_password
+        schema_repo:
+          username: tip-read
+          password: tip-read
+  - wlan-portal-service:
+      enabled: true
+      persistence:
+        enabled: true
+        storageClass: {{ .Environment.Values.storageClass }}
+  - wlan-prov-service:
+      enabled: true
+      creds:
+        enabled: true
+        db:
+          postgresUser:
+            password: postgres
+          tipUser:
+            password: tip_password
+        schema_repo:
+          username: tip-read
+          password: tip-read
+  - wlan-spc-service:
+      enabled: true
+      creds:
+        sslKeyPassword: mypassword
+        sslKeystorePassword: mypassword
+        sslTruststorePassword: mypassword
+  - wlan-port-forwarding-gateway-service:
+      enabled: true
+      creds:
+        websocketSessionTokenEncKey: MyToKeN0MyToKeN1
+  - opensync-mqtt-broker:
+      enabled: true
+      replicaCount: 1
+      persistence:
+        enabled: true
+        storageClass: {{ .Environment.Values.storageClass }}
+  - opensync-gw-cloud:
+      enabled: true
+      externalhostaddress:
+        ovsdb: tip-wlan-opensync-gw-cloud
+        mqtt: tip-wlan-opensync-mqtt-broker
+      persistence:
+        enabled: true
+      filestore:
+        url: "https://tip-wlan-opensync-gw-cloud:9096"

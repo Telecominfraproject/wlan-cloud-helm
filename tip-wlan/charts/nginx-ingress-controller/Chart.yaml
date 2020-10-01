@@ -1,6 +1,0 @@
-name: nginx-ingress-controller
-version: 0.1.0
-appVersion: edge
-apiVersion: v2
-description: NGINX Ingress Controller
-type: application

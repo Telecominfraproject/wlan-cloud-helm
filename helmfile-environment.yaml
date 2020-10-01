@@ -1,0 +1,16 @@
+environments:
+  default:
+    values:
+    - namespace: testota
+    - monitoring:
+        namespace: monitoring
+    - domain: lab.wlan.tip.build
+    - storageClass: gp2
+    - postgres:
+        enabled: true
+    - zookeeper:
+        enabled: true
+    - kafka:
+        enabled: true
+    - cassandra:
+        enabled: true

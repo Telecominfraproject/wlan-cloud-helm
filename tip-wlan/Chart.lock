@@ -1,0 +1,39 @@
+dependencies:
+- name: opensync-gw-static
+  repository: ""
+  version: 0.1.0
+- name: opensync-gw-cloud
+  repository: ""
+  version: 0.1.0
+- name: opensync-mqtt-broker
+  repository: ""
+  version: 0.1.0
+- name: wlan-cloud-graphql-gw
+  repository: ""
+  version: 0.1.0
+- name: wlan-cloud-static-portal
+  repository: ""
+  version: 0.1.0
+- name: wlan-integrated-cloud-component-service
+  repository: ""
+  version: 0.1.0
+- name: wlan-portal-service
+  repository: ""
+  version: 0.1.0
+- name: wlan-prov-service
+  repository: ""
+  version: 0.1.0
+- name: wlan-ssc-service
+  repository: ""
+  version: 0.1.0
+- name: wlan-spc-service
+  repository: ""
+  version: 0.1.0
+- name: wlan-port-forwarding-gateway-service
+  repository: ""
+  version: 0.1.0
+- name: common
+  repository: ""
+  version: 0.1.0
+digest: sha256:7d0ce7ebb41d9e234160e556056e031f04aa76ec274819a992f495bee5b0d7ea
+generated: "2020-09-30T11:55:11.791698013Z"
