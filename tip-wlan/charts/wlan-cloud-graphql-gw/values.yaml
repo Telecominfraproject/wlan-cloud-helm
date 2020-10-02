@@ -12,7 +12,6 @@ replicaCount: 1
 image: 
   name: wlan-cloud-graphql-gw
   tag: latest
-  timestamp:
   pullPolicy: IfNotPresent
 
 nameOverride: ""
