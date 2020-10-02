@@ -28,6 +28,7 @@ spec:
           image: {{ .Values.global.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}-{{.Values.global.testingTimestamp}}
           {{- else }}
           image: {{ .Values.global.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
+          {{- end }}
           imagePullPolicy: {{ .Values.global.pullPolicy }}
           {{- if .Values.probes.enabled }}
           livenessProbe:
