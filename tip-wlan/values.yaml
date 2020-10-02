@@ -36,6 +36,11 @@ global:
 
   # Is the Cluster deployed in Cloud
   isCloudDeployment: true
+
+  testingEnabled: false
+
+  testingTimestamp: 
+  
   
 # Namespace related
 createReleaseNamespace: true
