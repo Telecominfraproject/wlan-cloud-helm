@@ -122,7 +122,11 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- if .Values.global.testingEnabled }}
+          image: {{ .Values.global.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}-{{.Values.global.testingTimestamp}}
+          {{- else }}
           image: {{ .Values.global.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
+          
           imagePullPolicy: {{ .Values.global.pullPolicy }}
           env:
             {{- include "common.env" . | nindent 12 }}

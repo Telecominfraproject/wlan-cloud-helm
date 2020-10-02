@@ -12,6 +12,7 @@ replicaCount: 1
 image:
   name: opensync-gateway-static
   tag: 0.0.1-SNAPSHOT
+  timestamp:
 
 nameOverride: ""
 fullnameOverride: ""

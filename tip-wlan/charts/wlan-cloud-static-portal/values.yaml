@@ -12,6 +12,7 @@ replicaCount: 1
 image: 
   name: wlan-cloud-ui
   tag: latest
+  timestamp:
   pullPolicy: IfNotPresent
 
 nameOverride: ""
