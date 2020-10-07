@@ -67,10 +67,9 @@ opensync-mqtt-broker:
     storageClass: "gp2"
 wlan-port-forwarding-gateway-service:
   enabled: true
-  env:
-    pfGateway:
-      externallyVisibleHost: api.wlan.zone3.lab.connectus.ai
-      externallyVisiblePort: 30401
+  externallyVisible:
+    host: api.wlan.zone3.lab.connectus.ai
+    port: 30401
 wlan-cloud-graphql-gw:
   enabled: true
   env:
