@@ -100,6 +100,10 @@ wlan-port-forwarding-gateway-service:
   enabled: true
   creds:
     websocketSessionTokenEncKey: MyToKeN0MyToKeN1
+  env:
+    pfGateway:
+      externallyVisibleHost: api.wlan.demo.lab.wlan.tip.build
+      externallyVisiblePort: 30401
 nginx-ingress-controller:
   enabled: true
   controller:

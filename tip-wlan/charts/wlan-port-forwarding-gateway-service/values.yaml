@@ -170,3 +170,5 @@ env:
   pfGateway:
     service: wlan-port-forwarding-gateway-service
     port: 7070
+    externallyVisibleHost: pfg.example.org
+    externallyVisiblePort: 7070
