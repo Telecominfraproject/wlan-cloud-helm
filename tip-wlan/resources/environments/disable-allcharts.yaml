@@ -97,7 +97,7 @@ wlan-spc-service:
     sslKeystorePassword: mypassword
     sslTruststorePassword: mypassword
 wlan-port-forwarding-gateway-service:
-  enabled: true
+  enabled: false
   creds:
     websocketSessionTokenEncKey: MyToKeN0MyToKeN1
 nginx-ingress-controller:
