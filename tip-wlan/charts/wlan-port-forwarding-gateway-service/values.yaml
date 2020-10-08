@@ -157,6 +157,10 @@ tolerations: []
 
 affinity: {}
 
+externallyVisible:
+  host: pfg.example.org
+  port: 7070
+
 env:
   protocol: https
   ssc_url: SSC_RELEASE_URL
@@ -170,4 +174,5 @@ env:
   pfGateway:
     service: wlan-port-forwarding-gateway-service
     port: 7070
+
 
