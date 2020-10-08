@@ -73,10 +73,7 @@ spec:
                 secretKeyRef:
                   name: {{ include "common.fullname" . }}-creds
                   key: websocketSessionTokenEncKey
-            - name: PF_GATEWAY_RELEASE_EXT_HOST
-              value: {{ .Values.externallyVisible.host }}
-            - name: PF_GATEWAY_RELEASE_EXT_PORT
-              value: {{ .Values.externallyVisible.port }}
+
           {{- if .Values.probes.enabled }}
           livenessProbe:
             httpGet:

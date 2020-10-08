@@ -156,9 +156,7 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-externallyVisible:
-    host: pfg.example.org
-    port: 7070
+
 env:
   protocol: https
   ssc_url: SSC_RELEASE_URL
