@@ -107,8 +107,8 @@ affinity: {}
 creds:
   enabled: true
   sslKeyPassword: DUMMY_PASSWORD
-  sslKeystorePassword: DUMMY_PASSWORD
-  sslTruststorePassword: DUMMY_PASSWORD
+  sslKeystorePassword: mypassword
+  sslTruststorePassword: mypassword
   cassandra:
     tip_user: DUMMY_TIP_USERNAME
     tip_password: DUMMY_TIP_USERS_PASSWORD

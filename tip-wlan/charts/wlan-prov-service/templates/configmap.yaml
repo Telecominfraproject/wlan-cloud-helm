@@ -4,7 +4,7 @@ metadata:
   name: {{ include "common.fullname" . }}-log-config
   namespace: {{ include "common.namespace" . }}
 data:
-  datasource.properties:
+  datasource.properties: |-
     singleDataSource.url=jdbc:postgresql://tip-wlan-postgresql:5432/prov_db
     singleDataSource.username={{ .Values.creds.postgres.singleDataSourceUsername }}
     singleDataSource.password={{ .Values.creds.postgres.singleDataSourcePassword }}
