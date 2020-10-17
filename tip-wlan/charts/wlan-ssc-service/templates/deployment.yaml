@@ -25,99 +25,91 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
-        - name: {{ include "common.name" . }}-kafka-readiness
-          image: busybox:1.28
-          imagePullPolicy: {{ .Values.global.pullPolicy }}
-          command: ['sh', '-c', "until nslookup {{ $kafka }}.{{ $ns }}.svc.cluster.local; do echo waiting for Kafka; sleep 2; done"]
-        - name: {{ include "common.name" . }}-cassandra-readiness
-          image: busybox:1.28
-          imagePullPolicy: {{ .Values.global.pullPolicy }}
-          command: ['sh', '-c', "until nslookup {{ $cassandra }}.{{ $ns }}.svc.cluster.local; do echo waiting for Cassandra; sleep 2; done"]
-        - name: {{ include "common.name" . }}-create-db-schema-cassandra
-          env:
-          - name: CASSANDRA_PORT_NUMBER
-            value: "{{ .Values.cassandra.port }}"
-          - name: SCHEMA_REPO_USER
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "common.fullname" . }}-creds
-                key: schema-repo-user
-          - name: SCHEMA_REPO_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "common.fullname" . }}-creds
-                key: schema-repo-password
-          image: cassandra:3.11.6
-          imagePullPolicy: IfNotPresent
-          command:
-          - sh
-          - -c
-          - |
-            if [ {{ $cloudeployment }} = false ]
-            then
-              echo "52.35.62.28 tip-tip-wlan-cloud-docker-repo.jfrog.io" >> /etc/hosts
-              echo "91.189.88.152 security.ubuntu.com" >> /etc/hosts
-              echo "91.189.88.142 archive.ubuntu.com" >> /etc/hosts
-              echo "Added name-resolution for local deployments"
-            fi
-            apt update
-            apt -y install curl
-            echo "***** Fetching cloud-sdk-schema-cassandra.cql from JFrog *****"
-            curl --insecure -u$SCHEMA_REPO_USER:$SCHEMA_REPO_PASSWORD -O "https://tip-tip-wlan-cloud-docker-repo.jfrog.io/artifactory/tip-wlan-cloud-schemas/0.0.1-SNAPSHOT/cql/cloud-sdk-schema-cassandra.cql"
-            echo "***** Now executing cloud-sdk-schema-cassandra.cql and creating/updating schema on Cassandra instance *****"
-            counter=0
-            status=1
-            while [ $counter -lt 20 ] && [ $status -ne 0 ]
-            do
-              echo {{ $cassandra }} service isnt ready. Tried $counter times
-              cqlsh --cqlshrc /opt/tip-wlan/cqlshrc.tip-wlan -f /cloud-sdk-schema-cassandra.cql
-              status=$(echo $?)
-              echo Response when executing cqlsh on {{ $cassandra }} service = $status
-              counter=`expr $counter + 1`
-              sleep 5
-            done
+      - name: {{ include "common.name" . }}-create-db-schema-cassandra
+        env:
+        - name: CASSANDRA_PORT_NUMBER
+          value: "{{ .Values.cassandra.port }}"
+        - name: SCHEMA_REPO_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "common.resource.name" . }}-credentials
+              key: schema-repo-user
+        - name: SCHEMA_REPO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "common.resource.name" . }}-credentials
+              key: schema-repo-password
+        image: cassandra:3.11.6
+        imagePullPolicy: IfNotPresent
+        command:
+        - sh
+        - -c
+        - |
+          if [ {{ $cloudeployment }} = false ]
+          then
+            echo "52.35.62.28 tip-tip-wlan-cloud-docker-repo.jfrog.io" >> /etc/hosts
+            echo "91.189.88.152 security.ubuntu.com" >> /etc/hosts
+            echo "91.189.88.142 archive.ubuntu.com" >> /etc/hosts
+            echo "Added name-resolution for local deployments"
+          fi
+          apt update
+          apt -y install curl
+          echo "***** Fetching cloud-sdk-schema-cassandra.cql from JFrog *****"
+          curl --insecure -u$SCHEMA_REPO_USER:$SCHEMA_REPO_PASSWORD -O "https://tip-tip-wlan-cloud-docker-repo.jfrog.io/artifactory/tip-wlan-cloud-schemas/0.0.1-SNAPSHOT/cql/cloud-sdk-schema-cassandra.cql"
+          echo "***** Now executing cloud-sdk-schema-cassandra.cql and creating/updating schema on Cassandra instance *****"
+          counter=0
+          status=1
+          while [ $counter -lt 20 ] && [ $status -ne 0 ]
+          do
+            echo {{ $cassandra }} service isnt ready. Tried $counter times
+            cqlsh --cqlshrc /opt/tip-wlan/cqlshrc.tip-wlan -f /cloud-sdk-schema-cassandra.cql
+            status=$(echo $?)
+            echo Response when executing cqlsh on {{ $cassandra }} service = $status
+            counter=`expr $counter + 1`
+            sleep 5
+          done
+          if [ $status -eq 0 ]
+          then
+            ##  TW-892: get tip_user from user table
+            cqlsh --cqlshrc /opt/tip-wlan/cqlshrc.tip-wlan -e "list roles of 'tip_user';"
+            # if tip_user does not exists, status would be non-zero (generally 2)
+            status=$(echo $?)
             if [ $status -eq 0 ]
             then
-              ##  TW-892: get tip_user from user table
-              cqlsh --cqlshrc /opt/tip-wlan/cqlshrc.tip-wlan -e "list roles of 'tip_user';"
-              # if tip_user does not exists, status would be non-zero (generally 2)
-              status=$(echo $?)
-              if [ $status -eq 0 ]
-              then
-                echo 'tip_user exists'
-              else
-                ## tip_user does not exist; run the CQL again to create it
-                cqlsh --cqlshrc /opt/tip-wlan/cqlshrc.tip-wlan -f /cloud-sdk-schema-cassandra.cql
-              fi
-              echo DB-Schema has been created/updated in Cassandra
+              echo 'tip_user exists'
             else
-              echo Failed to create/update schema in Cassandra after 100 secs.
-              echo Check if at least 2 Cassandra nodes are in Running state.
-              exit 1
+              ## tip_user does not exist; run the CQL again to create it
+              cqlsh --cqlshrc /opt/tip-wlan/cqlshrc.tip-wlan -f /cloud-sdk-schema-cassandra.cql
             fi
-          ports:
-          - containerPort: {{ .Values.cassandra.port }}
-            name: tcp-cassandra
-            protocol: TCP
-          resources:
-            requests:
-              cpu: 250m
-              memory: 256Mi
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-          volumeMounts:
-          - mountPath: /opt/tip-wlan/cqlshrc.tip-wlan
-            name: ssc-configurations
-            subPath: cqlshrc.tip-wlan
-          - mountPath: /opt/tip-wlan/certs/cassandraservercert.pem
-            name: certificates
-            subPath: cassandraservercert.pem
-          - mountPath: /opt/tip-wlan/certs/cassandraserverkey_dec.pem
-            name: certificates
-            subPath: cassandraserverkey_dec.pem
-          - mountPath: /opt/tip-wlan/certs/cacert.pem
-            name: certificates
-            subPath: cacert.pem          
+            echo DB-Schema has been created/updated in Cassandra
+          else
+            echo Failed to create/update schema in Cassandra after 100 secs.
+            echo Check if at least 2 Cassandra nodes are in Running state.
+            exit 1
+          fi
+        ports:
+        - containerPort: {{ .Values.cassandra.port }}
+          name: tcp-cassandra
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 250m
+            memory: 256Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /opt/tip-wlan/cqlshrc.tip-wlan
+          name: ssc-configurations
+          subPath: cqlshrc.tip-wlan
+        - mountPath: /opt/tip-wlan/certs/cassandraservercert.pem
+          name: certificates
+          subPath: cassandraservercert.pem
+        - mountPath: /opt/tip-wlan/certs/cassandraserverkey_dec.pem
+          name: certificates
+          subPath: cassandraserverkey_dec.pem
+        - mountPath: /opt/tip-wlan/certs/cacert.pem
+          name: certificates
+          subPath: cacert.pem          
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -131,14 +123,14 @@ spec:
             - name: tip.wlan.kafka.sslKeyPassword
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "common.fullname" . }}-creds
+                  name: {{ include "common.resource.name" . }}-credentials
                   key: sslKeyPassword
             - name: tip.wlan.kafka.sslKeystoreLocation
               value: /opt/tip-wlan/certs/kafka-server.pkcs12
             - name: tip.wlan.kafka.sslKeystorePassword
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "common.fullname" . }}-creds
+                  name: {{ include "common.resource.name" . }}-credentials
                   key: sslKeystorePassword
             - name: tip.wlan.kafka.sslKeystoreType
               value: PKCS12
@@ -147,7 +139,7 @@ spec:
             - name: tip.wlan.kafka.sslTruststorePassword
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "common.fullname" . }}-creds
+                  name: {{ include "common.resource.name" . }}-credentials
                   key: sslTruststorePassword
             - name: tip.wlan.kafka.sslTruststoreType
               value: JKS
@@ -158,12 +150,12 @@ spec:
             - name: CASSANDRA_TIP_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "common.fullname" . }}-creds
+                  name: {{ include "common.resource.name" . }}-credentials
                   key: cassandra_tip_password
             - name: CASSANDRA_TIP_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "common.fullname" . }}-creds
+                  name: {{ include "common.resource.name" . }}-credentials
                   key: cassandra_tip_user
             - name: CASSANDRA_HOST
               value: {{ $cassandra }}:{{ .Values.cassandra.port }}
@@ -241,7 +233,7 @@ spec:
       volumes:
       - name: certificates
         secret:
-          secretName: {{ include "common.fullname" . }}-certs
+          secretName: {{ include "common.resource.name" . }}-cassandra-client-certs
       - name: ssc-configurations
         configMap:
             name: {{ include "common.fullname" . }}-ssc-config

@@ -1,0 +1,71 @@
+bases:
+- helmfile-environment.yaml
+- helmfile-defaults.yaml
+---
+
+releases:
+- name: tip-{{ .Environment.Values.namespace }}
+  namespace: {{ .Environment.Values.namespace }}
+  chart: tip-wlan
+  labels:
+    role: payload
+    app: cloudsdk
+  values:
+  - global:
+      nodePortPrefix: 311
+      nodePortPrefixExt: 313
+      nsPrefix: {{ .Environment.Values.namespace }}
+      pullPolicy: Always
+      repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
+      debugEnabled: true
+      isCloudDeployment: true
+    annotations:
+      "helm.sh/resource-policy": keep
+    createReleaseNamespace: false
+    dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
+  - wlan-cloud-graphql-gw:
+      enabled: true
+      env:
+        portalsvc: graphql.{{ .Environment.Values.domain }}
+      ingress:
+        hosts:
+        - host: graphql.{{ .Environment.Values.domain }}
+          paths:
+          - "/"
+  - wlan-cloud-static-portal:
+      enabled: true
+      ingress:
+        hosts:
+        - host: portal.{{ .Environment.Values.domain }}
+          paths:
+          - "/"
+  - wlan-ssc-service:
+      enabled: true
+  - wlan-portal-service:
+      enabled: true
+      persistence:
+        enabled: true
+        storageClass: {{ .Environment.Values.storageClass }}
+  - wlan-prov-service:
+      enabled: true
+  - wlan-spc-service:
+      enabled: true
+  - wlan-port-forwarding-gateway-service:
+      enabled: true
+  - opensync-mqtt-broker:
+      enabled: true
+      replicaCount: 1
+      persistence:
+        enabled: true
+        storageClass: {{ .Environment.Values.storageClass }}
+  - opensync-gw-static:
+      enabled: true
+  - opensync-gw-cloud:
+      enabled: true
+      externalhostaddress:
+        ovsdb: tip-wlan-opensync-gw-cloud
+        mqtt: tip-wlan-opensync-mqtt-broker
+      persistence:
+        enabled: true
+      filestore:
+        url: "https://tip-wlan-opensync-gw-cloud:9096"

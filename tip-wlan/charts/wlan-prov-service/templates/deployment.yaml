@@ -24,10 +24,6 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
-        - name: {{ include "common.name" . }}-readiness
-          image: busybox:1.28
-          imagePullPolicy: {{ .Values.global.pullPolicy }}
-          command: ['sh', '-c', "until nslookup {{ $pg }}.{{ $ns }}.svc.cluster.local; do echo waiting for POSTGRES; sleep 2; done"]
         - name: {{ include "common.name" . }}-create-db-schema
           env:
           - name: POSTGRESQL_PORT_NUMBER
@@ -35,22 +31,22 @@ spec:
           - name: POSTGRES_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ include "common.fullname" . }}-creds
+                name: {{ include "common.resource.name" . }}-credentials
                 key: postgresql-password
           - name: TIPUSER_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ include "common.fullname" . }}-creds
+                name: {{ include "common.resource.name" . }}-credentials
                 key: tipuser-password
           - name: SCHEMA_REPO_USER
             valueFrom:
               secretKeyRef:
-                name: {{ include "common.fullname" . }}-creds
+                name: {{ include "common.resource.name" . }}-credentials
                 key: schema-repo-user
           - name: SCHEMA_REPO_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ include "common.fullname" . }}-creds
+                name: {{ include "common.resource.name" . }}-credentials
                 key: schema-repo-password
           image: postgres:latest
           imagePullPolicy: IfNotPresent
@@ -73,13 +69,9 @@ spec:
             curl --insecure -u$SCHEMA_REPO_USER:$SCHEMA_REPO_PASSWORD -O "https://tip-tip-wlan-cloud-docker-repo.jfrog.io/artifactory/tip-wlan-cloud-schemas/0.0.1-SNAPSHOT/sql/cloud-sdk-schema-postgresql-db-user.sql"
             curl --insecure -u$SCHEMA_REPO_USER:$SCHEMA_REPO_PASSWORD -O "https://tip-tip-wlan-cloud-docker-repo.jfrog.io/artifactory/tip-wlan-cloud-schemas/0.0.1-SNAPSHOT/sql/cloud-sdk-schema-postgresql-tables.sql"
             echo "***** Now executing cloud-sdk-schema-postgresql-db-user.sql on host {{ $pg }} and creating db prov_db and user tip_user using User Postgres. This uses full client-cert authentication *****"
-            ### Observed that PSQL was unable to resolve the Postgres-service host because the postgres service wasnt 
-            ### really ready when running Postgres in Master-Slave config... hence the below retry-logic
-            psql 'host={{ $pg }} port=5432 user=postgres sslmode=verify-ca sslcert=/opt/tip-wlan/certs/postgresclientcert.pem sslkey=/opt/tip-wlan/certs/postgresclientkey_dec.pem sslrootcert=/opt/tip-wlan/certs/cacert.pem' -f cloud-sdk-schema-postgresql-db-user.sql
-            status=$(echo $?)
-            echo psql response of the request = $status
+            status=1
             counter=0
-            while [ $counter -lt 3 ] && [ $status -ne 0 ]
+            while [ $counter -lt 5 ] && [ $status -ne 0 ]
             do
               echo {{ $pg }} service isnt ready. Tried $counter times
               sleep 2
@@ -207,7 +199,7 @@ spec:
       volumes:
       - name: certificates
         secret:
-          secretName: {{ include "common.fullname" . }}-certs
+          secretName: {{ include "common.resource.name" . }}-postgres-client-certs
           defaultMode: 0400
       - name: logback-config
         configMap:

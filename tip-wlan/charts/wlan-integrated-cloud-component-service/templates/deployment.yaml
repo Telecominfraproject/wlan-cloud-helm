@@ -37,17 +37,17 @@ spec:
           - name: POSTGRES_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ include "common.fullname" . }}-creds
+                name: {{ include "common.resource.name" . }}-credentials
                 key: postgresql-password
           - name: SCHEMA_REPO_USER
             valueFrom:
               secretKeyRef:
-                name: {{ include "common.fullname" . }}-creds
+                name: {{ include "common.resource.name" . }}-credentials
                 key: schema-repo-user
           - name: SCHEMA_REPO_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ include "common.fullname" . }}-creds
+                name: {{ include "common.resource.name" . }}-credentials
                 key: schema-repo-password
           image: postgres:latest
           imagePullPolicy: IfNotPresent
@@ -156,7 +156,7 @@ spec:
       volumes:
       - name: certificates
         secret:
-          secretName: {{ include "common.fullname" . }}-certs
+          secretName: {{ include "common.resource.name" . }}-kafka-client-certs
       - name: logback-config
         configMap:
             name: {{ include "common.fullname" . }}-log-config

@@ -67,7 +67,7 @@ spec:
             - name: PF_GATEWAY_RELEASE_ENCRYPTION_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "common.fullname" . }}-creds
+                  name: {{ include "common.resource.name" . }}-credentials
                   key: websocketSessionTokenEncKey
           {{- if .Values.probes.enabled }}
           livenessProbe:
@@ -137,7 +137,7 @@ spec:
       volumes:
       - name: certificates
         secret:
-          secretName: {{ include "common.fullname" . }}-certs
+          secretName: {{ include "common.resource.name" . }}-kafka-client-certs
           defaultMode: 0400
       - name: configuration
         configMap:

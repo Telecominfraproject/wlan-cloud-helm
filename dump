@@ -1,0 +1,249 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kubernetes.io/psp: eks.privileged
+  creationTimestamp: "2020-10-16T09:45:50Z"
+  generateName: kafka-testota-
+  labels:
+    app.kubernetes.io/component: kafka
+    app.kubernetes.io/instance: kafka-testota
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: kafka
+    controller-revision-hash: kafka-testota-76778778f5
+    helm.sh/chart: kafka-11.8.7
+    statefulset.kubernetes.io/pod-name: kafka-testota-0
+  name: kafka-testota-0
+  namespace: testota
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: StatefulSet
+    name: kafka-testota
+    uid: 280783fd-b80a-45e0-81cb-36fb6410846a
+  resourceVersion: "25240573"
+  selfLink: /api/v1/namespaces/testota/pods/kafka-testota-0
+  uid: 8ca0e4be-6d2d-4477-a60d-240e6c86c7a3
+spec:
+  containers:
+  - command:
+    - /scripts/setup.sh
+    env:
+    - name: BITNAMI_DEBUG
+      value: "false"
+    - name: MY_POD_IP
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: status.podIP
+    - name: MY_POD_NAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.name
+    - name: KAFKA_CFG_ZOOKEEPER_CONNECT
+      value: zookeeper-testota
+    - name: KAFKA_INTER_BROKER_LISTENER_NAME
+      value: INTERNAL
+    - name: KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP
+      value: INTERNAL:PLAINTEXT,CLIENT:PLAINTEXT
+    - name: KAFKA_CFG_LISTENERS
+      value: INTERNAL://:9093,CLIENT://:9092
+    - name: KAFKA_CFG_ADVERTISED_LISTENERS
+      value: INTERNAL://$(MY_POD_NAME).kafka-testota-headless.testota.svc.cluster.local:9093,CLIENT://$(MY_POD_NAME).kafka-testota-headless.testota.svc.cluster.local:9092
+    - name: ALLOW_PLAINTEXT_LISTENER
+      value: "yes"
+    - name: KAFKA_CFG_DELETE_TOPIC_ENABLE
+      value: "false"
+    - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
+      value: "true"
+    - name: KAFKA_HEAP_OPTS
+      value: -Xmx1024m -Xms1024m
+    - name: KAFKA_CFG_LOG_FLUSH_INTERVAL_MESSAGES
+      value: "10000"
+    - name: KAFKA_CFG_LOG_FLUSH_INTERVAL_MS
+      value: "1000"
+    - name: KAFKA_CFG_LOG_RETENTION_BYTES
+      value: "1073741824"
+    - name: KAFKA_CFG_LOG_RETENTION_CHECK_INTERVALS_MS
+      value: "300000"
+    - name: KAFKA_CFG_LOG_RETENTION_HOURS
+      value: "168"
+    - name: KAFKA_CFG_MESSAGE_MAX_BYTES
+      value: "1000012"
+    - name: KAFKA_CFG_LOG_SEGMENT_BYTES
+      value: "1073741824"
+    - name: KAFKA_CFG_LOG_DIRS
+      value: /bitnami/kafka/data
+    - name: KAFKA_CFG_DEFAULT_REPLICATION_FACTOR
+      value: "1"
+    - name: KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR
+      value: "1"
+    - name: KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
+      value: "1"
+    - name: KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR
+      value: "1"
+    - name: KAFKA_CFG_NUM_IO_THREADS
+      value: "8"
+    - name: KAFKA_CFG_NUM_NETWORK_THREADS
+      value: "3"
+    - name: KAFKA_CFG_NUM_PARTITIONS
+      value: "1"
+    - name: KAFKA_CFG_NUM_RECOVERY_THREADS_PER_DATA_DIR
+      value: "1"
+    - name: KAFKA_CFG_SOCKET_RECEIVE_BUFFER_BYTES
+      value: "102400"
+    - name: KAFKA_CFG_SOCKET_REQUEST_MAX_BYTES
+      value: "104857600"
+    - name: KAFKA_CFG_SOCKET_SEND_BUFFER_BYTES
+      value: "102400"
+    - name: KAFKA_CFG_ZOOKEEPER_CONNECTION_TIMEOUT_MS
+      value: "6000"
+    image: docker.io/bitnami/kafka:2.6.0-debian-10-r30
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      failureThreshold: 3
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      successThreshold: 1
+      tcpSocket:
+        port: kafka-client
+      timeoutSeconds: 5
+    name: kafka
+    ports:
+    - containerPort: 9092
+      name: kafka-client
+      protocol: TCP
+    - containerPort: 9093
+      name: kafka-internal
+      protocol: TCP
+    readinessProbe:
+      failureThreshold: 6
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      tcpSocket:
+        port: kafka-client
+      timeoutSeconds: 5
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /bitnami/kafka
+      name: data
+    - mountPath: /bitnami/kafka/config/server.properties
+      name: kafka-config
+      subPath: server.properties
+    - mountPath: /scripts/setup.sh
+      name: scripts
+      subPath: setup.sh
+    - mountPath: /etc/kafka/secrets/truststore.jks
+      name: kafka-certificates
+      subPath: truststore.jks
+    - mountPath: /etc/kafka/secrets/kafka-server.pkcs12
+      name: kafka-certificates
+      subPath: kafka-server.pkcs12
+    - mountPath: /etc/kafka/secrets/key_creds
+      name: kafka-certificates
+      subPath: key_creds
+    - mountPath: /etc/kafka/secrets/keystore_creds
+      name: kafka-certificates
+      subPath: keystore_creds
+    - mountPath: /etc/kafka/secrets/truststore_creds
+      name: kafka-certificates
+      subPath: truststore_creds
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kafka-testota-token-j4lsn
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  hostname: kafka-testota-0
+  nodeName: ip-10-10-11-67.us-east-2.compute.internal
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext:
+    fsGroup: 1001
+    runAsUser: 1001
+  serviceAccount: kafka-testota
+  serviceAccountName: kafka-testota
+  subdomain: kafka-testota-headless
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: data
+    persistentVolumeClaim:
+      claimName: data-kafka-testota-0
+  - configMap:
+      defaultMode: 420
+      name: tip-testota-common-kafka-config
+    name: kafka-config
+  - configMap:
+      defaultMode: 493
+      name: kafka-testota-scripts
+    name: scripts
+  - name: kafka-certificates
+    secret:
+      defaultMode: 420
+      secretName: tip-testota-common-kafka-certs
+  - name: kafka-testota-token-j4lsn
+    secret:
+      defaultMode: 420
+      secretName: kafka-testota-token-j4lsn
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2020-10-16T09:45:56Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2020-10-16T09:45:56Z"
+    message: 'containers with unready status: [kafka]'
+    reason: ContainersNotReady
+    status: "False"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2020-10-16T09:45:56Z"
+    message: 'containers with unready status: [kafka]'
+    reason: ContainersNotReady
+    status: "False"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2020-10-16T09:45:56Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: docker://7cae8c87863968f8bde1f589fe7b5eca976285bbddcd2e5b28645f4dd5728340
+    image: bitnami/kafka:2.6.0-debian-10-r30
+    imageID: docker-pullable://bitnami/kafka@sha256:f90834468a3cf87f4db0de401c1557a63b22f62bf5443b5fc7561fc59013db74
+    lastState:
+      terminated:
+        containerID: docker://7cae8c87863968f8bde1f589fe7b5eca976285bbddcd2e5b28645f4dd5728340
+        exitCode: 1
+        finishedAt: "2020-10-16T09:46:49Z"
+        reason: Error
+        startedAt: "2020-10-16T09:46:49Z"
+    name: kafka
+    ready: false
+    restartCount: 3
+    started: false
+    state:
+      waiting:
+        message: back-off 40s restarting failed container=kafka pod=kafka-testota-0_testota(8ca0e4be-6d2d-4477-a60d-240e6c86c7a3)
+        reason: CrashLoopBackOff
+  hostIP: 10.10.11.67
+  phase: Running
+  podIP: 10.10.11.44
+  podIPs:
+  - ip: 10.10.11.44
+  qosClass: BestEffort
+  startTime: "2020-10-16T09:45:56Z"

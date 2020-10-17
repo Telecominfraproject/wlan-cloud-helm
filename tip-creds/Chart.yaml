@@ -1,0 +1,6 @@
+# Chart for deploying Common templates that are used by other charts
+
+apiVersion: v1
+description: creds secrets for reuse in other charts
+name: creds
+version: 0.1.0

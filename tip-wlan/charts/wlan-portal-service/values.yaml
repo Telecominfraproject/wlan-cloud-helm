@@ -105,7 +105,7 @@ persistence:
   enabled: false
   # Storage class should be aws-efs if efs is used (see name of common/charts/efs-provisioner/templates/storage-class.yaml)
   storageClass: "-"
-  accessMode: ReadWriteMany
+  accessMode: ReadWriteOnce
   annotations: {}
   ## Size of Filestore PVC
   filestoreSize: 1Gi

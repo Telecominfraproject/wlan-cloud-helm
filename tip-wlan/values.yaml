@@ -72,13 +72,3 @@ wlan-port-forwarding-gateway-service:
   enabled: false
 wlan-integrated-cloud-component-service:
   enabled: false
-nginx-ingress-controller:
-  enabled: false
-zookeeper:
-  enabled: false
-kafka:
-  enabled: false
-cassandra:
-  enabled: false
-postgresql:
-  enabled: false

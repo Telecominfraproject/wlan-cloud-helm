@@ -2,7 +2,7 @@
     Resolve the Postgres service-name to apply to a chart. 
 */}}
 {{- define "postgresql.service" -}}
-  {{- printf "%s-%s" .Release.Name .Values.postgresql.url | trunc 63 -}}
+  {{- printf "postgres-%s-%s" .Values.global.nsPrefix .Values.postgresql.url | trunc 63 -}}
 {{- end -}}
 
 {{/*
@@ -22,14 +22,14 @@ else use user-provided URL
   Resolve the Kafka service-name to apply to a chart. 
 */}}
 {{- define "kafka.service" -}}
-{{- printf "%s-%s" .Release.Name .Values.kafka.url | trunc 63 -}}
+{{- printf "kafka-%s-headless" .Values.global.nsPrefix | trunc 63 -}}
 {{- end -}}
 
 {{/*
   Resolve the Cassandra service-name to apply to a chart. 
 */}}
 {{- define "cassandra.service" -}}
-{{- printf "%s-%s" .Release.Name .Values.cassandra.url | trunc 63 -}}
+{{- printf "cassandra-%s-headless" .Values.global.nsPrefix | trunc 63 -}}
 {{- end -}}
 
 {{/*

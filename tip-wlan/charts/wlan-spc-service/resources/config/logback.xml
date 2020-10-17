@@ -72,8 +72,9 @@
   <logger name="com.telecominfraproject.wlan.streams.kafka.KafkaStreamsConfig" level="TRACE"/>
   <logger name="com.telecominfraproject.wlan.stream.StreamMessageDispatcher" level="TRACE"/>
 
-  <root level="WARN">
-    <appender-ref ref="logfile"/>
+  <root level="INFO">
+    <appender-ref ref="stdout"/>
+    <!-- <appender-ref ref="logfile"/> -->
   </root>
   
 </configuration>

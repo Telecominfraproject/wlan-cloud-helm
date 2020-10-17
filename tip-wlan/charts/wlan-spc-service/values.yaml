@@ -110,9 +110,6 @@ creds:
   sslKeystorePassword: DUMMY_PASSWORD
   sslTruststorePassword: DUMMY_PASSWORD
 
-kafka: 
-  url: kafka-headless
-
 env:
   protocol: https
   ssc_url: SSC_RELEASE_URL

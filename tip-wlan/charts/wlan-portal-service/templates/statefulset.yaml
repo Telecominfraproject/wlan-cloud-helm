@@ -119,7 +119,7 @@ spec:
     {{- end }}
 
       volumes:
-      - name: certificates
+      - name: {{ include "common.resource.name" . }}-kafka-client-certs
         secret:
           secretName: {{ include "common.fullname" . }}-certs
       - name: logback-config

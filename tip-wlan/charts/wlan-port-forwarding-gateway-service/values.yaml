@@ -30,7 +30,7 @@ podSecurityContext: {}
 
 # Reserving hundred nodeports (30400 - 30499) for this service (using different NodePortPrefix)
 # Expectation is we allow multiple APs to be debugged at the same time
-nodePortPrefixExt: 304
+nodePortPrefixExt: 390
 
 ## Liveness and Readiness probe values.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
@@ -89,7 +89,6 @@ service:
 # kubectl port forwarding. However, we dont want the developer to install kubectl.
 
 debugPorts:
-  - 30410
   - 30411
   - 30412
   - 30413
