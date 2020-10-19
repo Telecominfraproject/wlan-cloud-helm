@@ -2,7 +2,7 @@ apiVersion: {{ template "postgresql.statefulset.apiVersion" . }}
 kind: StatefulSet
 metadata:
   name: {{ template "postgresql.master.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "common.namespace" . }}
   labels:
     app: {{ template "common.name" . }}
     chart: {{ template "common.chart" . }}

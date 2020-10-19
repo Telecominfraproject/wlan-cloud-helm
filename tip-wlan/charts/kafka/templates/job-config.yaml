@@ -4,7 +4,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: "{{ include "common.fullname" . }}-config-{{ $scriptHash }}"
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "common.namespace" . }}
   labels:
   {{- include "kafka.config.labels" . | nindent 4 }}
 spec:

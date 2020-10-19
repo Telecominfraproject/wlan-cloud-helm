@@ -2,13 +2,14 @@
 {{- $prov := include "prov.service" . -}}
 {{- $ssc := include "ssc.service" . -}}
 {{- $mqtt := include "mqtt.service" . -}}
+{{- $ns := include "common.namespace" . -}}
 {{- $file_store_path := include "filestore.dir.name" . -}}
 {{- $cloudeployment := .Values.global.isCloudDeployment -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "common.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "common.namespace" . }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:
@@ -22,7 +23,7 @@ spec:
         {{- include "common.selectorLabels" . | nindent 8 }}
     spec:
       imagePullSecrets:
-        - name: "{{ .Release.Namespace }}-docker-registry-key"
+        - name: "{{ include "common.namespace" . }}-docker-registry-key"
       serviceAccountName: {{ include "common.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}

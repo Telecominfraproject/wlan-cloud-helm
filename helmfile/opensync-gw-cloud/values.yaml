@@ -110,8 +110,8 @@ mqtt:
 portal:
   url: wlan-portal-service
   sharedPvc:
-      name: file-store-data
-      ordinal: 0
+    name: file-store-data
+    ordinal: 0
 
  # These are list of external HostAddresses for ovsdb, mqtt. 
  # This is important for ovsdb and mqtt since 

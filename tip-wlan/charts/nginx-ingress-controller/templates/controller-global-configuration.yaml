@@ -3,7 +3,7 @@ apiVersion: k8s.nginx.org/v1alpha1
 kind: GlobalConfiguration 
 metadata:
   name: {{ include "common.name" . }}-global-configuration
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "common.namespace" . }}
 spec:
   listeners:
   - name: opensync-gw-controller-port-listener

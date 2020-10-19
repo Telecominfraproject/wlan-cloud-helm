@@ -1,11 +1,12 @@
 {{- $kafka := include "kafka.service" . -}}
 {{- $cassandra := include "cassandra.service" . -}}
+{{- $ns := include "common.namespace" . -}}
 {{- $cloudeployment := .Values.global.isCloudDeployment -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "common.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "common.namespace" . }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:
@@ -19,7 +20,7 @@ spec:
         {{- include "common.selectorLabels" . | nindent 8 }}
     spec:
       imagePullSecrets:
-        - name: "{{ .Release.Namespace }}-docker-registry-key"
+        - name: "{{ include "common.namespace" . }}-docker-registry-key"
       serviceAccountName: {{ include "common.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -27,11 +28,11 @@ spec:
         - name: {{ include "common.name" . }}-kafka-readiness
           image: busybox:1.28
           imagePullPolicy: {{ .Values.global.pullPolicy }}
-          command: ['sh', '-c', "until nslookup {{ $kafka }}.{{ .Release.Namespace }}.svc.cluster.local; do echo waiting for Kafka; sleep 2; done"]
+          command: ['sh', '-c', "until nslookup {{ $kafka }}.{{ $ns }}.svc.cluster.local; do echo waiting for Kafka; sleep 2; done"]
         - name: {{ include "common.name" . }}-cassandra-readiness
           image: busybox:1.28
           imagePullPolicy: {{ .Values.global.pullPolicy }}
-          command: ['sh', '-c', "until nslookup {{ $cassandra }}.{{ .Release.Namespace }}.svc.cluster.local; do echo waiting for Cassandra; sleep 2; done"]
+          command: ['sh', '-c', "until nslookup {{ $cassandra }}.{{ $ns }}.svc.cluster.local; do echo waiting for Cassandra; sleep 2; done"]
         - name: {{ include "common.name" . }}-create-db-schema-cassandra
           env:
           - name: CASSANDRA_PORT_NUMBER
