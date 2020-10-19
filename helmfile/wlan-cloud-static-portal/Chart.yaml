@@ -1,0 +1,12 @@
+apiVersion: v2
+name: wlan-cloud-static-portal
+description: WLAN Cloud Portal Helm Chart
+
+type: application
+version: 0.1.0
+appVersion: 0.0.1
+
+dependencies:
+- name: common
+  version: 0.1.0
+  repository: file://../common

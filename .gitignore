@@ -3,3 +3,5 @@
 *.pkcs12
 *.p12
 *.DS_Store
+
+*.tgz

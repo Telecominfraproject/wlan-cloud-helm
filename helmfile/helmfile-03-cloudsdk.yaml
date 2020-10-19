@@ -1,0 +1,196 @@
+bases:
+- helmfile-environment.yaml
+- helmfile-defaults.yaml
+---
+
+releases:
+- name: tip-{{ .Environment.Values.global.namespace }}-opensync-gw-cloud
+  namespace: {{ .Environment.Values.global.namespace }}
+  chart: opensync-gw-cloud
+  condition: opensync-gw-cloud.enabled
+  labels:
+    role: payload
+    app: opensync-gw-cloud
+  values:
+  - global:
+      nodePortPrefixExt: {{ .Environment.Values.global.nodePortPrefixExt }}
+      nodePortPrefix: {{ .Environment.Values.global.nodePortPrefix }}
+      repository: {{ .Environment.Values.global.repository }}
+      isCloudDeployment: true
+      pullPolicy: Always
+  - externalhostaddress:
+      ovsdb: tip-wlan-opensync-gw-cloud
+      mqtt: tip-wlan-opensync-mqtt-broker
+    persistence:
+      enabled: true
+    filestore:
+      url: "https://tip-wlan-opensync-gw-cloud:9096"
+
+- name: tip-{{ .Environment.Values.global.namespace }}-opensync-gw-static
+  namespace: {{ .Environment.Values.global.namespace }}
+  chart: opensync-gw-static
+  condition: opensync-gw-static.enabled
+  labels:
+    role: payload
+    app: opensync-gw-static
+  values:
+  - global:
+      nodePortPrefixExt: {{ .Environment.Values.global.nodePortPrefixExt }}
+      nodePortPrefix: {{ .Environment.Values.global.nodePortPrefix }}
+      repository: {{ .Environment.Values.global.repository }}
+      isCloudDeployment: true
+      pullPolicy: Always
+
+- name: tip-{{ .Environment.Values.global.namespace }}-opensync-mqtt-broker
+  namespace: {{ .Environment.Values.global.namespace }}
+  chart: opensync-mqtt-broker
+  condition: opensync-mqtt-broker.enabled
+  labels:
+    role: payload
+    app: opensync-mqtt-broker
+  values:
+  - global:
+      nodePortPrefixExt: {{ .Environment.Values.global.nodePortPrefixExt }}
+      nodePortPrefix: {{ .Environment.Values.global.nodePortPrefix }}
+      repository: {{ .Environment.Values.global.repository }}
+      isCloudDeployment: true
+      pullPolicy: Always
+  - replicaCount: 1
+    persistence:
+      enabled: true
+      storageClass: {{ .Environment.Values.storageClass }}
+
+- name: tip-{{ .Environment.Values.global.namespace }}-wlan-cloud-graphql-gw
+  namespace: {{ .Environment.Values.global.namespace }}
+  chart: wlan-cloud-graphql-gw
+  condition: wlan-cloud-graphql-gw.enabled
+  labels:
+    role: payload
+    app: wlan-cloud-graphql-gw
+  values:
+  - global:
+      nodePortPrefixExt: {{ .Environment.Values.global.nodePortPrefixExt }}
+      nodePortPrefix: {{ .Environment.Values.global.nodePortPrefix }}
+      repository: {{ .Environment.Values.global.repository }}
+      isCloudDeployment: true
+      pullPolicy: Always
+  - env:
+      portalsvc: graphql.{{ .Environment.Values.global.domain }}
+    ingress:
+      hosts:
+      - host: graphql.{{ .Environment.Values.global.domain }}
+        paths:
+        - "/"
+
+- name: tip-{{ .Environment.Values.global.namespace }}-wlan-cloud-static-portal
+  namespace: {{ .Environment.Values.global.namespace }}
+  chart: wlan-cloud-static-portal
+  condition: wlan-cloud-static-portal.enabled
+  labels:
+    role: payload
+    app: wlan-cloud-static-portal
+  values:
+  - global:
+      nodePortPrefixExt: {{ .Environment.Values.global.nodePortPrefixExt }}
+      nodePortPrefix: {{ .Environment.Values.global.nodePortPrefix }}
+      repository: {{ .Environment.Values.global.repository }}
+      isCloudDeployment: true
+      pullPolicy: Always 
+  - ingress:
+      hosts:
+      - host: portal.{{ .Environment.Values.global.domain }}
+        paths:
+        - "/"
+
+- name: tip-{{ .Environment.Values.global.namespace }}-wlan-integrated-cloud-component-service
+  namespace: {{ .Environment.Values.global.namespace }}
+  chart: wlan-integrated-cloud-component-service
+  condition: wlan-integrated-cloud-component-service.enabled
+  labels:
+    role: payload
+    app: wlan-integrated-cloud-component-service
+  values:
+  - global:
+      nodePortPrefixExt: {{ .Environment.Values.global.nodePortPrefixExt }}
+      nodePortPrefix: {{ .Environment.Values.global.nodePortPrefix }}
+      repository: {{ .Environment.Values.global.repository }}
+      isCloudDeployment: true
+      pullPolicy: Always 
+
+- name: tip-{{ .Environment.Values.global.namespace }}-wlan-port-forwarding-gateway-service
+  namespace: {{ .Environment.Values.global.namespace }}
+  chart: wlan-port-forwarding-gateway-service
+  condition: wlan-port-forwarding-gateway-service.enabled
+  labels:
+    role: payload
+    app: port-forwarding-gateway-service
+  values:
+  - global:
+      nodePortPrefixExt: {{ .Environment.Values.global.nodePortPrefixExt }}
+      nodePortPrefix: {{ .Environment.Values.global.nodePortPrefix }}
+      repository: {{ .Environment.Values.global.repository }}
+      isCloudDeployment: true
+      pullPolicy: Always 
+
+- name: tip-{{ .Environment.Values.global.namespace }}-wlan-portal-service
+  namespace: {{ .Environment.Values.global.namespace }}
+  chart: wlan-portal-service
+  condition: wlan-portal-service.enabled
+  labels:
+    role: payload
+    app: wlan-portal-service
+  values:
+  - global:
+      nodePortPrefixExt: {{ .Environment.Values.global.nodePortPrefixExt }}
+      nodePortPrefix: {{ .Environment.Values.global.nodePortPrefix }}
+      repository: {{ .Environment.Values.global.repository }}
+      isCloudDeployment: true
+      pullPolicy: Always 
+  - persistence:
+      enabled: true
+      storageClass: {{ .Environment.Values.storageClass }}
+
+- name: tip-{{ .Environment.Values.global.namespace }}-wlan-prov-service
+  namespace: {{ .Environment.Values.global.namespace }}
+  chart: wlan-prov-service
+  condition: wlan-prov-service.enabled
+  labels:
+    role: payload
+    app: wlan-prov-service
+  values:
+  - global:
+      nodePortPrefixExt: {{ .Environment.Values.global.nodePortPrefixExt }}
+      nodePortPrefix: {{ .Environment.Values.global.nodePortPrefix }}
+      repository: {{ .Environment.Values.global.repository }}
+      isCloudDeployment: true
+      pullPolicy: Always 
+
+- name: tip-{{ .Environment.Values.global.namespace }}-wlan-spc-service
+  namespace: {{ .Environment.Values.global.namespace }}
+  chart: wlan-spc-service
+  condition: wlan-spc-service.enabled
+  labels:
+    role: payload
+    app: wlan-spc-service
+  values:
+  - global:
+      nodePortPrefixExt: {{ .Environment.Values.global.nodePortPrefixExt }}
+      nodePortPrefix: {{ .Environment.Values.global.nodePortPrefix }}
+      repository: {{ .Environment.Values.global.repository }}
+      isCloudDeployment: true
+      pullPolicy: Always 
+
+- name: tip-{{ .Environment.Values.global.namespace }}-wlan-ssc-service
+  namespace: {{ .Environment.Values.global.namespace }}
+  chart: wlan-ssc-service
+  condition: wlan-ssc-service.enabled
+  labels:
+    role: payload
+    app: wlan-ssc-service
+  values:
+  - global:
+      nodePortPrefixExt: {{ .Environment.Values.global.nodePortPrefixExt }}
+      nodePortPrefix: {{ .Environment.Values.global.nodePortPrefix }}
+      repository: {{ .Environment.Values.global.repository }}
+      isCloudDeployment: true
+      pullPolicy: Always 

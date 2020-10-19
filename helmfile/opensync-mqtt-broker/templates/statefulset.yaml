@@ -1,0 +1,168 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "common.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ include "common.fullname" . }}
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "common.selectorLabels" . | nindent 6 }}
+  updateStrategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+  template:
+    metadata:
+      labels:
+        {{- include "common.selectorLabels" . | nindent 8 }}
+      {{- if .Values.podLabels }}
+        ## Custom pod labels
+        {{- range $key, $value := .Values.podLabels }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
+{{- if .Values.podAnnotations }}
+      annotations:
+        ## Custom pod annotations
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+{{- end }}
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+{{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+{{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}
+      imagePullSecrets:
+        - name: "{{ .Release.Namespace }}-docker-registry-key"
+      serviceAccountName: {{ include "common.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: {{ include "common.name" . }}-init-dir-ownership-change
+          image: alpine:3.6
+          # Change ownership to `mosquitto` user for a mounted volume
+          command:
+          - sh
+          - -c
+          - |
+            chown -R 1883:1883 /mosquitto/data
+            chown -R 1883:1883 /mosquitto/db
+          volumeMounts:
+          - name: data
+            mountPath: /mosquitto/data
+          - name: db
+            mountPath: /mosquitto/db
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: {{ .Values.image.name }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.global.pullPolicy }}
+          {{- if .Values.probes.enabled }}
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.service.port1 }}
+            initialDelaySeconds: {{ .Values.probes.livenessProbe.initialDelaySeconds }}  
+            timeoutSeconds: {{ .Values.probes.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.livenessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.probes.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.probes.livenessProbe.successThreshold }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.service.port1 }}
+            initialDelaySeconds: {{ .Values.probes.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.probes.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.readinessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.probes.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.probes.readinessProbe.successThreshold }}
+          {{- end }}
+          volumeMounts:
+          - mountPath: /certs/cacert.pem
+            name: opensync-mqtt-broker-truststore
+            subPath: cacert.pem
+          - mountPath: /certs/mqttservercert.pem
+            name: opensync-mqtt-broker-truststore
+            subPath: mqttservercert.pem
+          - mountPath: /certs/mqttserverkey_dec.pem
+            name: opensync-mqtt-broker-truststore
+            subPath: mqttserverkey_dec.pem
+          - mountPath: /mosquitto/config/mosquitto.conf
+            name: opensync-mqtt-broker-conf
+            subPath: mosquitto.conf
+          - mountPath: /mosquitto/db/
+            name: db
+          - mountPath: /mosquitto/data/
+            name: data
+          ports:
+            - name: {{ .Values.service.name1 }}
+              containerPort: {{ .Values.service.port1 }}
+              protocol: TCP
+            - name: {{ .Values.service.name2 }}
+              containerPort: {{ .Values.service.port2 }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      volumes:
+      - name: opensync-mqtt-broker-truststore
+        secret:
+          secretName: opensync-mqtt-broker-certs
+      - name: opensync-mqtt-broker-conf
+        configMap:
+            name: mosquitto-config
+      {{- if not .Values.persistence.enabled }}
+      - name: db
+        emptyDir: {}
+      - name: data
+        emptyDir: {}
+      {{- end }}
+  {{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: db
+      spec:
+        accessModes:
+          - {{ .Values.persistence.accessMode | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.sizeDb | quote }}
+      {{- if .Values.persistence.storageClass }}
+        {{- if (eq "-" .Values.persistence.storageClass) }}
+        storageClassName: ""
+        {{- else }}
+        storageClassName: "{{ .Values.persistence.storageClass }}"
+        {{- end }}
+      {{- end }}
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - {{ .Values.persistence.accessMode | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.sizeData | quote }}
+      {{- if .Values.persistence.storageClass }}
+        {{- if (eq "-" .Values.persistence.storageClass) }}
+        storageClassName: ""
+        {{- else }}
+        storageClassName: "{{ .Values.persistence.storageClass }}"
+        {{- end }}
+      {{- end }}
+  {{- end }}

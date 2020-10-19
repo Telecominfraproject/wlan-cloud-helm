@@ -1,0 +1,6 @@
+# Chart for deploying Common templates that are used by other charts
+
+apiVersion: v1
+description: Common templates for inclusion in other charts
+name: common
+version: 0.1.0

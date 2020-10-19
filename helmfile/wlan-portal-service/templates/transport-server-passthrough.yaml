@@ -1,0 +1,18 @@
+apiVersion: k8s.nginx.org/v1alpha1
+kind: TransportServer
+metadata:
+  name: {{ include "common.name" . }}-portal-svc
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  listener:
+    name: tls-passthrough
+    protocol: TLS_PASSTHROUGH
+  host: {{ .Values.tsp.host }}
+  upstreams:
+    - name: {{ include "common.name" . }}
+      service: {{ include "common.fullname" . }}
+      port: {{ .Values.service.port1 }}
+  action:
+    pass: {{ include "common.name" . }}

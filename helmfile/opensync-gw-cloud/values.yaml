@@ -1,0 +1,170 @@
+# Default values for opensync-gw.
+# This is a YAML-formatted file.
+
+#################################################################
+# Application configuration defaults.
+#################################################################
+
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  name: opensync-gateway-cloud
+  tag: 0.0.1-SNAPSHOT
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+## Liveness and Readiness probe values.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
+probes:
+  enabled: false
+  livenessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 30
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3
+  readinessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 30
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3
+
+# Enable/Disable Helm tests
+testsEnabled: false
+
+# Enable/Disable Remote debugging
+debug: 
+  enabled: false
+
+service:
+  type: NodePort
+  port1: 6640
+  nodePort1: 29
+  name1: controller
+  port2: 6643
+  name2: redirector
+  nodePort2: 30
+  port3: 9096
+  name3: server
+  nodePort3: 27
+  port4: 9097
+  name4: internal
+  nodePort4: 28
+  port5: 5005
+  name5: debug
+  nodePort5: 26
+
+persistence:
+  enabled: false
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+
+# the filestore internal: location of the folder where UI files will be stored
+# on the PV
+# the filestore url: externally reachable URL i.e.; reachable from AP, where it 
+# can download the files from. Override this value (url) to the configured
+# HTTP server in your system 
+filestore:
+  internal: "/tmp/filestore"
+  url: DUMMY_FILESTORE_HTTPS_URL
+
+integratedcloudcomponent:
+  url: wlan-integrated-cloud-component-service
+  port: 9091
+
+prov:
+  url: wlan-prov-service
+  port: 9092
+
+ssc:
+  url: wlan-ssc-service
+  port: 9032
+
+mqtt:
+  url: opensync-mqtt-broker
+
+portal:
+  url: wlan-portal-service
+  sharedPvc:
+    name: file-store-data
+    ordinal: 0
+
+ # These are list of external HostAddresses for ovsdb, mqtt. 
+ # This is important for ovsdb and mqtt since 
+ # that's what AP sees. Please make sure to override
+ # them in dev override file for your respective environments.
+externalhostaddress:
+  ovsdb: opensync-gw-cloud
+  mqtt: opensync-mqtt-broker
+
+ethernetType:
+  lanName: "lan"
+  lanType: "bridge"
+  wanType: "bridge"
+  wanName: "wan"
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+env:
+  protocol: https
+  ssc_url: SSC_RELEASE_URL
+  prov_url: PROV_RELEASE_URL
+  ssc:
+    service: wlan-ssc-service
+    port: 9031
+  prov:
+    service: wlan-prov-service
+    port: 9091
