@@ -1,0 +1,149 @@
+{{- $file_store_path := include "filestore.dir.name" . -}}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "common.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ include "common.fullname" . }}
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "common.selectorLabels" . | nindent 6 }}
+  updateStrategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}      
+  template:
+    metadata:
+      labels:
+        {{- include "common.selectorLabels" . | nindent 8 }}
+      {{- if .Values.podLabels }}
+        ## Custom pod labels
+        {{- range $key, $value := .Values.podLabels }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
+{{- if .Values.podAnnotations }}
+      annotations:
+        ## Custom pod annotations
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+{{- end }}        
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+{{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+{{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+{{- end }}    
+      imagePullSecrets:
+        - name: "{{ .Release.Namespace }}-docker-registry-key"
+      serviceAccountName: {{ include "common.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: {{ .Values.global.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.global.pullPolicy }}
+          env:
+            {{- include "common.env" . | nindent 12 }}
+            - name: FILE_STORE_DIRECTORY_INTERNAL
+              value: {{ $file_store_path }}
+          {{- if .Values.probes.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: {{ .Values.service.port1 }}
+              scheme: {{ .Values.probes.livenessProbe.scheme }}
+            initialDelaySeconds: {{ .Values.probes.livenessProbe.initialDelaySeconds }}  
+            timeoutSeconds: {{ .Values.probes.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.livenessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.probes.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.probes.livenessProbe.successThreshold }}
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: {{ .Values.service.port1 }}
+              scheme: {{ .Values.probes.readinessProbe.scheme }}
+            initialDelaySeconds: {{ .Values.probes.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.probes.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.readinessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.probes.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.probes.readinessProbe.successThreshold }}
+          {{- end }}
+          volumeMounts:
+          - mountPath: /opt/tip-wlan/certs/client_keystore.jks
+            name: certificates
+            subPath: client_keystore.jks
+          - mountPath: /opt/tip-wlan/certs/truststore.jks
+            name: certificates
+            subPath: truststore.jks
+          - mountPath: /opt/tip-wlan/certs/server.pkcs12
+            name: certificates
+            subPath: server.pkcs12
+          - mountPath: /app/portal/logback.xml
+            name: logback-config
+            subPath: logback.xml
+          - mountPath: {{ $file_store_path }}
+            name: file-store-data
+          ports:
+            - name: {{ .Values.service.name1 }}
+              containerPort: {{ .Values.service.port1 }}
+              protocol: TCP
+            - name: {{ .Values.service.name2 }}
+              containerPort: {{ .Values.service.port2 }}
+              protocol: TCP
+            {{- if .Values.debug.enabled }}
+            - name: {{ .Values.service.name3 }}
+              containerPort: {{ .Values.service.port3 }}
+              protocol: TCP
+            {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+
+      volumes:
+      - name: {{ include "common.resource.name" . }}-kafka-client-certs
+        secret:
+          secretName: {{ include "common.fullname" . }}-certs
+      - name: logback-config
+        configMap:
+            name: {{ include "common.fullname" . }}-log-config
+      {{- if not .Values.persistence.enabled }}
+      - name: file-store-data
+        emptyDir: {}
+      {{- end }}
+  {{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ .Values.persistence.sharedPvc.name }}
+      spec:
+        accessModes:
+          - {{ .Values.persistence.accessMode | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.filestoreSize | quote }}
+      {{- if .Values.persistence.storageClass }}
+        {{- if (eq "-" .Values.persistence.storageClass) }}
+        storageClassName: ""
+        {{- else }}
+        storageClassName: "{{ .Values.persistence.storageClass }}"
+        {{- end }}
+      {{- end }}
+  {{- end }}

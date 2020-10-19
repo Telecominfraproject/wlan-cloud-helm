@@ -6,6 +6,6 @@ name: common
 version: 0.1.0
 
 dependencies:
-- name: efs-provisioner
-  version: 1.0.0
-  condition: efs-provisioner.enabled
+  - name: efs-provisioner
+    version: 1.0.0
+    condition: efs-provisioner.enabled

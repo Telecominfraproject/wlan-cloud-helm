@@ -67,9 +67,9 @@
   <logger name="com.telecominfraproject.wlan" level="DEBUG"/>
   <logger name="com.telecominfraproject.wlan.core.server.webconfig.WebGenericConverter" level="OFF"/>
 
-  <root level="INFO">
-    <appender-ref ref="stdout"/>
-    <!-- <appender-ref ref="logfile"/> -->
+  <root level="WARN">
+    <!--    <appender-ref ref="stdout"/>-->
+    <appender-ref ref="logfile"/>
   </root>
   
 </configuration>

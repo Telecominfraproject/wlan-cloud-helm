@@ -45,7 +45,7 @@ opensync-gw-static:
   enabled: false
 common:
   efs-provisioner:
-    enabled: false
+    enabled: true
     provisioner:
       efsFileSystemId: fs-49a5104c
       awsRegion: us-west-2
@@ -54,12 +54,12 @@ common:
 opensync-gw-cloud:
   enabled: true
   externalhostaddress:
-    ovsdb: opensync-controller.zone1.lab.wlan.tip.build
-    mqtt: opensync-mqtt-broker.zone1.lab.wlan.tip.build
+    ovsdb: opensync-controller.demo.lab.wlan.tip.build
+    mqtt: opensync-mqtt-broker.demo.lab.wlan.tip.build
   persistence:
     enabled: false
   filestore:
-    url: "https://wlan-filestore.zone1.lab.wlan.tip.build"
+    url: "https://wlan-filestore.demo.lab.wlan.tip.build"
 opensync-mqtt-broker:
   enabled: true
   replicaCount: 1
@@ -69,14 +69,14 @@ opensync-mqtt-broker:
 wlan-cloud-graphql-gw:
   enabled: true
   env:
-    portalsvc: wlan-portal-svc.zone1.lab.wlan.tip.build
+    portalsvc: wlan-portal-svc.demo.lab.wlan.tip.build
 wlan-cloud-static-portal:
   enabled: true
   env:
-    graphql: https://wlan-graphql.zone1.lab.wlan.tip.build
+    graphql: https://wlan-graphql.demo.lab.wlan.tip.build
   ingress:
     hosts:
-      - host: wlan-ui.zone1.lab.wlan.tip.build
+      - host: wlan-ui.demo.lab.wlan.tip.build
         paths: [
            /
           ]
@@ -84,9 +84,8 @@ wlan-portal-service:
   enabled: true
   persistence:
     enabled: true
-    storageClass: gp2
-    accessMode: ReadWriteOnce
-    filestoreSize: 1Gi
+    storageClass: aws-efs
+    filestoreSize: 10Gi
 wlan-prov-service:
   enabled: true
   creds:
@@ -121,11 +120,14 @@ wlan-port-forwarding-gateway-service:
   enabled: true
   creds:
     websocketSessionTokenEncKey: MyToKeN0MyToKeN1
+  externallyVisible:
+    host: api.wlan.demo.lab.wlan.tip.build
+    port: 30401
 nginx-ingress-controller:
   enabled: true
   controller:
     config:
-      externalStatusAddress: "api.wlan.zone1.lab.wlan.tip.build"
+      externalStatusAddress: "api.wlan.demo.lab.wlan.tip.build"
 zookeeper:
   enabled: true
   replicaCount: 1
@@ -141,7 +143,7 @@ kafka:
 cassandra:
   enabled: true
   config:
-    replicaCount: 1
+    replicaCount: 3
     seedCount: 2
   persistence:
     enabled: true

@@ -1,0 +1,65 @@
+environments:
+  default:
+    values:
+    - global:
+        namespace: testota
+        domain: lab.wlan.tip.build
+        repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
+        monitoring:
+          namespace: monitoring
+        nodePortPrefix: 311
+        nodePortPrefixExt: 313
+    
+    - credentials:
+        jFrog:
+          user: tip-read
+          password: tip-read
+        websocketSessionTokenEncKey: MyToKeN0MyToKeN1
+        keyPassword: mypassword
+        keystorePassword: mypassword
+        truststorePassword: mypassword
+        dockerSecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
+    
+    # Stateful components start here
+    - storageClass: gp2
+    - postgres:
+        enabled: true
+        user: tip_user
+        password: DUMMY_POSTGRES_PASSWORD
+        replication:
+          user: repl_user
+          password: repl_password
+    - zookeeper:
+        enabled: true
+    - kafka:
+        enabled: true
+    - cassandra:
+        enabled: true
+        user: cassandra
+        password: cassandra
+    - efs-provisioner:
+        enabled: false
+
+    # Wlan components start here
+    - opensync-gw-cloud:
+        enabled: true
+    - opensync-gw-static:
+        enabled: true
+    - opensync-mqtt-broker:
+        enabled: true
+    - wlan-cloud-graphql-gw:
+        enabled: true
+    - wlan-cloud-static-portal:
+        enabled: true
+    - wlan-integrated-cloud-component-service:
+        enabled: true
+    - wlan-port-forwarding-gateway-service:
+        enabled: true
+    - wlan-portal-service:
+        enabled: true
+    - wlan-prov-service:
+        enabled: true
+    - wlan-spc-service:
+        enabled: true
+    - wlan-ssc-service:
+        enabled: true

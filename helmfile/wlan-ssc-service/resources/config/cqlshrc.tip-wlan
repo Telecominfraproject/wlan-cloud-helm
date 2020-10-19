@@ -1,0 +1,16 @@
+[authentication]
+username = cassandra
+password = cassandra
+
+[ui]
+color = on
+
+[connection]
+hostname = cassandra-testota-headless
+port = 9042
+ssl = true
+
+[ssl]
+certfile = /opt/tip-wlan/certs/cacert.pem
+userkey = /opt/tip-wlan/certs/cassandraserverkey_dec.pem
+usercert = /opt/tip-wlan/certs/cassandraservercert.pem

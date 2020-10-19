@@ -30,7 +30,7 @@ podSecurityContext: {}
 
 # Reserving hundred nodeports (30400 - 30499) for this service (using different NodePortPrefix)
 # Expectation is we allow multiple APs to be debugged at the same time
-nodePortPrefixExt: 390
+nodePortPrefixExt: 304
 
 ## Liveness and Readiness probe values.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
@@ -89,6 +89,7 @@ service:
 # kubectl port forwarding. However, we dont want the developer to install kubectl.
 
 debugPorts:
+  - 30410
   - 30411
   - 30412
   - 30413
@@ -156,6 +157,10 @@ tolerations: []
 
 affinity: {}
 
+externallyVisible:
+  host: pfg.example.org
+  port: 7070
+
 env:
   protocol: https
   ssc_url: SSC_RELEASE_URL
@@ -169,3 +174,5 @@ env:
   pfGateway:
     service: wlan-port-forwarding-gateway-service
     port: 7070
+
+

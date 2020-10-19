@@ -104,6 +104,9 @@ wlan-port-forwarding-gateway-service:
   enabled: true
   creds:
     websocketSessionTokenEncKey: MyToKeN0MyToKeN1
+  externallyVisible:
+    host: api.wlan.demo.lab.wlan.tip.build
+    port: 30401
 nginx-ingress-controller:
   enabled: true
   controller:

@@ -1,0 +1,12 @@
+apiVersion: v2
+name: wlan-port-forwarding-gateway-service
+description: WLAN Port Forwarding Gateway Service Helm chart for Kubernetes for debugging APs remotely
+
+type: application
+version: 0.1.0
+appVersion: 0.0.1
+
+dependencies:
+- name: common
+  version: 0.1.0
+  repository: file://../common

@@ -116,6 +116,9 @@ creds:
     username: DUMMY_SCHEMA_REPO_USERNAME
     password: DUMMY_SCHEMA_REPO_PASSWORD
 
+kafka: 
+  url: kafka-headless
+
 cassandra:
   url: cassandra-headless
   port: 9042

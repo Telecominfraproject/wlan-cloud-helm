@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: {{ include "common.namespace" . }}
+  name: {{ .Release.Namespace }}
   labels:
     release: {{ .Release.Name }}
 {{- if .Values.annotations }}

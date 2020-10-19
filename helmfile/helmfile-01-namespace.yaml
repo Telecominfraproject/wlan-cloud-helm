@@ -1,0 +1,18 @@
+bases:
+- helmfile-environment.yaml
+- helmfile-defaults.yaml
+---
+bases:
+- helmfile-repositories.yaml.gotmpl
+---
+
+releases:
+- name: namespace-{{ .Environment.Values.global.namespace }}
+  chart: incubator/raw
+  namespace: default
+  values:
+  - resources:
+    - apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: {{ .Environment.Values.global.namespace }}

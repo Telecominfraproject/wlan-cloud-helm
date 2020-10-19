@@ -18,6 +18,9 @@ PROV_URL=${PROV_RELEASE_URL}
 # PF_GATEWAY_URL: something like https://${PF_GATEWAY_SERVER_HOST}:7070
 PF_GATEWAY_URL=${PF_GATEWAY_RELEASE_URL}
 PF_GATEWAY_ENCRYPTION_KEY=${PF_GATEWAY_RELEASE_ENCRYPTION_KEY:='MyToKeN0MyToKeN1'}
+PF_GATEWAY_EXT_HOST=${PF_GATEWAY_RELEASE_EXT_HOST:=''}
+PF_GATEWAY_EXT_PORT=${PF_GATEWAY_RELEASE_EXT_PORT:='0'}
+
 
 # SSC URLs
 HOST_PROPS=" "
@@ -41,6 +44,9 @@ HOST_PROPS+=" -Dtip.wlan.profileServiceBaseUrl=$PROV_URL"
 # Port-Forwarder Gateway Specific
 HOST_PROPS+=" -Dtip.wlan.portForwarderGatewayBaseUrl=$PF_GATEWAY_URL"
 HOST_PROPS+=" -Dtip.wlan.websocketSessionTokenEncryptionKey=$PF_GATEWAY_ENCRYPTION_KEY"
+HOST_PROPS+=" -Dtip.wlan.externallyVisibleHostName=$PF_GATEWAY_EXT_HOST"
+HOST_PROPS+=" -Dtip.wlan.externallyVisiblePort=$PF_GATEWAY_EXT_PORT"
+
 
 REMOTE_DEBUG_PORT=5010
 REMOTE_DEBUG=" -agentlib:jdwp=transport=dt_socket,server=y,address=*:$REMOTE_DEBUG_PORT,suspend=n"

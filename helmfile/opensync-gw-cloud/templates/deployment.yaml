@@ -1,0 +1,287 @@
+{{- $icc := include "integratedcloudcomponent.service" . -}}
+{{- $prov := include "prov.service" . -}}
+{{- $ssc := include "ssc.service" . -}}
+{{- $mqtt := include "mqtt.service" . -}}
+{{- $file_store_path := include "filestore.dir.name" . -}}
+{{- $cloudeployment := .Values.global.isCloudDeployment -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "common.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "common.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "common.selectorLabels" . | nindent 8 }}
+    spec:
+      imagePullSecrets:
+        - name: "{{ .Release.Namespace }}-docker-registry-key"
+      serviceAccountName: {{ include "common.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: {{ include "common.name" . }}-mqtt-readiness
+          image: eclipse-mosquitto:latest
+          imagePullPolicy: {{ .Values.global.pullPolicy }}
+          command:
+          - sh
+          - -c
+          - |
+            mosquitto_pub -h {{ $mqtt }} -p 1883 --cafile /certs/cacert.pem --cert /certs/clientcert.pem --key /certs/clientkey.pem --insecure -t "/ap/test" -q 0 -m "CheckingMQTTAliveness"
+            status=$(echo $?)
+            echo mosquitto_pub response of the request = $status
+            counter=0
+            while [ $counter -lt 10 ] && [ $status -ne 0 ]
+            do
+              echo {{ $mqtt }} service isnt ready. Tried $counter times
+              sleep 2
+              counter=`expr $counter + 1`
+              mosquitto_pub -h {{ $mqtt }} -p 1883 --cafile /certs/cacert.pem --cert /certs/clientcert.pem --key /certs/clientkey.pem --insecure -t "/ap/test" -q 0 -m "CheckingMQTTAliveness"
+              status=$(echo $?)
+              echo mosquitto_pub response of the request = $status
+            done
+            if [ $status -eq 0 ]
+            then
+              echo {{ $mqtt }} service is ready!
+            else
+              echo {{ $mqtt }} service failed to respond after 20 secs
+              exit 1
+            fi
+          volumeMounts:
+          - mountPath: /certs/cacert.pem
+            name: certificates
+            subPath: cacert.pem
+          - mountPath: /certs/clientcert.pem
+            name: certificates
+            subPath: clientcert.pem
+          - mountPath: /certs/clientkey.pem
+            name: certificates
+            subPath: clientkey.pem
+      {{- if .Values.global.integratedDeployment }}
+        - name: {{ include "common.name" . }}-readiness-int-cloud
+          image: alpine
+          imagePullPolicy: {{ .Values.global.pullPolicy }}
+          command:
+          - sh
+          - -c
+          - |
+            if [ {{ $cloudeployment }} = false ]
+            then            
+              echo "151.101.112.249 dl-cdn.alpinelinux.org" >> /etc/hosts
+              echo "Added name-resolution for local deployments"
+            fi
+            apk add curl
+            url=https://{{ $icc }}/ping
+            counter=0
+            status=$(curl --insecure --head --location --connect-timeout 5 --write-out %{http_code} --silent --output /dev/null ${url});
+            while [ $counter -lt 10 ] && [ $status -ne 200 ] 
+            do
+              echo ${url} service isnt ready. Tried $counter times
+              sleep 5
+              counter=`expr $counter + 1`
+              status=$(curl --insecure --head --location --connect-timeout 5 --write-out %{http_code} --silent --output /dev/null ${url});
+              echo Http Response code of ping request = $status
+            done
+            if [ $status -eq 200 ]
+            then
+              echo ${url} service is ready!
+            else
+              echo ${url} service failed to respond after 50 secs
+              exit 1
+            fi 
+      {{- else }}
+        - name: {{ include "common.name" . }}-readiness-prov
+          image: alpine
+          imagePullPolicy: {{ .Values.global.pullPolicy }}
+          command:
+          - sh
+          - -c
+          - |
+            if [ {{ $cloudeployment }} = false ]
+            then          
+              echo "151.101.112.249 dl-cdn.alpinelinux.org" >> /etc/hosts
+              echo "Added name-resolution for local deployments"
+            fi
+            apk add curl
+            url=https://{{ $prov }}/ping
+            counter=0
+            status=$(curl --insecure --head --location --connect-timeout 5 --write-out %{http_code} --silent --output /dev/null ${url});
+            while [ $counter -lt 10 ] && [ $status -ne 200 ] 
+            do
+              echo ${url} service isnt ready. Tried $counter times
+              sleep 5
+              counter=`expr $counter + 1`
+              status=$(curl --insecure --head --location --connect-timeout 5 --write-out %{http_code} --silent --output /dev/null ${url});
+              echo Http Response code of ping request = $status
+            done
+            if [ $status -eq 200 ]
+            then
+              echo ${url} service is ready!
+            else
+              echo ${url} service failed to respond after 50 secs
+              exit 1
+            fi
+        - name: {{ include "common.name" . }}-readiness-ssc
+          image: alpine
+          imagePullPolicy: {{ .Values.global.pullPolicy }}
+          command:
+          - sh
+          - -c
+          - |
+            if [ {{ $cloudeployment }} = false ]
+            then          
+              echo "151.101.112.249 dl-cdn.alpinelinux.org" >> /etc/hosts
+              echo "Added name-resolution for local deployments"
+            fi
+            apk add curl
+            url=https://{{ $ssc }}/ping
+            counter=0
+            status=$(curl --insecure --head --location --connect-timeout 5 --write-out %{http_code} --silent --output /dev/null ${url});
+            while [ $counter -lt 10 ] && [ $status -ne 200 ] 
+            do
+              echo ${url} service isnt ready. Tried $counter times
+              sleep 5
+              counter=`expr $counter + 1`
+              status=$(curl --insecure --head --location --connect-timeout 5 --write-out %{http_code} --silent --output /dev/null ${url});
+              echo Http Response code of ping request = $status
+            done
+            if [ $status -eq 200 ]
+            then
+              echo ${url} service is ready!
+            else
+              echo ${url} service failed to respond after 50 secs
+              exit 1
+            fi        
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: {{ .Values.global.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.global.pullPolicy }}
+          {{- if .Values.probes.enabled }}
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.service.port2 }}
+            initialDelaySeconds: {{ .Values.probes.livenessProbe.initialDelaySeconds }}  
+            timeoutSeconds: {{ .Values.probes.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.livenessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.probes.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.probes.livenessProbe.successThreshold }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.service.port2 }}
+            initialDelaySeconds: {{ .Values.probes.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.probes.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.readinessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.probes.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.probes.readinessProbe.successThreshold }}
+          {{- end }}
+          env:
+            {{- include "common.env" . | nindent 12 }}
+            - name: OVSDB_MANAGER
+              value: {{ .Values.externalhostaddress.ovsdb }}
+            - name: OVSDB_MANAGER_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: MQTT_SERVER_INTERNAL
+              value: {{ .Release.Name }}-{{ .Values.mqtt.url }}
+            - name: MQTT_SERVER_EXTERNAL
+              value: {{ .Values.externalhostaddress.mqtt }}
+            {{- if .Values.global.integratedDeployment }}
+            - name: INTEGRATED_SERVER
+              value: {{ .Release.Name }}-{{ .Values.integratedcloudcomponent.url }}
+            {{- else }}
+            - name: PROV_SERVER
+              value: {{ .Release.Name }}-{{ .Values.prov.url }}
+            - name: SSC_SERVER
+              value: {{ .Release.Name }}-{{ .Values.ssc.url }}
+            {{- end }}
+            - name: FILE_STORE_DIRECTORY_INTERNAL
+              value: {{ $file_store_path }}
+            - name: FILE_STORE_URL
+              value: {{ .Values.filestore.url }}
+            - name: DEFAULT_LAN_NAME
+              value: {{ .Values.ethernetType.lanName }}
+            - name: DEFAULT_LAN_TYPE
+              value: {{ .Values.ethernetType.lanType }}
+            - name: DEFAULT_WAN_TYPE
+              value: {{ .Values.ethernetType.wanType }}
+            - name: DEFAULT_WAN_NAME
+              value: {{ .Values.ethernetType.wanName }}
+          volumeMounts:
+          - mountPath: /opt/tip-wlan/certs/client_keystore.jks
+            name: certificates
+            subPath: client_keystore.jks
+          - mountPath: /opt/tip-wlan/certs/truststore.jks
+            name: certificates
+            subPath: truststore.jks
+          - mountPath: /opt/tip-wlan/certs/server.pkcs12
+            name: certificates
+            subPath: server.pkcs12
+          - mountPath: /opt/tip-wlan/certs/httpClientConfig.json
+            name: certificates
+            subPath: httpClientConfig.json
+          - mountPath: /opt/tip-wlan/certs/ssl.properties
+            name: certificates
+            subPath: ssl.properties
+          - mountPath: /app/opensync/logback.xml
+            name: logback-config
+            subPath: logback.xml
+          - mountPath: {{ $file_store_path }}
+            name: file-store-data
+          ports:
+            - name: {{ .Values.service.name1 }}
+              containerPort: {{ .Values.service.port1 }}
+              protocol: TCP
+            - name: {{ .Values.service.name2 }}
+              containerPort: {{ .Values.service.port2 }}
+              protocol: TCP
+            - name: {{ .Values.service.name3 }}
+              containerPort: {{ .Values.service.port3 }}
+              protocol: TCP
+            - name: {{ .Values.service.name4 }}
+              containerPort: {{ .Values.service.port4 }}
+              protocol: TCP
+            {{- if .Values.debug.enabled }}
+            - name: {{ .Values.service.name5 }}
+              containerPort: {{ .Values.service.port5 }}
+              protocol: TCP
+            {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+
+      volumes:
+      - name: certificates
+        secret:
+          secretName: {{ include "common.fullname" . }}-certs
+      - name: logback-config
+        configMap:
+            name: {{ include "common.fullname" . }}-log-config
+      - name: file-store-data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ include "portal.sharedPvc.name" . }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}

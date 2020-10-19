@@ -1,0 +1,6 @@
+apiVersion: v2
+name: zookeeper
+version: 0.1.0
+appVersion: 1.0.0
+description: Centralized service for maintaining configuration information, naming,
+  providing distributed synchronization, and providing group services.
