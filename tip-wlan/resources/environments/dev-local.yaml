@@ -153,22 +153,12 @@ cassandra:
   enabled: true
   image:
     debug: true
-  # config:
-  #   replicaCount: 1
-  #   seedCount: 1
   cluster:
     replicaCount: 1
     seedCount: 1
   persistence:
     enabled: true
     storageClass: standard
-  # resources:
-  #   requests:
-  #     cpu: 500m
-  #     memory: 2Gi
-  #   limits:
-  #     cpu: 500m
-  #     memory: 3Gi
 postgresql:
   enabled: true
   postgresqlPassword: postgres
