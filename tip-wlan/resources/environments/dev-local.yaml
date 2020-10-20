@@ -42,14 +42,6 @@ dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLX
 #################################################################
 opensync-gw-static:
   enabled: false
-common:
-  efs-provisioner:
-    enabled: false
-    provisioner:
-      efsFileSystemId: fs-49a5104c
-      awsRegion: us-west-2
-      efsDnsName: fs-49a5104c.efs.us-west-2.amazonaws.com
-      storageClass: aws-efs  
 opensync-gw-cloud:
   enabled: true
   externalhostaddress:
