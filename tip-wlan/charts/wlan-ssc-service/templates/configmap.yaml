@@ -26,8 +26,8 @@ data:
 
       advanced.auth-provider {
         class = PlainTextAuthProvider
-        username = tip_user
-        password = tip_password
+        username = {{ .Values.creds.cassandra.tip_user }}
+        password = {{ .Values.creds.cassandra.tip_password }}
       }
     }
 {{ tpl (.Files.Glob "resources/config/*").AsConfig . | indent 2 }}
