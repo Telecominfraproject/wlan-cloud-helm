@@ -15,5 +15,5 @@ data:
     singleDataSource.sslfactory=org.postgresql.ssl.LibPQFactory
     singleDataSource.sslkey=/opt/tip-wlan/certs/postgresclient.p12
     singleDataSource.sslrootcert=/opt/tip-wlan/certs/cacert.pem
-    singleDataSource.sslkeypassword=mypassword
+    singleDataSource.sslkeypassword=DUMMY_PASSWORD
 {{ tpl (.Files.Glob "resources/config/*").AsConfig . | indent 2 }}
