@@ -98,9 +98,6 @@ wlan-prov-service:
     schema_repo:
       username: tip-read
       password: tip-read
-    postgres:
-      singleDataSourceUsername: tip_user
-      singleDataSourcePassword: tip_password
 wlan-ssc-service:
   enabled: true
   creds:
