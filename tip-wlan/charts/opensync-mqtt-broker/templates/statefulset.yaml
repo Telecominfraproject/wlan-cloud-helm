@@ -76,35 +76,13 @@ spec:
           readinessProbe:
             tcpSocket:
               port: {{ .Values.service.port1 }}
-            initialDelaySeconds: {{ .Values.probes.readinessProbe.initialDelaySeconds }}  
+            initialDelaySeconds: {{ .Values.probes.readinessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.probes.readinessProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.probes.readinessProbe.failureThreshold }}
             periodSeconds: {{ .Values.probes.readinessProbe.periodSeconds }}
             successThreshold: {{ .Values.probes.readinessProbe.successThreshold }}
-          startupProbe:
-            exec:
-              command:
-              - ash
-              - -c
-              - >
-                mosquitto_pub -h 127.0.0.1 -p {{ .Values.service.port1 }} 
-                --cafile /certs/cacert.pem
-                --cert /certs/clientcert.pem
-                --key /certs/clientkey.pem
-                --insecure
-                -t "/ap/test"
-                -q 0
-                -m "CheckingMQTTAliveness"
-            failureThreshold: {{ .Values.probes.readinessProbe.failureThreshold }}
-            periodSeconds: {{ .Values.probes.readinessProbe.periodSeconds }}
           {{- end }}
           volumeMounts:
-          - mountPath: /certs/clientcert.pem
-            name: certificates
-            subPath: clientcert.pem
-          - mountPath: /certs/clientkey.pem
-            name: certificates
-            subPath: clientkey.pem
           - mountPath: /certs/cacert.pem
             name: opensync-mqtt-broker-truststore
             subPath: cacert.pem
@@ -149,9 +127,6 @@ spec:
       - name: opensync-mqtt-broker-conf
         configMap:
             name: mosquitto-config
-      - name: certificates
-        secret:
-          secretName: {{ .Release.Name }}-opensync-gw-cloud-certs
       {{- if not .Values.persistence.enabled }}
       - name: db
         emptyDir: {}
