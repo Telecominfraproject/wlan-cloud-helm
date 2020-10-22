@@ -65,7 +65,9 @@ creds:
       password: DUMMY_POSTGRES_PASSWORD
     tipUser:
       password: DUMMY_TIPUSER_PASSWORD
-    
+  postgres:
+    singleDataSourceUsername: DUMMY_POSTGRES_USERNAME
+    singleDataSourcePassword: DUMMY_POSTGRES_PASSWORD
   schema_repo:
     username: DUMMY_SCHEMA_REPO_USERNAME
     password: DUMMY_SCHEMA_REPO_PASSWORD
