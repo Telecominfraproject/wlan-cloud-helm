@@ -73,6 +73,7 @@
 
   <root level="WARN">
     <appender-ref ref="logfile"/>
+    <appender-ref ref="stdout"/>
   </root>
 
 </configuration>
