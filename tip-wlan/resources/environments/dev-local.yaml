@@ -76,7 +76,6 @@ wlan-cloud-static-portal:
   env:
     graphql: https://wlan-ui-graphql.wlan.local
   service:
-    # type: LoadBalancer
     type: NodePort
   ingress:
     hosts:
