@@ -5,3 +5,26 @@ metadata:
   namespace: {{ include "common.namespace" . }}
 data:
 {{ tpl (.Files.Glob "resources/config/*").AsConfig . | indent 2 }}
+  cassandra-application.conf: >-
+    datastax-java-driver {
+        basic {
+            contact-points = [ "tip-wlan-cassandra-headless:9042" ]
+            load-balancing-policy.local-datacenter = datacenter1
+            session-keyspace = tip_wlan_keyspace
+        }
+
+        advanced.ssl-engine-factory {
+            class = DefaultSslEngineFactory
+            hostname-validation = false
+            truststore-path = /opt/tip-wlan/certs/truststore.jks
+            truststore-password = {{ .Values.creds.sslTruststorePassword }}
+            keystore-path = /opt/tip-wlan/certs/cassandra_server_keystore.jks
+            keystore-password = {{ .Values.creds.sslKeystorePassword }}
+        }
+
+        advanced.auth-provider {
+            class = PlainTextAuthProvider
+            username = {{ .Values.creds.cassandra.tip_user }}
+            password = {{ .Values.creds.cassandra.tip_password }}
+        }
+    }

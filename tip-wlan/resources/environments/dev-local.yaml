@@ -4,7 +4,7 @@
 # It can be tweaked, based on the need to support different
 # dev environments.
 # This file expects to have a GlusterFS storage solution running
-# before "helm install" is performed. 
+# before "helm install" is performed.
 #################################################################
 # Global configuration overrides.
 #
@@ -109,6 +109,7 @@ wlan-prov-service:
     postgres:
       singleDataSourceUsername: tip_user
       singleDataSourcePassword: tip_password
+      singleDataSourceSslKeyPassword: mypassword
 wlan-ssc-service:
   enabled: true
   creds:
@@ -117,7 +118,7 @@ wlan-ssc-service:
     sslTruststorePassword: mypassword
     cassandra:
       tip_user: tip_user
-      tip_password: tip_password 
+      tip_password: tip_password
     schema_repo:
       username: tip-read
       password: tip-read
@@ -149,6 +150,10 @@ kafka:
   persistence:
     enabled: true
     storageClass: standard
+  creds:
+    sslKeystorePassword: mypassword
+    sslTruststorePassword: mypassword
+    sslKeyPassword: mypassword
 cassandra:
   enabled: true
   image:
@@ -159,12 +164,15 @@ cassandra:
   persistence:
     enabled: true
     storageClass: standard
+  creds:
+    sslKeystorePassword: mypassword
+    sslTruststorePassword: mypassword
 postgresql:
   enabled: true
   postgresqlPassword: postgres
-## NOTE: If we are using glusterfs as Storage class, we don't really need 
+## NOTE: If we are using glusterfs as Storage class, we don't really need
 ## replication turned on, since the data is anyway replicated on glusterfs nodes
-## Replication is useful: 
+## Replication is useful:
 ## a. When we use HostPath as storage mechanism
 ## b. If master goes down and one of the slave is promoted as master
   replication:
