@@ -51,6 +51,7 @@ service:
   port: 4000
   name: graphui
   nodePort: 23
+  annotations: {}
 
 ingress:
   enabled: true
