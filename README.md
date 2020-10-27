@@ -94,25 +94,28 @@ Run minikube:
 
 ```minikube start --memory=10g --cpus=4 --driver=virtualbox --extra-config=kubelet.serialize-image-pulls=false --extra-config=kubelet.image-pull-progress-deadline=3m0s --docker-opt=max-concurrent-downloads=10```
 
+Please note that you may choose another driver (parallels, vmwarefusion, hyperkit, vmware, docker, podman) which might be more suitable for your setup. Omitting this option enables auto discovery of available drivers.
+
 Deploy CloudSDK chart:
 
-```helm install tip-wlan tip-wlan -f tip-wlan/resources/environments/dev-local.yaml -n default```
+```helm upgrade --install tip-wlan tip-wlan -f tip-wlan/resources/environments/dev-local.yaml -n default```
 
 Wait a few minutes, when all pods are in `Running` state, obtain web ui link with `minikube service tip-wlan-wlan-cloud-static-portal -n tip --url`, open in the browser. Importing or trusting certificate might be needed.
 
-Services may be exposed to the local machine and local network with ssh, kubectl or kubefwd port forwarding, needs to be repeated for each service, please examples below:
+Services may be exposed to the local machine or local network with ssh, kubectl or kubefwd with port forwarding, please examples below.
 
 Kubefwd:
 
+kubefwd is used to forward Kubernetes services to a local workstation, easing the development of applications that communicate with other services. It is for development purposes only. For production/staging environments services need to be exposed via load balancers.
 Download latest release from https://github.com/eugenetaranov/kubefwd/releases and run the binary.
 
-Forward to all interfaces:
+Forward to all interfaces (useful if you need to connect from other devices in your local network):
 
 ```
 sudo kubefwd services --namespace tip -l "app.kubernetes.io/name in (nginx-ingress-controller,wlan-portal-service,opensync-gw-cloud,opensync-mqtt-broker)" --allinterfaces --extrahosts wlan-ui-graphql.wlan.local,wlan-ui.wlan.local
 ```
 
-Kubectl forwarding:
+Kubectl port forwarding (alternative to kubefwd):
 ```
 kubectl -n tip port-forward --address 0.0.0.0 $(kubectl -n tip get pods -l app=tip-wlan-nginx-ingress-controller -o jsonpath='{.items[0].metadata.name}') 443:443 &
 kubectl -n tip port-forward --address 0.0.0.0 $(kubectl -n tip get pods -l app.kubernetes.io/name=wlan-portal-service -o jsonpath='{.items[0].metadata.name}') 9051:9051 &
