@@ -69,6 +69,10 @@ creds:
   schema_repo:
     username: DUMMY_SCHEMA_REPO_USERNAME
     password: DUMMY_SCHEMA_REPO_PASSWORD
+  postgres:
+    singleDataSourceUsername: DUMMY_POSTGRES_USER
+    singleDataSourcePassword: DUMMY_POSTGRES_PASSWORD
+    singleDataSourceSslKeyPassword: DUMMY_SSL_PASSWORD
 
 # Enable/Disable Remote debugging
 debug: 

@@ -353,3 +353,8 @@ zookeeper:
   #       labelSelector:
   #         matchLabels:
   #           release: zookeeper
+
+creds:
+  sslTruststorePassword: DUMMY_PASSWORD
+  sslKeystorePassword: DUMMY_PASSWORD
+  sslKeyPassword: DUMMY_PASSWORD
