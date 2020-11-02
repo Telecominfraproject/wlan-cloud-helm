@@ -19,22 +19,17 @@ global:
   nsPrefix: tip
   # image pull policy
   pullPolicy: Always
-
   repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
   # override default mount path root directory
   # referenced by persistent volumes and log files
   persistence:
-
   # flag to enable debugging - application support required
   debugEnabled: true
-
 # Annotations for namespace
 annotations: {
     "helm.sh/resource-policy": keep
 }
-
 #createReleaseNamespace: false
-
 # Docker registry secret
 dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
 #################################################################
@@ -45,7 +40,7 @@ opensync-gw-static:
   enabled: false
 common:
   efs-provisioner:
-    enabled: true
+    enabled: false
     provisioner:
       efsFileSystemId: fs-49a5104c
       awsRegion: us-west-2
@@ -60,7 +55,7 @@ opensync-gw-cloud:
   persistence:
     enabled: false
   filestore:
-    url: "https://wlan-filestore.demo.lab.wlan.tip.build"
+    url: "https://wlan-filestore.testcluster.lab.wlan.tip.build"
 opensync-mqtt-broker:
   enabled: true
   replicaCount: 1
@@ -69,15 +64,22 @@ opensync-mqtt-broker:
     storageClass: "gp2"
 wlan-cloud-graphql-gw:
   enabled: true
+  ingress:
+    enabled: true
+    hosts:
+    - host: wlan-graphql.testcluster.lab.wlan.tip.build    
+      paths: [
+        /
+        ]
   env:
-    portalsvc: wlan-portal-svc.demo.lab.wlan.tip.build
+    portalsvc: wlan-portal-svc.testcluster.lab.wlan.tip.build
 wlan-cloud-static-portal:
   enabled: true
   env:
-    graphql: https://wlan-graphql.demo.lab.wlan.tip.build
+    graphql: https://wlan-graphql.testcluster.lab.wlan.tip.build
   ingress:
     hosts:
-      - host: wlan-ui.demo.lab.wlan.tip.build
+      - host: wlan-ui.testcluster.lab.wlan.tip.build
         paths: [
            /
           ]
@@ -85,8 +87,11 @@ wlan-portal-service:
   enabled: true
   persistence:
     enabled: true
-    storageClass: aws-efs
+    storageClass: gp2
+    accessMode: ReadWriteOnce
     filestoreSize: 10Gi
+  tsp:
+    host: wlan-portal-service.testcluster.lab.wlan.tip.build
 wlan-prov-service:
   enabled: true
   creds:
@@ -122,13 +127,24 @@ wlan-port-forwarding-gateway-service:
   creds:
     websocketSessionTokenEncKey: MyToKeN0MyToKeN1
   externallyVisible:
-    host: api.wlan.demo.lab.wlan.tip.build
+    host: api.wlan.testcluster.lab.wlan.tip.build
     port: 30401
 nginx-ingress-controller:
   enabled: true
   controller:
+    nginxDebug: true
+    service:
+      type: LoadBalancer
+      annotations:
+        service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-1:289708231103:certificate/eeab0cc5-f6d1-4bf2-a125-9dbf10daed42
+        service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+        service.beta.kubernetes.io/aws-load-balancer-type: elb
+        service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
+      httpsPort:
+        targetPort: 80
     config:
-      externalStatusAddress: "api.wlan.demo.lab.wlan.tip.build"
+      map-hash-bucket-size: "64"
+  #     externalStatusAddress: "api.wlan.testcluster.lab.wlan.tip.build"
 zookeeper:
   enabled: true
   replicaCount: 1
@@ -141,6 +157,10 @@ kafka:
   persistence:
     enabled: true
     storageClass: "gp2"
+  creds:
+    sslKeystorePassword: mypassword
+    sslTruststorePassword: mypassword
+    sslKeyPassword: mypassword
 cassandra:
   enabled: true
   config:
@@ -156,6 +176,9 @@ cassandra:
     limits:
       cpu: 1000m
       memory: 4Gi
+  creds:
+    sslKeystorePassword: mypassword
+    sslTruststorePassword: mypassword
 postgresql:
   enabled: true
   postgresqlPassword: postgres
