@@ -143,8 +143,7 @@ nginx-ingress-controller:
       httpsPort:
         targetPort: 80
     config:
-      map-hash-bucket-size: "64"
-  #     externalStatusAddress: "api.wlan.testcluster.lab.wlan.tip.build"
+      externalStatusAddress: "api.wlan.testcluster.lab.wlan.tip.build"
 zookeeper:
   enabled: true
   replicaCount: 1
@@ -172,7 +171,7 @@ cassandra:
   resources:
     requests:
       cpu: 500m
-      memory: 2Gi
+      memory: 4Gi
     limits:
       cpu: 1000m
       memory: 4Gi
