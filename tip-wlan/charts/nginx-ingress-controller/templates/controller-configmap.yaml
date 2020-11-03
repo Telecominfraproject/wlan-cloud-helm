@@ -8,4 +8,3 @@ metadata:
 data:
     external-status-address: {{ .Values.controller.config.externalStatusAddress }}
     client-max-body-size: {{ .Values.controller.config.clientMaxBodySize }}
-    map-hash-bucket-size: "64"
