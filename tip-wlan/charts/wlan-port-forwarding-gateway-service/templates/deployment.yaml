@@ -1,4 +1,3 @@
-{{- $cloudeployment := .Values.global.isCloudDeployment -}}
 {{- $opensyncgw := include "opensyncgw.service" . -}}
 apiVersion: apps/v1
 kind: Deployment
@@ -30,11 +29,6 @@ spec:
           - sh
           - -c
           - |
-            if [ {{ $cloudeployment }} = false ]
-            then          
-              echo "151.101.112.249 dl-cdn.alpinelinux.org" >> /etc/hosts
-              echo "Added name-resolution for local deployments"
-            fi
             apk add curl
             url=https://{{ $opensyncgw }}/ping
             counter=0

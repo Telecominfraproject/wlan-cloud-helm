@@ -4,7 +4,6 @@
 {{- $mqtt := include "mqtt.service" . -}}
 {{- $ns := include "common.namespace" . -}}
 {{- $file_store_path := include "filestore.dir.name" . -}}
-{{- $cloudeployment := .Values.global.isCloudDeployment -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -73,11 +72,6 @@ spec:
           - sh
           - -c
           - |
-            if [ {{ $cloudeployment }} = false ]
-            then            
-              echo "151.101.112.249 dl-cdn.alpinelinux.org" >> /etc/hosts
-              echo "Added name-resolution for local deployments"
-            fi
             apk add curl
             url=https://{{ $icc }}/ping
             counter=0
@@ -105,11 +99,6 @@ spec:
           - sh
           - -c
           - |
-            if [ {{ $cloudeployment }} = false ]
-            then          
-              echo "151.101.112.249 dl-cdn.alpinelinux.org" >> /etc/hosts
-              echo "Added name-resolution for local deployments"
-            fi
             apk add curl
             url=https://{{ $prov }}/ping
             counter=0
@@ -136,11 +125,6 @@ spec:
           - sh
           - -c
           - |
-            if [ {{ $cloudeployment }} = false ]
-            then          
-              echo "151.101.112.249 dl-cdn.alpinelinux.org" >> /etc/hosts
-              echo "Added name-resolution for local deployments"
-            fi
             apk add curl
             url=https://{{ $ssc }}/ping
             counter=0
