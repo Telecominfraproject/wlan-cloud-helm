@@ -51,12 +51,16 @@ opensync-gw-cloud:
     enabled: true
   filestore:
     url: "https://wlan-filestore.wlan.local"
+  service:
+    type: LoadBalancer
+    annotations:
+      metallb.universe.tf/allow-shared-ip: 192.168.0.11
 opensync-mqtt-broker:
   enabled: true
   replicaCount: 1
   persistence:
     enabled: true
-helm upgrade --install tip-wlan tip-wlan -f tip-wlan/resources/environments/dev-local.yaml -n defaulthelm upgrade --install tip-wlan tip-wlan -f tip-wlan/resources/environments/dev-local.yaml -n default    storageClass: microk8s-hostpath
+  storageClass: microk8s-hostpath
   service:
     type: LoadBalancer
     annotations:
