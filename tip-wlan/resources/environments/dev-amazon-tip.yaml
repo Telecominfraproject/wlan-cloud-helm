@@ -64,6 +64,11 @@ opensync-mqtt-broker:
 wlan-cloud-graphql-gw:
   enabled: true
   ingress:
+    annotations:
+      kubernetes.io/ingress.class: alb
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/group.name: ui
+      alb.ingress.kubernetes.io/group.order: "2"
     enabled: true
     hosts:
     - host: wlan-graphql.testcluster.lab.wlan.tip.build    
@@ -76,7 +81,14 @@ wlan-cloud-static-portal:
   enabled: true
   env:
     graphql: https://wlan-graphql.testcluster.lab.wlan.tip.build
+  service:
+    type: NodePort
   ingress:
+    annotations:
+      kubernetes.io/ingress.class: alb
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/group.name: ui
+      alb.ingress.kubernetes.io/group.order: "1"
     hosts:
       - host: wlan-ui.testcluster.lab.wlan.tip.build
         paths: [
