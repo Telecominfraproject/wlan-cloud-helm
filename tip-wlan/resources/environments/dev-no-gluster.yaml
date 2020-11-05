@@ -26,9 +26,6 @@ global:
   # flag to enable debugging - application support required
   debugEnabled: true
 
-  # Is the Cluster deployed in Cloud
-  isCloudDeployment: false
-
 # Annotations for namespace
 annotations: {
     "helm.sh/resource-policy": keep

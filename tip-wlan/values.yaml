@@ -34,9 +34,6 @@ global:
   # SSC Service in a single docker image 
   integratedDeployment: false
 
-  # Is the Cluster deployed in Cloud
-  isCloudDeployment: true
-
   testingEnabled: false
 
   testingTimestamp: 
