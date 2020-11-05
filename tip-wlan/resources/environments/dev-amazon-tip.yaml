@@ -68,7 +68,6 @@ wlan-cloud-graphql-gw:
       kubernetes.io/ingress.class: alb
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/group.name: ui
-      alb.ingress.kubernetes.io/group.order: "2"
       alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:289708231103:certificate/eeab0cc5-f6d1-4bf2-a125-9dbf10daed42"
       alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     enabled: true
@@ -90,7 +89,6 @@ wlan-cloud-static-portal:
       kubernetes.io/ingress.class: alb
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/group.name: ui
-      alb.ingress.kubernetes.io/group.order: "1"
       alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:289708231103:certificate/eeab0cc5-f6d1-4bf2-a125-9dbf10daed42"
       alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     hosts:
@@ -107,6 +105,20 @@ wlan-portal-service:
     filestoreSize: 10Gi
   tsp:
     host: wlan-portal-service.testcluster.lab.wlan.tip.build
+  ingress:
+    enabled: true
+    tls: []
+    annotations:
+      kubernetes.io/ingress.class: alb
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/group.name: ui
+      alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:289708231103:certificate/eeab0cc5-f6d1-4bf2-a125-9dbf10daed42"
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    hosts:
+      - host: wlan-portal-service.testcluster.lab.wlan.tip.build
+        paths: [
+           /
+          ]
 wlan-prov-service:
   enabled: true
   creds:
