@@ -47,6 +47,9 @@ common:
       efsDnsName: fs-49a5104c.efs.us-west-2.amazonaws.com
       storageClass: aws-efs  
 opensync-gw-cloud:
+  service:
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-type: "nlb-ip"
   enabled: true
   externalhostaddress:
     ovsdb: opensync-controller.testcluster.lab.wlan.tip.build
@@ -56,6 +59,9 @@ opensync-gw-cloud:
   filestore:
     url: "https://wlan-filestore.testcluster.lab.wlan.tip.build"
 opensync-mqtt-broker:
+  service:
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-type: "nlb-ip"
   enabled: true
   replicaCount: 1
   persistence:
