@@ -11,6 +11,16 @@
 # These overrides will affect all helm charts (ie. applications)
 # that are listed below and are 'enabled'.
 #################################################################
+shared:
+  service:
+    srv-https-annotations: &srv-https-annotations
+      kubernetes.io/ingress.class: alb
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/group.name: tip-wlan
+      alb.ingress.kubernetes.io/certificate-arn: ""
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+      alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_302"}}'
+
 global:
   # Change to an unused port prefix range to prevent port conflicts
   # with other instances running within the same k8s cluster
@@ -71,13 +81,7 @@ opensync-mqtt-broker:
 wlan-cloud-graphql-gw:
   enabled: true
   ingress:
-    annotations:
-      kubernetes.io/ingress.class: alb
-      alb.ingress.kubernetes.io/scheme: internet-facing
-      alb.ingress.kubernetes.io/group.name: ui
-      alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:289708231103:certificate/eeab0cc5-f6d1-4bf2-a125-9dbf10daed42"
-      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
-      alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_302"}}'
+    annotations: *srv-https-annotations
     enabled: true
     alb_https_redirect: true
     hosts:
@@ -94,13 +98,7 @@ wlan-cloud-static-portal:
   service:
     type: NodePort
   ingress:
-    annotations:
-      kubernetes.io/ingress.class: alb
-      alb.ingress.kubernetes.io/scheme: internet-facing
-      alb.ingress.kubernetes.io/group.name: ui
-      alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:289708231103:certificate/eeab0cc5-f6d1-4bf2-a125-9dbf10daed42"
-      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
-      alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_302"}}'
+    annotations: *srv-https-annotations
     alb_https_redirect: true
     hosts:
       - host: wlan-ui.testcluster.lab.wlan.tip.build
@@ -120,13 +118,7 @@ wlan-portal-service:
     enabled: true
     alb_https_redirect: true
     tls: []
-    annotations:
-      kubernetes.io/ingress.class: alb
-      alb.ingress.kubernetes.io/scheme: internet-facing
-      alb.ingress.kubernetes.io/group.name: ui
-      alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:289708231103:certificate/eeab0cc5-f6d1-4bf2-a125-9dbf10daed42"
-      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
-      alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_302"}}'
+    annotations: *srv-https-annotations
     hosts:
       - host: wlan-portal-service.testcluster.lab.wlan.tip.build
         paths: [
