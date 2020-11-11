@@ -74,7 +74,8 @@ service:
   nodePort2: 52
   port3: 5006
   name3: debug
-  nodePort3: 15  
+  nodePort3: 15
+  nodePort_static: false
 
 ingress:
   enabled: false
