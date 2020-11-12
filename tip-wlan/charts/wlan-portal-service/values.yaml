@@ -75,7 +75,7 @@ service:
   port3: 5006
   name3: debug
   nodePort3: 15
-  nodePort_static: false
+  nodePort_static: true
 
 ingress:
   enabled: false
