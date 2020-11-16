@@ -206,6 +206,10 @@ spec:
               value: {{ .Values.ethernetType.wanType }}
             - name: DEFAULT_WAN_NAME
               value: {{ .Values.ethernetType.wanName }}
+            - name: MQTT_BROKER_EXTERNAL_PORT
+              value: "{{ .Values.externalhostports.mqtt }}"
+            - name: OVSDB_EXTERNAL_PORT
+              value: "{{ .Values.externalhostports.ovsdb }}"
           volumeMounts:
           - mountPath: /opt/tip-wlan/certs/client_keystore.jks
             name: certificates

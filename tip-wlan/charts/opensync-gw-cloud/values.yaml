@@ -121,6 +121,13 @@ externalhostaddress:
   ovsdb: opensync-gw-cloud
   mqtt: opensync-mqtt-broker
 
+# These are the ports for the externalhostaddress
+# the default values below would be used if not overriden
+externalhostports:
+  ovsdb: 6640
+  mqtt: 1883
+
+
 ethernetType:
   lanName: "lan"
   lanType: "bridge"
