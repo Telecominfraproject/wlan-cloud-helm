@@ -155,6 +155,10 @@ wlan-prov-service:
     schema_repo:
       username: tip-read
       password: tip-read
+    postgres:
+      singleDataSourceUsername: tip_user
+      singleDataSourcePassword: tip_password
+      singleDataSourceSslKeyPassword: mypassword
 wlan-ssc-service:
   enabled: true
   creds:
@@ -207,10 +211,10 @@ cassandra:
   resources:
     requests:
       cpu: 500m
-      memory: 4Gi
+      memory: 3800Mi
     limits:
       cpu: 1000m
-      memory: 4Gi
+      memory: 3800Mi
   creds:
     sslKeystorePassword: mypassword
     sslTruststorePassword: mypassword
