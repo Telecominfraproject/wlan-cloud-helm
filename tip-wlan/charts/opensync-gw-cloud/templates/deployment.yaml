@@ -176,7 +176,9 @@ spec:
           env:
             {{- include "common.env" . | nindent 12 }}
             - name: OVSDB_MANAGER
-              value: {{ .Values.externalhostaddress.ovsdb }}
+              value: {{ .Values.externalhost.address.ovsdb }}
+            - name: OVSDB_EXTERNAL_PORT
+              value: "{{ .Values.externalhost.ports.ovsdb }}"
             - name: OVSDB_MANAGER_IP
               valueFrom:
                 fieldRef:
@@ -184,7 +186,9 @@ spec:
             - name: MQTT_SERVER_INTERNAL
               value: {{ .Release.Name }}-{{ .Values.mqtt.url }}
             - name: MQTT_SERVER_EXTERNAL
-              value: {{ .Values.externalhostaddress.mqtt }}
+              value: {{ .Values.externalhost.address.mqtt }}
+            - name: MQTT_BROKER_EXTERNAL_PORT
+              value: "{{ .Values.externalhost.ports.mqtt }}"
             {{- if .Values.global.integratedDeployment }}
             - name: INTEGRATED_SERVER
               value: {{ .Release.Name }}-{{ .Values.integratedcloudcomponent.url }}
