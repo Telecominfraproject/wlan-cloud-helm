@@ -50,11 +50,11 @@ opensync-gw-static:
   enabled: false
 common:
   efs-provisioner:
-    enabled: false
+    enabled: true
     provisioner:
       efsFileSystemId: fs-49a5104c
       awsRegion: us-west-2
-      efsDnsName: fs-49a5104c.efs.us-west-2.amazonaws.com
+      efsDnsName: fs-71d97384.efs.us-east-1.amazonaws.com
       storageClass: aws-efs
 opensync-gw-cloud:
   service:
@@ -122,8 +122,7 @@ wlan-portal-service:
   enabled: true
   persistence:
     enabled: true
-    storageClass: gp2
-    accessMode: ReadWriteOnce
+    storageClass: aws-efs
     filestoreSize: 10Gi
   tsp:
     host: wlan-portal-svc.testcluster.lab.wlan.tip.build
