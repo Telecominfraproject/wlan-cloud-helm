@@ -11,6 +11,16 @@
 # These overrides will affect all helm charts (ie. applications)
 # that are listed below and are 'enabled'.
 #################################################################
+shared:
+  service:
+    srv-https-annotations: &srv-https-annotations
+      kubernetes.io/ingress.class: alb
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/group.name: wlan-testcluster
+      alb.ingress.kubernetes.io/certificate-arn: ""
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+      alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_302"}}'
+
 global:
   # Change to an unused port prefix range to prevent port conflicts
   # with other instances running within the same k8s cluster
@@ -19,22 +29,17 @@ global:
   nsPrefix: tip
   # image pull policy
   pullPolicy: Always
-
   repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
   # override default mount path root directory
   # referenced by persistent volumes and log files
   persistence:
-
   # flag to enable debugging - application support required
   debugEnabled: true
-
 # Annotations for namespace
 annotations: {
     "helm.sh/resource-policy": keep
 }
-
 #createReleaseNamespace: false
-
 # Docker registry secret
 dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
 #################################################################
@@ -49,18 +54,32 @@ common:
     provisioner:
       efsFileSystemId: fs-49a5104c
       awsRegion: us-west-2
-      efsDnsName: fs-49a5104c.efs.us-west-2.amazonaws.com
-      storageClass: aws-efs  
+      efsDnsName: fs-71d97384.efs.us-east-1.amazonaws.com
+      storageClass: aws-efs
 opensync-gw-cloud:
+  service:
+    type: LoadBalancer
+    annotations:
+      external-dns.alpha.kubernetes.io/hostname: wlan-filestore.testcluster.lab.wlan.tip.build,opensync-controller.testcluster.lab.wlan.tip.build,opensync-redirector.testcluster.lab.wlan.tip.build
+      service.beta.kubernetes.io/aws-load-balancer-access-log-enabled: "true"
+      service.beta.kubernetes.io/aws-load-balancer-access-log-s3-bucket-name: "alb-logs-tip-wlan-testcluster-xqgkeyjvjk"
+      service.beta.kubernetes.io/aws-load-balancer-access-log-s3-bucket-prefix: "opensync-gw-cloud"
   enabled: true
   externalhostaddress:
-    ovsdb: opensync-controller.demo.lab.wlan.tip.build
-    mqtt: opensync-mqtt-broker.demo.lab.wlan.tip.build
+    ovsdb: opensync-controller.testcluster.lab.wlan.tip.build
+    mqtt: opensync-mqtt-broker.testcluster.lab.wlan.tip.build
   persistence:
     enabled: false
   filestore:
-    url: "https://wlan-filestore.demo.lab.wlan.tip.build"
+    url: "https://wlan-filestore.testcluster.lab.wlan.tip.build"
 opensync-mqtt-broker:
+  service:
+    type: LoadBalancer
+    annotations:
+      external-dns.alpha.kubernetes.io/hostname: "opensync-mqtt-broker.testcluster.lab.wlan.tip.build"
+      service.beta.kubernetes.io/aws-load-balancer-access-log-enabled: "true"
+      service.beta.kubernetes.io/aws-load-balancer-access-log-s3-bucket-name: "alb-logs-tip-wlan-testcluster-xqgkeyjvjk"
+      service.beta.kubernetes.io/aws-load-balancer-access-log-s3-bucket-prefix: "opensync-mqtt-broker"
   enabled: true
   replicaCount: 1
   persistence:
@@ -68,24 +87,60 @@ opensync-mqtt-broker:
     storageClass: "gp2"
 wlan-cloud-graphql-gw:
   enabled: true
+  ingress:
+    annotations:
+      <<: *srv-https-annotations
+    enabled: true
+    alb_https_redirect: true
+    hosts:
+    - host: wlan-graphql.testcluster.lab.wlan.tip.build    
+      paths: [
+        /*
+        ]
   env:
-    portalsvc: wlan-portal-svc.demo.lab.wlan.tip.build
+    portalsvc: wlan-portal-svc.testcluster.lab.wlan.tip.build
 wlan-cloud-static-portal:
   enabled: true
   env:
-    graphql: https://wlan-graphql.demo.lab.wlan.tip.build
+    graphql: https://wlan-graphql.testcluster.lab.wlan.tip.build
+  service:
+    type: NodePort
   ingress:
+    annotations:
+      <<: *srv-https-annotations
+      alb.ingress.kubernetes.io/load-balancer-attributes: access_logs.s3.enabled=true,access_logs.s3.bucket=alb-logs-tip-wlan-testcluster-xqgkeyjvjk,access_logs.s3.prefix=wlan-testcluster
+    alb_https_redirect: true
     hosts:
-      - host: wlan-ui.demo.lab.wlan.tip.build
+      - host: wlan-ui.testcluster.lab.wlan.tip.build
         paths: [
-           /
+           /*
           ]
 wlan-portal-service:
+  service:
+    type: NodePort
+    nodePort_static: false
   enabled: true
   persistence:
     enabled: true
     storageClass: aws-efs
     filestoreSize: 10Gi
+  tsp:
+    host: wlan-portal-svc.testcluster.lab.wlan.tip.build
+  ingress:
+    enabled: true
+    alb_https_redirect: true
+    tls: []
+    annotations:
+      <<: *srv-https-annotations
+      alb.ingress.kubernetes.io/backend-protocol: HTTPS
+      alb.ingress.kubernetes.io/healthcheck-protocol: HTTPS
+      alb.ingress.kubernetes.io/healthcheck-port: traffic-port
+      alb.ingress.kubernetes.io/healthcheck-path: /ping
+    hosts:
+      - host: wlan-portal-svc.testcluster.lab.wlan.tip.build
+        paths: [
+           /*
+          ]
 wlan-prov-service:
   enabled: true
   creds:
@@ -98,6 +153,10 @@ wlan-prov-service:
     schema_repo:
       username: tip-read
       password: tip-read
+    postgres:
+      singleDataSourceUsername: tip_user
+      singleDataSourcePassword: tip_password
+      singleDataSourceSslKeyPassword: mypassword
 wlan-ssc-service:
   enabled: true
   creds:
@@ -121,13 +180,8 @@ wlan-port-forwarding-gateway-service:
   creds:
     websocketSessionTokenEncKey: MyToKeN0MyToKeN1
   externallyVisible:
-    host: api.wlan.demo.lab.wlan.tip.build
+    host: api.wlan.testcluster.lab.wlan.tip.build
     port: 30401
-nginx-ingress-controller:
-  enabled: true
-  controller:
-    config:
-      externalStatusAddress: "api.wlan.demo.lab.wlan.tip.build"
 zookeeper:
   enabled: true
   replicaCount: 1
@@ -140,6 +194,10 @@ kafka:
   persistence:
     enabled: true
     storageClass: "gp2"
+  creds:
+    sslKeystorePassword: mypassword
+    sslTruststorePassword: mypassword
+    sslKeyPassword: mypassword
 cassandra:
   enabled: true
   config:
@@ -151,10 +209,13 @@ cassandra:
   resources:
     requests:
       cpu: 500m
-      memory: 2Gi
+      memory: 3800Mi
     limits:
       cpu: 1000m
-      memory: 4Gi
+      memory: 3800Mi
+  creds:
+    sslKeystorePassword: mypassword
+    sslTruststorePassword: mypassword
 postgresql:
   enabled: true
   postgresqlPassword: postgres
