@@ -3,6 +3,8 @@
 *.pkcs12
 *.p12
 *.DS_Store
+
+# local development
 *.local_dev
 stern*
 tip-wlan/resources/certs
