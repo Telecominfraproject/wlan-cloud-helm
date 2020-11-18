@@ -113,19 +113,20 @@ portal:
       name: file-store-data
       ordinal: 0
 
- # These are list of external HostAddresses for ovsdb, mqtt. 
- # This is important for ovsdb and mqtt since 
- # that's what AP sees. Please make sure to override
- # them in dev override file for your respective environments.
-externalhostaddress:
-  ovsdb: opensync-gw-cloud
-  mqtt: opensync-mqtt-broker
 
-# These are the ports for the externalhostaddress
+# These are the address and ports for the externalhost
+# This is important for ovsdb and mqtt since 
+# that's what AP sees. Please make sure to override
+# them in dev override file for your respective environments.
 # the default values below would be used if not overriden
-externalhostports:
-  ovsdb: 6640
-  mqtt: 1883
+externalhost:
+  address:
+    ovsdb: opensync-gw-cloud
+    mqtt: opensync-mqtt-broker
+  ports:
+    ovsdb: 6640
+    mqtt: 1883
+
 
 
 ethernetType:
