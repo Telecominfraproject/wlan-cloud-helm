@@ -48,9 +48,10 @@ opensync-gw-static:
   enabled: false
 opensync-gw-cloud:
   enabled: true
-  externalhostaddress:
-    ovsdb: opensync-controller.tip.lab.connectus.ai
-    mqtt: opensync-mqtt-broker.tip.lab.connectus.ai
+  externalhost:
+    address:
+      ovsdb: opensync-controller.tip.lab.connectus.ai
+      mqtt: opensync-mqtt-broker.tip.lab.connectus.ai
   env:
     protocol: https
     ssc:

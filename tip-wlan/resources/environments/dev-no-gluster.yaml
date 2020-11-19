@@ -43,9 +43,10 @@ opensync-gw-static:
   enabled: false
 opensync-gw-cloud:
   enabled: true
-  externalhostaddress:
-    ovsdb: tip-wlan-opensync-gw-cloud
-    mqtt: tip-wlan-opensync-mqtt-broker
+  externalhost:
+    address:
+      ovsdb: opensync-controller.wlan.local
+      mqtt: opensync-mqtt-broker.wlan.local
   persistence:
     enabled: true
   filestore:
