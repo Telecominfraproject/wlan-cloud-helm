@@ -65,9 +65,10 @@ opensync-gw-cloud:
       service.beta.kubernetes.io/aws-load-balancer-access-log-s3-bucket-name: "alb-logs-tip-wlan-testcluster-xqgkeyjvjk"
       service.beta.kubernetes.io/aws-load-balancer-access-log-s3-bucket-prefix: "opensync-gw-cloud"
   enabled: true
-  externalhostaddress:
-    ovsdb: opensync-controller.testcluster.lab.wlan.tip.build
-    mqtt: opensync-mqtt-broker.testcluster.lab.wlan.tip.build
+  externalhost:
+    address:
+      ovsdb: opensync-controller.testcluster.lab.wlan.tip.build
+      mqtt: opensync-mqtt-broker.testcluster.lab.wlan.tip.build
   persistence:
     enabled: false
   filestore:
