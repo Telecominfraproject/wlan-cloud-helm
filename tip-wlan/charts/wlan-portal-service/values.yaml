@@ -74,12 +74,10 @@ service:
   nodePort2: 52
   port3: 5006
   name3: debug
-  nodePort3: 15
-  nodePort_static: true
+  nodePort3: 15  
 
 ingress:
   enabled: false
-  alb_https_redirect: false
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"

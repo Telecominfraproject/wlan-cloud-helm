@@ -54,7 +54,6 @@ service:
 
 ingress:
   enabled: true
-  alb_https_redirect: false
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
