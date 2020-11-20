@@ -55,8 +55,8 @@ opensync-gw-cloud:
   enabled: true
   externalhost:
     address:
-      ovsdb: opensync-controller.testcluster.lab.wlan.tip.build
-      mqtt: opensync-mqtt-broker.testcluster.lab.wlan.tip.build
+      ovsdb: opensync-controller.demo.lab.wlan.tip.build
+      mqtt: opensync-mqtt-broker.demo.lab.wlan.tip.build
   persistence:
     enabled: false
   filestore:
