@@ -23,10 +23,11 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
-        - name: {{ include "common.name" . }}-readiness
-          image: busybox:1.28
-          imagePullPolicy: {{ .Values.global.pullPolicy }}
-          command: ['sh', '-c', "until nslookup {{ $pg }}.{{ $ns }}.svc.cluster.local; do echo waiting for POSTGRES; sleep 2; done"]
+        - name: wait-for-services
+          image: opsfleet/depends-on
+          args:
+          - "-service={{ .Release.Name }}-postgresql"
+          - -check_interval=5
         - name: {{ include "common.name" . }}-create-db-schema
           env:
           - name: POSTGRESQL_PORT_NUMBER

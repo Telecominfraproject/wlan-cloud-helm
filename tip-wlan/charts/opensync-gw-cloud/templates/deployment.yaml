@@ -27,43 +27,13 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
-        - name: {{ include "common.name" . }}-mqtt-readiness
-          image: eclipse-mosquitto:latest
-          imagePullPolicy: {{ .Values.global.pullPolicy }}
-          command:
-          - sh
-          - -c
-          - |
-            mosquitto_pub -h {{ $mqtt }} -p 1883 --cafile /certs/cacert.pem --cert /certs/clientcert.pem --key /certs/clientkey.pem --insecure -t "/ap/test" -q 0 -m "CheckingMQTTAliveness"
-            status=$(echo $?)
-            echo mosquitto_pub response of the request = $status
-            counter=0
-            while [ $counter -lt 10 ] && [ $status -ne 0 ]
-            do
-              echo {{ $mqtt }} service isnt ready. Tried $counter times
-              sleep 2
-              counter=`expr $counter + 1`
-              mosquitto_pub -h {{ $mqtt }} -p 1883 --cafile /certs/cacert.pem --cert /certs/clientcert.pem --key /certs/clientkey.pem --insecure -t "/ap/test" -q 0 -m "CheckingMQTTAliveness"
-              status=$(echo $?)
-              echo mosquitto_pub response of the request = $status
-            done
-            if [ $status -eq 0 ]
-            then
-              echo {{ $mqtt }} service is ready!
-            else
-              echo {{ $mqtt }} service failed to respond after 20 secs
-              exit 1
-            fi
-          volumeMounts:
-          - mountPath: /certs/cacert.pem
-            name: certificates
-            subPath: cacert.pem
-          - mountPath: /certs/clientcert.pem
-            name: certificates
-            subPath: clientcert.pem
-          - mountPath: /certs/clientkey.pem
-            name: certificates
-            subPath: clientkey.pem
+        - name: wait-for-services
+          image: opsfleet/depends-on
+          args:
+          - "-service={{ .Release.Name }}-opensync-mqtt-broker"
+          - "-service={{ .Release.Name }}-wlan-prov-service"
+          - "-service={{ .Release.Name }}-wlan-ssc-service"
+          - -check_interval=5
       {{- if .Values.global.integratedDeployment }}
         - name: {{ include "common.name" . }}-readiness-int-cloud
           image: alpine
@@ -90,60 +60,7 @@ spec:
             else
               echo ${url} service failed to respond after 50 secs
               exit 1
-            fi 
-      {{- else }}
-        - name: {{ include "common.name" . }}-readiness-prov
-          image: alpine
-          imagePullPolicy: {{ .Values.global.pullPolicy }}
-          command:
-          - sh
-          - -c
-          - |
-            apk add curl
-            url=https://{{ $prov }}/ping
-            counter=0
-            status=$(curl --insecure --head --location --connect-timeout 5 --write-out %{http_code} --silent --output /dev/null ${url});
-            while [ $counter -lt 10 ] && [ $status -ne 200 ] 
-            do
-              echo ${url} service isnt ready. Tried $counter times
-              sleep 5
-              counter=`expr $counter + 1`
-              status=$(curl --insecure --head --location --connect-timeout 5 --write-out %{http_code} --silent --output /dev/null ${url});
-              echo Http Response code of ping request = $status
-            done
-            if [ $status -eq 200 ]
-            then
-              echo ${url} service is ready!
-            else
-              echo ${url} service failed to respond after 50 secs
-              exit 1
             fi
-        - name: {{ include "common.name" . }}-readiness-ssc
-          image: alpine
-          imagePullPolicy: {{ .Values.global.pullPolicy }}
-          command:
-          - sh
-          - -c
-          - |
-            apk add curl
-            url=https://{{ $ssc }}/ping
-            counter=0
-            status=$(curl --insecure --head --location --connect-timeout 5 --write-out %{http_code} --silent --output /dev/null ${url});
-            while [ $counter -lt 10 ] && [ $status -ne 200 ] 
-            do
-              echo ${url} service isnt ready. Tried $counter times
-              sleep 5
-              counter=`expr $counter + 1`
-              status=$(curl --insecure --head --location --connect-timeout 5 --write-out %{http_code} --silent --output /dev/null ${url});
-              echo Http Response code of ping request = $status
-            done
-            if [ $status -eq 200 ]
-            then
-              echo ${url} service is ready!
-            else
-              echo ${url} service failed to respond after 50 secs
-              exit 1
-            fi        
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
