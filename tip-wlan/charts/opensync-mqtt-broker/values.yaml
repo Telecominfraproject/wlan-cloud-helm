@@ -61,7 +61,6 @@ service:
   port2: 9001
   name2: debug
   nodePort2: 32
-  annotations: {}
 
 ingress:
   enabled: false
