@@ -1,0 +1,226 @@
+# This is a development override file.
+# It overrides the default Tip-Wlan parent chart behaviour
+#
+# It can be tweaked, based on the need to support different
+# dev environments.
+# This file expects to have a GlusterFS storage solution running
+# before "helm install" is performed.
+#################################################################
+# Global configuration overrides.
+#
+# These overrides will affect all helm charts (ie. applications)
+# that are listed below and are 'enabled'.
+#################################################################
+global:
+  # Change to an unused port prefix range to prevent port conflicts
+  # with other instances running within the same k8s cluster
+  nodePortPrefix: 302
+  nsPrefix: tip
+  # image pull policy
+  pullPolicy: Always
+
+  repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
+  # override default mount path root directory
+  # referenced by persistent volumes and log files
+  persistence:
+
+  # flag to enable debugging - application support required
+  debugEnabled: true
+
+# Annotations for namespace
+annotations: {
+    "helm.sh/resource-policy": keep
+}
+
+# createReleaseNamespace: false
+
+# Docker registry secret
+dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
+#################################################################
+# Enable/disable and configure helm charts (ie. applications)
+# to customize the TIP-WLAN deployment.
+#################################################################
+opensync-gw-static:
+  enabled: false
+opensync-gw-cloud:
+  enabled: true
+  externalhost:
+    address:
+      ovsdb: opensync-controller.wlan.local
+      mqtt: opensync-mqtt-broker.wlan.local
+  persistence:
+    enabled: true
+  filestore:
+    url: "https://wlan-filestore.wlan.local"
+opensync-mqtt-broker:
+  enabled: true
+  replicaCount: 1
+  persistence:
+    enabled: true
+    storageClass: standard
+wlan-cloud-graphql-gw:
+  enabled: true
+  env:
+    portalsvc: tip-wlan-wlan-portal-service:9051
+  ingress:
+    hosts:
+      - host: wlan-ui-graphql.wlan.local
+        paths: [
+           /
+          ]
+    tls:
+    - hosts:
+      - wlan-ui-graphql.wlan.local
+      secretName: nginx-ingress-controller-default-server-secret
+wlan-cloud-static-portal:
+  enabled: true
+  env:
+    graphql: https://wlan-ui-graphql.wlan.local
+  service:
+    type: NodePort
+  ingress:
+    hosts:
+      - host: wlan-ui.wlan.local
+        paths: [
+           /
+          ]
+    tls:
+    - hosts:
+      - wlan-ui.wlan.local
+      secretName: nginx-ingress-controller-default-server-secret
+wlan-portal-service:
+  enabled: true
+  persistence:
+    enabled: true
+    storageClass: standard
+    filestoreSize: 1Gi
+wlan-prov-service:
+  enabled: true
+  creds:
+    enabled: true
+    db:
+      postgresUser:
+        password: postgres
+      tipUser:
+        password: tip_password
+    schema_repo:
+      username: tip-read
+      password: tip-read
+    postgres:
+      singleDataSourceUsername: tip_user
+      singleDataSourcePassword: tip_password
+      singleDataSourceSslKeyPassword: mypassword
+wlan-ssc-service:
+  enabled: true
+  creds:
+    sslKeyPassword: mypassword
+    sslKeystorePassword: mypassword
+    sslTruststorePassword: mypassword
+    cassandra:
+      tip_user: tip_user
+      tip_password: tip_password
+    schema_repo:
+      username: tip-read
+      password: tip-read
+wlan-spc-service:
+  enabled: true
+  creds:
+    sslKeyPassword: mypassword
+    sslKeystorePassword: mypassword
+    sslTruststorePassword: mypassword
+nginx-ingress-controller:
+  enabled: true
+  controller:
+    service:
+      type: LoadBalancer
+    config:
+      externalStatusAddress: "api.wlan.local"
+    defaultTLS:
+      cert: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZXakNDQTBLZ0F3SUJBZ0lVUU5hUC9zcHZSSHRCVEFLd1lSTndieFJmRkFzd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0hURWJNQmtHQTFVRUF3d1NkMnhoYmkxMWFTNTNiR0Z1TG14dlkyRnNNQjRYRFRJd01EZ3lOekl3TWpZMQpObG9YRFRNd01EZ3lOVEl3TWpZMU5sb3dIVEViTUJrR0ExVUVBd3dTZDJ4aGJpMTFhUzUzYkdGdUxteHZZMkZzCk1JSUNJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBZzhBTUlJQ0NnS0NBZ0VBd1JhZ2lEV3pDTllCdFd3QmNLK2YKVGtrUW1NdCtRQWdUallyMEtTOERQSkNKZjZLa1BmWkhDdTN3NEx2cnh6WTlObWllaDJYVTgzNGFtZEp4SXVDdwo2SWJObzZ6c2tqc3lmb084d0ZEbWxMVldMZWc1SDlHOWRvZW0rV1RlS1BhRUhpM29xdXpOZ3Q2d0xzM212dk9BClR2aVRJb2M4OEVMams0ZFNSMlQ0ZGhoMHFLQ0NqK0hkWEJBNlYvOWJpcnUralYrL2t4RVF1TDJ6TTM5RHZWZDgKOWtzMzV6TVZVemUzNmxENElDT25sN2hnYVROQmk0NU85c2RMRDBZYVVtamlGd1FsdEpVZG1QS3BhQWRidmpVTwpuc3VwbkRZam0rVW0rOWFFcHFNNHRlMjNlZkM4TjhqMXVrZXh6SnJFMkdlRi9XQi9ZMUxGSUcyd2pxVm5zUGNzCm5GRjRZZDlFQlJSbmUxRVplWEJ1M0ZFTEZ5NmxDT0hJMTQ2b0JjYy9JYjYxN3JkVEtYcXh0di8yTkw2L1RxRmsKbnMvRUVqdmU2a1FZemxCWndXSFdwWndRZmczbW82TmFvRlpwVGFnOThNeXU1clpvT29mVGN4WEg2cExtNVB4MQpPQXpnTG5hOU8rMkZtQTRGanJnSGNNWTFOSXp5blpMK0RIOGZpYnQxRi92MkYyTUErUjl2bzg0dlI1Uk9HTmRECnZhMkFwZXZrTGNqUWcvTHdzWHYwZ1RvcFEvWEl6ZWpoNmJkVWtPcktTd0p6VDJDOS9lOUdRbjBncHBWOExCdUsKMXpRSG9ST0xuQTQxTUNGdlFMUUhvK1h0OEtHdytVYmFseTZoT3hCWkY1MUwvQmJxamtESDlBRUZhSkxwdGlFeQpxbjFFNXYrM3doZ0ZTNUlaVDhJVzV1VUNBd0VBQWFPQmtUQ0JqakFkQmdOVkhRNEVGZ1FVeTJiQVV5TlBYSFM5CjNWVFNEK3dvTjd0M3E4RXdId1lEVlIwakJCZ3dGb0FVeTJiQVV5TlBYSFM5M1ZUU0Qrd29ON3QzcThFd0R3WUQKVlIwVEFRSC9CQVV3QXdFQi96QTdCZ05WSFJFRU5EQXlnaHAzYkdGdUxYVnBMV2R5WVhCb2NXd3VkMnhoYmk1cwpiMk5oYklJT1lYQnBMbmRzWVc0dWJHOWpZV3lIQk1Db0FBRXdEUVlKS29aSWh2Y05BUUVMQlFBRGdnSUJBS0grCmJxSmVlMTFuMzRTWWdCRHZnb1o4bEpMUVJ3c0ZucUV4Y1NyL3BsWjdHVklHRkg1L1EyS3lvOVZ5RWlUUHdySXMKS3NFckMxZXZINnh0MVVSZk16cDA1elZRMExZTTUra3NhbVJEYWdBZzNNMWNtN29LT2Rtcy9kcXpQZTJnWmZHSgpwVmR0VlcxQ0hyTDBSTFRSOTNoN2tnU2lCbFNFSVlNb2VLZk41SDlBYXZKNEtyeXlnUXM2M2trR1E1TTllc0FwCnU2YkIzMDd6eWZ6Z1MzdG1Rc1UwMXJnSmZoRUhRL1krQWs5d0R1T2d2bWZ4MFRXZ0FPR2JLcTZUdThNS1lkZWoKSWU3clYxRzVVdjdLZmdvelZYNzZnMktkblRWQmZzcFNLbzN6eXJaa2NrekFwdlV1OUllZkhkVG9lNEpNRVUweQpmazdsRVUvZXh6Qnl5TnhwKzZoZHUvWklnM3hiMXlBMW9WWThORWQxckwxekFWaVBlMzUxU0VORUtlSnBSYW5DCmtDTDNSQUZrYnhRN0loYWNqb3g4YmVsUitnbW84Y3lGWnBqOVhhb1BsU0ZTY2R3ejU3M0NUMGg5N3Y3NkE3c3cKeUMrQ2lTcDg1Z1dFVjV2Z0JpdE5KN1I5b25qQmRzdUgybGdFdE1EM0pOT3M4Y0NTUmloWXhyaXdaU3FoVDdvLwp0Y0lsY0o4NFc1bTZYNnpISjNHbXR1S0czUVBOT21zMC9WVm9EVHA5cWRwTCtFazE3dUIyQTQxTnB4ejNVUytsCjZ5SytwZFFRajdBTHpLdVJmT3lnODBYYk53MnY0U25wSTVxYlhGQlJ1bTUyZjg2c1BlbUZxMUtjdU5XZTRFVkMKeERHM2VLbHUrZGxsVXRLeC9QTjZ5ZmxiVDV4Y0dnY2Rtcnd6UmFXUwotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+      key: LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUpRUUlCQURBTkJna3Foa2lHOXcwQkFRRUZBQVNDQ1Nzd2dna25BZ0VBQW9JQ0FRREJGcUNJTmJNSTFnRzEKYkFGd3I1OU9TUkNZeTM1QUNCT05pdlFwTHdNOGtJbC9vcVE5OWtjSzdmRGd1K3ZITmowMmFKNkhaZFR6ZmhxWgowbkVpNExEb2hzMmpyT3lTT3pKK2c3ekFVT2FVdFZZdDZEa2YwYjEyaDZiNVpONG85b1FlTGVpcTdNMkMzckF1CnplYSs4NEJPK0pNaWh6endRdU9UaDFKSFpQaDJHSFNvb0lLUDRkMWNFRHBYLzF1S3U3Nk5YNytURVJDNHZiTXoKZjBPOVYzejJTemZuTXhWVE43ZnFVUGdnSTZlWHVHQnBNMEdMams3Mngwc1BSaHBTYU9JWEJDVzBsUjJZOHFsbwpCMXUrTlE2ZXk2bWNOaU9iNVNiNzFvU21vemkxN2JkNThMdzN5UFc2UjdITW1zVFlaNFg5WUg5alVzVWdiYkNPCnBXZXc5eXljVVhoaDMwUUZGR2Q3VVJsNWNHN2NVUXNYTHFVSTRjalhqcWdGeHo4aHZyWHV0MU1wZXJHMi8vWTAKdnI5T29XU2V6OFFTTzk3cVJCak9VRm5CWWRhbG5CQitEZWFqbzFxZ1ZtbE5xRDN3eks3bXRtZzZoOU56RmNmcQprdWJrL0hVNERPQXVkcjA3N1lXWURnV091QWR3eGpVMGpQS2RrdjRNZngrSnUzVVgrL1lYWXdENUgyK2p6aTlICmxFNFkxME85cllDbDYrUXR5TkNEOHZDeGUvU0JPaWxEOWNqTjZPSHB0MVNRNnNwTEFuTlBZTDM5NzBaQ2ZTQ20KbFh3c0c0clhOQWVoRTR1Y0RqVXdJVzlBdEFlajVlM3dvYkQ1UnRxWExxRTdFRmtYblV2OEZ1cU9RTWYwQVFWbwprdW0ySVRLcWZVVG0vN2ZDR0FWTGtobFB3aGJtNVFJREFRQUJBb0lDQUMyR2hEc1pUaWtiTERQMlR6Q2VkOVVoCmJRUlpsbDdLaUxHcXZYNm9VdjhJcFNLdTJrS3h1blpkTzVvQk5NbzNnNTg4YzRSQkFrQ1d6dmJObzFjeDJ3UTQKSkd3ZTdYaGM5TDdYbUwxUFZjNWlJdnVYOFVBTFY3eUdwMXZONklPSC9BYVJsSFlZZHl3UURVSTcwZGZiMmJqRQo2d3dORHRVbk1Ea3NncjNLbExwamNiNEFla2dxWE9MRUFMMld1Nkt1T1hOankrdUU3b2hnVWN3bWlYWXZGb3VMCm1KYXVlS3l5U202NHdJZnpZQ1JwbUhHMVlCTGpic0xJb20zcmZYRkl3V1hqMkhBSGFIOFRWOVhyUmpwR2tEZm8KbFFqN3l0R0s2ZkllMWcva0ZBN3hDWDE2d1NYMS85bjM1WGYwVmMwZ08zdE9NVHJkM1JTVVNEaVp6eVR1WWxuZwpETEdmYXZjRS82QXJ5cTlWZ3hyUXdXbnZhd0hIcWxBWUtxVHpJYkRJS0Y3SjRYTE9FckFtRE50T1I2Lzc1WjJ3CnVPQlFYT0N3NFM1dWxWdzhIZUM0NGlFTmxJYU5lNDNWTkZUTGtRM3lCeW96VVlYWTN2eEJXMWpURFpFOTB5YTUKZzk4cmFiYWhIS0lockpGYzNXYTE0RWhicUE2TVVLSXRRTkk4K1N1Rk1KV3R4VW1iM1cxK2dHbXJvTmo1TU9kYQpzdjV5OThTYS93UUc4dGc0cmdNQ0xpQVNHL3hudDB3RURrNXFDVUUxRzRSdkdOeUYxU09zNk82c1BTOTg4Umd4CnJuamQvWWZoME5xVnhHcHFGNnhpQVgvZXkyU0NGUWNybEtmNnhGREF4YjI4RTdaNnRQSUZCTWxpQ1IrbzdYR3MKZDNvUWVuMThCalM1NjdtR2ZmNkJBb0lCQVFEanFFcHZqOVhJVVB3bk1RZitRY3R0R1pXZEp2bFZSa1BSMW9maApSVWI2UHdFRkEwdVQyM011ZmFvNGI4bWIrM2Vra1BkYTZmbWJqUGFUckQrbk5YNGxyRE5oYytvcVY4aFVEQnA0CmpVcEg3OXorTVNUZVVQclpnS3VMeEdqaDJiK0FWYVZjZTI2STVYUXVoUnR6ZHFYZDlIeSs4YXpYRTltbHlPQ00KMUpEK2VHZWxhaVJMbEZBbVRDNDNoNlV5T0Q5SmZOSW1oWDQ2WDJRRlFsbGc1cWxVdWQ4Ukx3eFViZTJoYzhTWQp4VnVvYVZSSUdBSmhqRkd3ZVhnRjdzc0tQNXBZMHRkTlNvSGsxeHRnUmVJTlllZFU1cmtpKzloZTN0cStqWUdJCmxVcVVzYzNzN3c4cUk1UXk5NGdmcUI5Lzd4K3BFdGEvak9leE4yL1pGOFJGSXVucEFvSUJBUURaSUpUaUUxKzkKc2xnQ0NGVllLR3Z5aE5odkppck94enlOUWU3YjIvZmxQNzVHd0pTTWpZZTdoTmhGK3JrZHRJcXF5dWxyeGF3YgpPbWliU0FCSG5kT20ycDRMdDhaK20vQXZaRUgzVklLdWkwY0xVbTlKRXNsWURVcFIrdG5BemloNzdrS2FlVzlnCk1wdlpiUzZGdXE2ZlBZQUJyK3dXeU1IazR0UnRNZ3duUFRtSzZQTW85b3FIUURTSVJjL3N0N2hBTUwwMDdtNlEKOTJkRXRqNTNtSTBURTRISVhtY3hZbjV5NGVJLy85aEFMb2xFa0ZHWDU0SmNMdWpDWWkwQ3RIU0xDcnNmQkJwZgpDS2NaMk5sWFNiYVREU1prZWhnQWFWTlM2OVp1K1o2eGFvNmZZMjVxSnNmeXlaUkNjSzJYY0FoUDV2QWNUbWhQClNKUFJZc1dSNXZ1ZEFvSUJBRmtRRXFiWWg1TkprNHdsazNIMS9ZYWVGcmtYY1QzYU1sZ2FiS2hGdVFIWHVpZGkKNWFOZm5BMFpIb25idWV6ckVTQnhra09mKzRYT1BQMEN5eGc0UmpTb3pLVVlld2k3dE9Ta280cDhCQTVtbVhkYwpkSWNBK1ZJMEUyaW5tenlZT21JVG41Q3h2VW1UTXNPc1VWUDNtK1pjYXAwczRTaDNYSk9PSmNNU3VmTEQyaENOCm1NdDBwM0tFSlNTV1RadDdBODlWSk1YclBibktiYy9jNkNpUHRMa3Z5a1BudXhRZ3VYR0xYK05BZXA1RkxyTFIKcWNUTjUzdDUyZW5BUlBDcWQxQytrM3BxWnF6SE5xK1FSMkppNWVTQ0t2V3p2eTlHVWg5d0xyZm5aL2tLSW56SgovWTNIdzRlNDdTa3RWYjF3S0Z1MXdndklMVEJZZHNwZ2tPbFhRbGtDZ2dFQUtKYVJuazFXMldRc1ZYenZUMEtICkkxZTRDZGNOcTRmTkJ1N3JVc2drNkFMcGM5cHVLblFPaW54RDNaa0gzOGl2SDB3OUpEdFlkK0tNU1hMRk1wNEwKUWFhZVlyeGc2NndFMHljZnViZGZrbmRRdVlvWWFZV01nOXhBSjJFSU1hV1lKY3FkUXJrdW04SDZKa1BsclhQLwpUcDgxZlp0QU8rWWRjTWNDUk1OVlNFU0dyRFB0dUp1VnU4REIwVE9Uc2NHS1BOMmZrUFI5VUxZZTVOWllpUXpJCldtZU1IRU9oY0xiandsLzlaazlTUW5Vd2pkT1luUmZXNDVxVlFqa09CdkpxMHM4WHVhMlBySEkyb250SjdhcEcKNmVoTVkvMzYzS0RUeGExMmNWcFNVd0lEVlVKR0VxdmJOc1I5NVltZ3VhMWtzR01RUVlwYXIyOTJ5bTUzVmxYaQpkUUtDQVFCTUFYS0RaNVZobHBRR1VlUk1FNVhqVm1KOE1WdlZTUzV3NzBGOC9CS0ZnZFBJNnR2Nkx5UGh3OTRPCmxZVldoOXJmdUpmbWllK1ZJSWhaeSthUVNpVVhGQUtTdjZFTWJ1bXdjN1pUNEkyYitDTXQxUEhaTEZtUEN0OXAKOEorUDdoaDlRYWRBYzZqZEdSa0NMNkpMU3VoeWhMbW90SG9IS0ZJazdhNENNZGl2QnB3SVdxMWVScHd0aWRrNwpIdytrdlJ5YW5DMUJVU1dYNGxJcW1LanAyR1B2UDVVdVV2RUlPNitqaWFyWTJDTUNKb3BtcVJ2WWQzNGtSVkF1CjZueFl4a05neEFQSnVWN2tkZVVzQXg5Q1FZcFQ1blFmendtdlVGa0FraHJoTmw5dUJRUDhMdkZORFQ0cWU0bFcKUWw0cXRFZFNiZDVxVWVVdkgzOG5JMmpTVDVMawotLS0tLUVORCBQUklWQVRFIEtFWS0tLS0tCg==
+zookeeper:
+  enabled: true
+  replicaCount: 1
+  persistence:
+    enabled: true
+    storageClass: standard
+kafka:
+  enabled: true
+  replicaCount: 1
+  persistence:
+    enabled: true
+    storageClass: standard
+  creds:
+    sslKeystorePassword: mypassword
+    sslTruststorePassword: mypassword
+    sslKeyPassword: mypassword
+cassandra:
+  enabled: true
+  image:
+    debug: true
+  cluster:
+    replicaCount: 1
+    seedCount: 1
+  persistence:
+    enabled: true
+    storageClass: standard
+  creds:
+    sslKeystorePassword: mypassword
+    sslTruststorePassword: mypassword
+postgresql:
+  enabled: true
+  postgresqlDatabase: tip
+  image:
+    debug: true
+  metrics:
+    enabled: false
+    serviceMonitor:
+      enabled: true
+      namespace: monitoring
+      additionalLabels:
+        release: prometheus-operator
+  postgresqlUsername: postgres
+  postgresqlPassword: postgres
+  pgHbaConfiguration: |
+    hostssl replication repl_user 0.0.0.0/0 md5 clientcert=0
+    hostssl postgres postgres 0.0.0.0/0 cert clientcert=1
+    hostssl postgres postgres ::/0 cert clientcert=1
+    hostssl all all 0.0.0.0/0 md5 clientcert=1
+  replication:
+    enabled: true
+    user: repl_user
+    password: repl_password
+    slaveReplicas: 1
+  persistence:
+    enabled: true
+    storageClass: hostpath
+  volumePermissions:
+    enabled: true
+  livenessProbe:
+    enabled: false
+  readinessProbe:
+    enabled: false
+  tls:
+    enabled: true
+    certificatesSecret: tip-common-postgres-certs
+    certFilename: cert.crt
+    certKeyFilename: cert.key
+    certCAFilename: cacert.pem
+  initdbScriptsConfigMap: tip-common-postgres-scripts
+  extraEnv:
+  - name: PGSSLCERT
+    value: /opt/tip-wlan/certs/postgresclientcert.pem
+  - name: PGSSLKEY
+    value: /opt/tip-wlan/certs/postgresclientkey_dec.pem
+  - name: PGSSLROOTCERT
+    value: "/opt/tip-wlan/certs/cacert.pem"
+  primary:
+    extraInitContainers:
+    - command: [ "sh", "-c", "chmod 0600 /opt/bitnami/postgresql/certs/postgresclientkey_dec.pem" ]
+      image: busybox:latest
+      name: chmod-client-cert-additional
+      securityContext:
+        runAsUser: 0
+      volumeMounts:
+      - mountPath: /opt/bitnami/postgresql/certs
+        name: postgresql-certificates
