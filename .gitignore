@@ -5,10 +5,13 @@
 *.csr
 *.cnf
 *.DS_Store
+*.lock
 
 # local development
 *.local_dev
-stern*
 tip-wlan/resources/certs
 tip-wlan/resources/scripts
 tip-wlan/templates
+
+stern*
+*.tgz
