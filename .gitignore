@@ -3,3 +3,8 @@
 *.pkcs12
 *.p12
 *.DS_Store
+*.local_dev
+stern*
+tip-wlan/resources/certs
+tip-wlan/resources/scripts
+tip-wlan/templates
