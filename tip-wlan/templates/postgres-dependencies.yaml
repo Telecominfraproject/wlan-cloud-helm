@@ -1,0 +1,38 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Namespace }}-common-postgres-scripts
+  namespace: {{ .Release.Namespace }}
+data:
+{{ tpl (.Files.Glob "resources/scripts/creation-replication-user-role.sh").AsConfig . | indent 2 }}
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Release.Namespace }}-common-postgres-certs
+  namespace: {{ .Release.Namespace }}
+type: Opaque
+data:
+  cacert.pem: {{ .Files.Get "resources/certs/cacert.pem" | b64enc }}
+  cert.crt: {{ .Files.Get "resources/certs/servercert.pem" | b64enc }}
+  cert.key: {{ .Files.Get "resources/certs/serverkey_dec.pem" | b64enc }}
+  postgresclientcert.pem: {{ .Files.Get "resources/certs/postgresclientcert.pem" | b64enc }}
+  postgresclientkey_dec.pem: {{ .Files.Get "resources/certs/postgresclientkey_dec.pem" | b64enc }}
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Release.Namespace }}-common-postgres-client-certs
+  namespace: {{ .Release.Namespace }}
+type: Opaque
+data:
+  cacert.pem: {{ .Files.Get "resources/certs/cacert.pem" | b64enc }}
+  client_keystore.jks: {{ .Files.Get "resources/certs/client_keystore.jks" | b64enc }} 
+  postgresclient.p12:  {{ .Files.Get "resources/certs/postgresclient.p12" | b64enc }}
+  postgresclientcert.pem: {{ .Files.Get "resources/certs/postgresclientcert.pem" | b64enc }}
+  postgresclientkey_dec.pem: {{ .Files.Get "resources/certs/postgresclientkey_dec.pem" | b64enc }}
+  server.pkcs12: {{ .Files.Get "resources/certs/server.pkcs12" | b64enc }}
+  truststore.jks: {{ .Files.Get "resources/certs/truststore.jks" | b64enc }}

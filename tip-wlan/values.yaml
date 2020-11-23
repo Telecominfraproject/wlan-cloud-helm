@@ -36,11 +36,7 @@ global:
 
   testingEnabled: false
 
-  testingTimestamp: 
-  
-  
-# Namespace related
-createReleaseNamespace: true
+  testingTimestamp:
 
 # DockerRegistry Secret
 createDockerRegistrySecret: true

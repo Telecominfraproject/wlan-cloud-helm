@@ -49,7 +49,7 @@ spec:
                 name: {{ include "common.fullname" . }}-creds
                 key: schema-repo-password
           image: postgres:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: {{ .Values.global.pullPolicy }}
           command:
           - sh
           - -c

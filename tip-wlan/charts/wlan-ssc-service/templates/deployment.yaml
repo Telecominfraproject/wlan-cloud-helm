@@ -47,7 +47,7 @@ spec:
                 name: {{ include "common.fullname" . }}-creds
                 key: schema-repo-password
           image: cassandra:3.11.6
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: {{ .Values.global.pullPolicy }}
           command:
           - sh
           - -c
