@@ -2,6 +2,8 @@
 *.jks
 *.pkcs12
 *.p12
+*.csr
+*.cnf
 *.DS_Store
 
 # local development
