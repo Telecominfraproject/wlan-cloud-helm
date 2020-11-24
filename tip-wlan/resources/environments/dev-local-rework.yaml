@@ -154,19 +154,35 @@ kafka:
     sslKeystorePassword: mypassword
     sslTruststorePassword: mypassword
     sslKeyPassword: mypassword
+
 cassandra:
   enabled: true
+  tlsEncryptionSecretName: tip-common-cassandra-certs
   image:
     debug: true
-  cluster:
-    replicaCount: 1
-    seedCount: 1
   persistence:
     enabled: true
-    storageClass: standard
-  creds:
-    sslKeystorePassword: mypassword
-    sslTruststorePassword: mypassword
+    storageClass: "hostpath"
+  replicaCount: 1
+  cluster:
+    name: TipWlanCluster
+    seedCount: 1
+    internodeEncryption: all
+    clientEncryption: true
+  exporter:
+    enabled: false
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: prometheus-operator
+  dbUser:
+    user: cassandra
+    password: cassandra
+  resources:
+    limits: {}
+    requests:
+      cpu: 1
+      memory: 3Gi
 postgresql:
   enabled: true
   postgresqlDatabase: tip
