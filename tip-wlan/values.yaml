@@ -47,19 +47,6 @@ dockerRegistrySecret: dummySecret
 # Annotations to add to the namespace
 annotations: {}
 
-configJob:
-  backoffLimit: 6
-  topics:
-  - name: wlan_service_metrics
-    partitions: 1
-    replicationFactor: 1
-  - name: system_events
-    partitions: 1
-    replicationFactor: 1
-  - name: customer_events
-    partitions: 1
-    replicationFactor: 1
-
 ## Topic creation and configuration.
 ## The job will be run on a deployment only when the config has been changed.
 ## - If 'partitions' and 'replicationFactor' are specified we create the topic (with --if-not-exists.)
