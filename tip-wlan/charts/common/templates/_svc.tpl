@@ -16,7 +16,7 @@ else use user-provided URL
 {{- $zookeeperService := printf "%s-%s" .Release.Name .Values.zookeeper.url }}
 {{- default $zookeeperService }}
 {{- end -}}
-{{- end -}}  
+{{- end -}}
 
 {{/*
   Resolve the Kafka service-name to apply to a chart. 
@@ -66,7 +66,6 @@ else use user-provided URL
 {{- define "opensyncgw.service" -}}
   {{- printf "%s-%s:%.f" .Release.Name .Values.opensyncgw.url .Values.opensyncgw.port | trunc 63 -}}
 {{- end -}}
-
 
 {{/*
   Resolve the pvc name that's would mounted to 2 charts - Portal and Opensync-gw 
