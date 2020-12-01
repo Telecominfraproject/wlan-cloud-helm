@@ -24,7 +24,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: wait-for-services
-          image: opsfleet/depends-on@sha256:d0eadc2b77af663d28fb24586cf8e9023ab6ce204d0d7b725299fed2e4f876e1
+          image: opsfleet/depends-on:latest
           args:
           - "-service={{ .Release.Name }}-postgresql"
           - -check_interval=5
