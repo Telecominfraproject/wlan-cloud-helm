@@ -16,11 +16,15 @@ spec:
       targetPort: {{ .Values.service.port1 }}
       protocol: TCP
       name: {{ .Values.service.name1 }}
+      {{- if and .Values.service.nodePort_static (eq .Values.service.type "NodePort") }}
       nodePort: {{ .Values.global.nodePortPrefix }}{{ .Values.service.nodePort1 }}
+      {{- end }}
     - port: {{ .Values.service.port2 }}
       targetPort: {{ .Values.service.port2 }}
       protocol: TCP
       name: {{ .Values.service.name2 }}
+      {{- if and .Values.service.nodePort_static (eq .Values.service.type "NodePort") }}
       nodePort: {{ .Values.global.nodePortPrefix }}{{ .Values.service.nodePort2 }}
+      {{- end }}
   selector:
     {{- include "common.selectorLabels" . | nindent 4 }}

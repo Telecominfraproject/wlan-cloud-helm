@@ -62,6 +62,7 @@ service:
   name2: debug
   nodePort2: 32
   annotations: {}
+  nodePort_static: true
 
 ingress:
   enabled: false
