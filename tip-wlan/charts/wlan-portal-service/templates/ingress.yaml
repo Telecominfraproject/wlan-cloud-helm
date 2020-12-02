@@ -32,7 +32,7 @@ spec:
     - host: {{ .host | quote }}
       http:
         paths:
-        {{- if $.Values.ingress.alb_https_redirect }}
+        {{- if $.Values.ingress.lb_https_redirect }}
           - path: /*
             backend:
               serviceName: ssl-redirect
