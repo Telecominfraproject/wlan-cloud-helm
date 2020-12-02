@@ -62,7 +62,7 @@ service:
   name2: debug
   nodePort2: 32
   annotations: {}
-  nodePortStatic: true
+  nodePortStatic: true ## if true, nodePort ports are statically defined effectively prohibiting multiple deployments on the same cluster; if false, nodePort ports are chosen dynamically by k8s
 
 ingress:
   enabled: false

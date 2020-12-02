@@ -75,7 +75,7 @@ service:
   port3: 5006
   name3: debug
   nodePort3: 15
-  nodePortStatic: true
+  nodePortStatic: true ## if true, nodePort ports are statically defined effectively prohibiting multiple deployments on the same cluster; if false, nodePort ports are chosen dynamically by k8s
 
 ingress:
   enabled: false
