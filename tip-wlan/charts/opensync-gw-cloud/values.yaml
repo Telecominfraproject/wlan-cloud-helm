@@ -78,6 +78,7 @@ service:
   name5: debug
   nodePort5: 26
   annotations: {}
+  nodePort_static: true
 
 persistence:
   enabled: false

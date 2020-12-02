@@ -16,28 +16,38 @@ spec:
       targetPort: {{ .Values.service.port1 }}
       protocol: TCP
       name: {{ .Values.service.name1 }}
+      {{- if and .Values.service.nodePort_static (eq .Values.service.type "NodePort") }}
       nodePort: {{ .Values.global.nodePortPrefix }}{{ .Values.service.nodePort1 }}
+      {{- end }}
     - port: {{ .Values.service.port2 }}
       targetPort: {{ .Values.service.port2 }}
       protocol: TCP
       name: {{ .Values.service.name2 }}
+      {{- if and .Values.service.nodePort_static (eq .Values.service.type "NodePort") }}
       nodePort: {{ .Values.global.nodePortPrefix }}{{ .Values.service.nodePort2 }}
+      {{- end }}
     - port: {{ .Values.service.port3 }}
       targetPort: {{ .Values.service.port3 }}
       protocol: TCP
       name: {{ .Values.service.name3 }}
+      {{- if and .Values.service.nodePort_static (eq .Values.service.type "NodePort") }}
       nodePort: {{ .Values.global.nodePortPrefix }}{{ .Values.service.nodePort3 }}
+      {{- end }}
     - port: {{ .Values.service.port4 }}
       targetPort: {{ .Values.service.port4 }}
       protocol: TCP
       name: {{ .Values.service.name4 }}
+      {{- if and .Values.service.nodePort_static (eq .Values.service.type "NodePort") }}
       nodePort: {{ .Values.global.nodePortPrefix }}{{ .Values.service.nodePort4 }}
+      {{- end }}
     {{- if .Values.debug.enabled }}
     - port: {{ .Values.service.port5 }}
       targetPort: {{ .Values.service.port5 }}
       protocol: TCP
       name: {{ .Values.service.name5 }}
+      {{- if and .Values.service.nodePort_static (eq .Values.service.type "NodePort") }}
       nodePort: {{ .Values.global.nodePortPrefix }}{{ .Values.service.nodePort5 }}
+      {{- end }}
     {{- end }}
   selector:
     {{- include "common.selectorLabels" . | nindent 4 }}
