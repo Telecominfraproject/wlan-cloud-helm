@@ -78,6 +78,7 @@ service:
   port3: 5010
   name3: debug-appl
   nodePort3: '03'
+  nodePort_static: true
 
 # The below ports are the ports that Java would choose as Local ports whenever it opens up
 # a developer session for debug.

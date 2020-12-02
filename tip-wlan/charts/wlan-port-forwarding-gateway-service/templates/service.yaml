@@ -12,14 +12,14 @@ spec:
       targetPort: {{ .Values.service.port1 }}
       protocol: TCP
       name: {{ .Values.service.name1 }}
-      {{- if eq .Values.service.type "NodePort" }}
+      {{- if and .Values.service.nodePort_static (eq .Values.service.type "NodePort") }}
       nodePort: {{ .Values.global.nodePortPrefixExt | default .Values.nodePortPrefixExt }}{{ .Values.service.nodePort1 }}
       {{- end }}
     - port: {{ .Values.service.port2 }}
       targetPort: {{ .Values.service.port2 }}
       protocol: TCP
       name: {{ .Values.service.name2 }}
-      {{- if eq .Values.service.type "NodePort" }}
+      {{- if and .Values.service.nodePort_static (eq .Values.service.type "NodePort") }}
       nodePort: {{ .Values.global.nodePortPrefixExt | default .Values.nodePortPrefixExt }}{{ .Values.service.nodePort2 }}
       {{- end }}
     {{- if .Values.debug.enabled }}
@@ -27,7 +27,7 @@ spec:
       targetPort: {{ .Values.service.port3 }}
       protocol: TCP
       name: {{ .Values.service.name3 }}
-      {{- if eq .Values.service.type "NodePort" }}
+      {{- if and .Values.service.nodePort_static (eq .Values.service.type "NodePort") }}
       nodePort: {{ .Values.global.nodePortPrefixExt | default .Values.nodePortPrefixExt }}{{ .Values.service.nodePort3 }}
       {{- end }}
     {{- end }}      
