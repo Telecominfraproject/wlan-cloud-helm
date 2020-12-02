@@ -23,10 +23,11 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
-        - name: {{ include "common.name" . }}-readiness
-          image: busybox:1.28
-          imagePullPolicy: {{ .Values.global.pullPolicy }}
-          command: ['sh', '-c', "until nslookup {{ $kafka }}.{{ $ns }}.svc.cluster.local; do echo waiting for Kafka; sleep 2; done"]
+        - name: wait-for-services
+          image: opsfleet/depends-on:latest
+          args:
+          - "-service={{ .Release.Name }}-kafka-headless"
+          - -check_interval=5
       containers:
         - name: {{ .Chart.Name }}
           securityContext:

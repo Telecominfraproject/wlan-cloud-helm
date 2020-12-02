@@ -24,14 +24,12 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
-        - name: {{ include "common.name" . }}-kafka-readiness
-          image: busybox:1.28
-          imagePullPolicy: {{ .Values.global.pullPolicy }}
-          command: ['sh', '-c', "until nslookup {{ $kafka }}.{{ $ns }}.svc.cluster.local; do echo waiting for Kafka; sleep 2; done"]
-        - name: {{ include "common.name" . }}-cassandra-readiness
-          image: busybox:1.28
-          imagePullPolicy: {{ .Values.global.pullPolicy }}
-          command: ['sh', '-c', "until nslookup {{ $cassandra }}.{{ $ns }}.svc.cluster.local; do echo waiting for Cassandra; sleep 2; done"]
+        - name: wait-for-services
+          image: opsfleet/depends-on:latest
+          args:
+          - "-service={{ .Release.Name }}-kafka-headless"
+          - "-service={{ .Release.Name }}-cassandra"
+          - -check_interval=5
         - name: {{ include "common.name" . }}-create-db-schema-cassandra
           env:
           - name: CASSANDRA_PORT_NUMBER
