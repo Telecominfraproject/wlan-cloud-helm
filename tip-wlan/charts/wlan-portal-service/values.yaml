@@ -74,10 +74,12 @@ service:
   nodePort2: 52
   port3: 5006
   name3: debug
-  nodePort3: 15  
+  nodePort3: 15
+  nodePortStatic: true ## if true, nodePort ports are statically defined effectively prohibiting multiple deployments on the same cluster; if false, nodePort ports are chosen dynamically by k8s
 
 ingress:
   enabled: false
+  lb_https_redirect: false ## if set to true, enables http->https redirect on cloud load balancer
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"

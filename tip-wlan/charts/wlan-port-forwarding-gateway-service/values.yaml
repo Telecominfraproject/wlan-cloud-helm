@@ -78,6 +78,7 @@ service:
   port3: 5010
   name3: debug-appl
   nodePort3: '03'
+  nodePortStatic: true ## if true, nodePort ports are statically defined effectively prohibiting multiple deployments on the same cluster; if false, nodePort ports are chosen dynamically by k8s
 
 # The below ports are the ports that Java would choose as Local ports whenever it opens up
 # a developer session for debug.

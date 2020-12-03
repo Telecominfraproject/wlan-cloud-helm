@@ -216,7 +216,7 @@ spec:
             - name: {{ .Values.service.name3 }}
               containerPort: {{ .Values.service.port3 }}
               protocol: TCP
-            {{- end }}              
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
