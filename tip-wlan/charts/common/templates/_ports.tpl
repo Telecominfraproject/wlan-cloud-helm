@@ -4,14 +4,17 @@
   */}}
 
 {{- define "container.dev.debugport" -}}
+  {{- if .Values.debug.enabled }}
   {{- range $index, $portid := .Values.debugPorts }}
   - name: debugport-{{ $index }}
     containerPort: {{ $portid }}
     protocol: TCP
   {{- end }}
+  {{- end }}
 {{- end -}}
 
 {{- define "service.dev.debugport" -}}
+  {{- if .Values.debug.enabled }}
   {{- range $index, $portid := .Values.debugPorts }}
   - port: {{ $portid }}
     targetPort: {{ $portid }}
@@ -20,5 +23,6 @@
     {{- if eq $.Values.service.type "NodePort" }}
     nodePort: {{ $portid }}
     {{- end }}   
+  {{- end }}
   {{- end }}
 {{- end -}}
