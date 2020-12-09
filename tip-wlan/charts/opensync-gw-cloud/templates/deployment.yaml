@@ -46,7 +46,7 @@ spec:
             url=https://{{ $icc }}/ping
             counter=0
             status=$(curl --insecure --head --location --connect-timeout 5 --write-out %{http_code} --silent --output /dev/null ${url});
-            while [ $counter -lt 10 ] && [ $status -ne 200 ] 
+            while [ $counter -lt 10 ] && [ $status -ne 200 ]
             do
               echo ${url} service isnt ready. Tried $counter times
               sleep 5
@@ -76,7 +76,7 @@ spec:
           livenessProbe:
             tcpSocket:
               port: {{ .Values.service.port2 }}
-            initialDelaySeconds: {{ .Values.probes.livenessProbe.initialDelaySeconds }}  
+            initialDelaySeconds: {{ .Values.probes.livenessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.probes.livenessProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.probes.livenessProbe.failureThreshold }}
             periodSeconds: {{ .Values.probes.livenessProbe.periodSeconds }}
@@ -127,6 +127,8 @@ spec:
               value: {{ .Values.ethernetType.wanType }}
             - name: DEFAULT_WAN_NAME
               value: {{ .Values.ethernetType.wanName }}
+            - name: tip_wlan_ovsdb_listener_threadPoolSize
+              value: {{ .Values.scalability.tip_wlan_ovsdb_listener_threadPoolSize }}
           volumeMounts:
           - mountPath: /opt/tip-wlan/certs/client_keystore.jks
             name: certificates

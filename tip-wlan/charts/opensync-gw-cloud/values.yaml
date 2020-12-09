@@ -57,7 +57,7 @@ probes:
 testsEnabled: false
 
 # Enable/Disable Remote debugging
-debug: 
+debug:
   enabled: false
 
 service:
@@ -87,9 +87,9 @@ persistence:
 
 # the filestore internal: location of the folder where UI files will be stored
 # on the PV
-# the filestore url: externally reachable URL i.e.; reachable from AP, where it 
+# the filestore url: externally reachable URL i.e.; reachable from AP, where it
 # can download the files from. Override this value (url) to the configured
-# HTTP server in your system 
+# HTTP server in your system
 filestore:
   internal: "/tmp/filestore"
   url: DUMMY_FILESTORE_HTTPS_URL
@@ -117,7 +117,7 @@ portal:
 
 
 # These are the address and ports for the externalhost
-# This is important for ovsdb and mqtt since 
+# This is important for ovsdb and mqtt since
 # that's what AP sees. Please make sure to override
 # them in dev override file for your respective environments.
 # the default values below would be used if not overriden
@@ -136,6 +136,9 @@ ethernetType:
   lanType: "bridge"
   wanType: "bridge"
   wanName: "wan"
+
+scalability:
+  tip_wlan_ovsdb_listener_threadPoolSize: 50
 
 ingress:
   enabled: false

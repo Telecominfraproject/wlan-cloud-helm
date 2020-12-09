@@ -52,6 +52,8 @@ opensync-gw-cloud:
     enabled: true
   filestore:
     url: "https://wlan-filestore.wlan.local"
+  scalability:
+    tip_wlan_ovsdb_listener_threadPoolSize: 50
 opensync-mqtt-broker:
   enabled: true
   replicaCount: 1
