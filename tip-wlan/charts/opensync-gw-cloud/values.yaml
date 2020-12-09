@@ -138,7 +138,7 @@ ethernetType:
   wanName: "wan"
 
 scalability:
-  tip_wlan_ovsdb_listener_threadPoolSize: "50"
+  tip_wlan_ovsdb_listener_threadPoolSize: 50
 
 ingress:
   enabled: false

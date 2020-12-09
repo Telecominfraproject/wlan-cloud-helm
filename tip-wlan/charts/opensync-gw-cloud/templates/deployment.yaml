@@ -128,7 +128,7 @@ spec:
             - name: DEFAULT_WAN_NAME
               value: {{ .Values.ethernetType.wanName }}
             - name: tip_wlan_ovsdb_listener_threadPoolSize
-              value: {{ .Values.scalability.tip_wlan_ovsdb_listener_threadPoolSize }}
+              value: "{{ .Values.scalability.tip_wlan_ovsdb_listener_threadPoolSize }}"
           volumeMounts:
           - mountPath: /opt/tip-wlan/certs/client_keystore.jks
             name: certificates
