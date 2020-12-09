@@ -59,7 +59,7 @@ securityContext: {}
 testsEnabled: false
 
 # Enable/Disable Remote debugging
-debug: 
+debug:
   enabled: false
 
 service:
@@ -71,6 +71,20 @@ service:
   port3: 5008
   name3: debug
 
+scalability:
+  #asynchronous task executor - monitor metrics and adjust if tasks start being rejected
+  tip_wlan_AsyncExecutor_CorePoolSize: 10
+  tip_wlan_AsyncExecutor_MaxPoolSize: 50
+  tip_wlan_AsyncExecutor_QueueCapacity: 50
+  #max total number of persistent connections in the http client pool
+  tip_wlan_httpClientConfig_maxConnectionsTotal: 100
+  #max number of persistent connections in the http client pool per destination
+  tip_wlan_httpClientConfig_maxConnectionsPerRoute: 10
+  #max number of concurrent REST API calls a single instance of this service can process
+  tip_wlan_maxHttpThreads:  100
+  #memory tuning parameters for the JVM - max size, initialsize, garbage collection tuning options, etc.
+  JVM_MEM_OPTIONS: " "
+
 ingress:
   enabled: false
   annotations: {}
@@ -79,9 +93,9 @@ ingress:
   hosts:
     - host: example.com
       paths: [
-         /portal 
+         /portal
         ]
-  tls: 
+  tls:
    - secretName: portal-secret
      hosts:
        - example.com
@@ -116,7 +130,7 @@ creds:
     username: DUMMY_SCHEMA_REPO_USERNAME
     password: DUMMY_SCHEMA_REPO_PASSWORD
 
-kafka: 
+kafka:
   url: kafka-headless
 
 cassandra:

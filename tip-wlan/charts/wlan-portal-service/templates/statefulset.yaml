@@ -13,7 +13,7 @@ spec:
     matchLabels:
       {{- include "common.selectorLabels" . | nindent 6 }}
   updateStrategy:
-{{ toYaml .Values.updateStrategy | indent 4 }}      
+{{ toYaml .Values.updateStrategy | indent 4 }}
   template:
     metadata:
       labels:
@@ -30,7 +30,7 @@ spec:
         {{- range $key, $value := .Values.podAnnotations }}
         {{ $key }}: {{ $value | quote }}
         {{- end }}
-{{- end }}        
+{{- end }}
     spec:
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
 {{- if .Values.schedulerName }}
@@ -38,7 +38,7 @@ spec:
 {{- end }}
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
-{{- end }}    
+{{- end }}
       imagePullSecrets:
         - name: "{{ include "common.namespace" . }}-docker-registry-key"
       serviceAccountName: {{ include "common.serviceAccountName" . }}
@@ -58,13 +58,27 @@ spec:
             {{- include "common.env" . | nindent 12 }}
             - name: FILE_STORE_DIRECTORY_INTERNAL
               value: {{ $file_store_path }}
+            - name: tip_wlan_AsyncExecutor_CorePoolSize
+              value: "{{ .Values.scalability.tip_wlan_AsyncExecutor_CorePoolSize }}"
+            - name: tip_wlan_AsyncExecutor_MaxPoolSize
+              value: "{{ .Values.scalability.tip_wlan_AsyncExecutor_MaxPoolSize }}"
+            - name: tip_wlan_AsyncExecutor_QueueCapacity
+              value: "{{ .Values.scalability.tip_wlan_AsyncExecutor_QueueCapacity }}"
+            - name: tip_wlan_httpClientConfig_maxConnectionsTotal
+              value: "{{ .Values.scalability.tip_wlan_httpClientConfig_maxConnectionsTotal }}"
+            - name: tip_wlan_httpClientConfig_maxConnectionsPerRoute
+              value: "{{ .Values.scalability.tip_wlan_httpClientConfig_maxConnectionsPerRoute }}"
+            - name: tip_wlan_maxHttpThreads
+              value: "{{ .Values.scalability.tip_wlan_maxHttpThreads }}"
+            - name: JVM_MEM_OPTIONS
+              value: "{{ .Values.scalability.JVM_MEM_OPTIONS }}"
           {{- if .Values.probes.enabled }}
           livenessProbe:
             httpGet:
               path: /ping
               port: {{ .Values.service.port1 }}
               scheme: {{ .Values.probes.livenessProbe.scheme }}
-            initialDelaySeconds: {{ .Values.probes.livenessProbe.initialDelaySeconds }}  
+            initialDelaySeconds: {{ .Values.probes.livenessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.probes.livenessProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.probes.livenessProbe.failureThreshold }}
             periodSeconds: {{ .Values.probes.livenessProbe.periodSeconds }}

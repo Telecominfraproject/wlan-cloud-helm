@@ -65,7 +65,7 @@ creds:
       password: DUMMY_POSTGRES_PASSWORD
     tipUser:
       password: DUMMY_TIPUSER_PASSWORD
-    
+
   schema_repo:
     username: DUMMY_SCHEMA_REPO_USERNAME
     password: DUMMY_SCHEMA_REPO_PASSWORD
@@ -75,7 +75,7 @@ creds:
     singleDataSourceSslKeyPassword: DUMMY_SSL_PASSWORD
 
 # Enable/Disable Remote debugging
-debug: 
+debug:
   enabled: false
 
 service:
@@ -87,6 +87,28 @@ service:
   port3: 5007
   name3: debug
 
+scalability:
+  #asynchronous task executor - monitor metrics and adjust if tasks start being rejected
+  tip_wlan_AsyncExecutor_CorePoolSize: 10
+  tip_wlan_AsyncExecutor_MaxPoolSize: 50
+  tip_wlan_AsyncExecutor_QueueCapacity: 50
+  #max total number of persistent connections in the http client pool
+  tip_wlan_httpClientConfig_maxConnectionsTotal: 100
+  #max number of persistent connections in the http client pool per destination
+  tip_wlan_httpClientConfig_maxConnectionsPerRoute: 10
+  #max number of concurrent REST API calls a single instance of this service can process
+  tip_wlan_maxHttpThreads:  100
+  #memory tuning parameters for the JVM - max size, initialsize, garbage collection tuning options, etc.
+  JVM_MEM_OPTIONS: " "
+  #max number of connections to PostgreSQL database
+  singleDataSource_maxTotalConnections: 8
+  #max number of idle connections to PostgreSQL database
+  singleDataSource_maxIdleConnections: 8
+  #max number of cached prepared statements used in PostgreSQL database
+  singleDataSource_maxPreparedStatements: 200
+  #max number of cached idle prepared statements used in PostgreSQL database
+  singleDataSource_maxIdlePreparedStatements: 200
+
 ingress:
   enabled: false
   annotations: {}
@@ -95,9 +117,9 @@ ingress:
   hosts:
     - host: example.com
       paths: [
-         /portal 
+         /portal
         ]
-  tls: 
+  tls:
    - secretName: portal-secret
      hosts:
        - example.com
@@ -120,7 +142,7 @@ tolerations: []
 
 affinity: {}
 
-postgresql: 
+postgresql:
   url: postgresql
 
 env:

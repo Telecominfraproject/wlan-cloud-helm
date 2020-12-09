@@ -57,14 +57,14 @@ spec:
           command:
           - sh
           - -c
-          - |      
+          - |
             apt update
             apt -y install curl
             echo "***** Fetching latest cloud-sdk-schema-postgresql for DB and Tables sql from JFrog *****"
             curl --insecure -u$SCHEMA_REPO_USER:$SCHEMA_REPO_PASSWORD -O "https://tip-tip-wlan-cloud-docker-repo.jfrog.io/artifactory/tip-wlan-cloud-schemas/0.0.1-SNAPSHOT/sql/cloud-sdk-schema-postgresql-db-user.sql"
             curl --insecure -u$SCHEMA_REPO_USER:$SCHEMA_REPO_PASSWORD -O "https://tip-tip-wlan-cloud-docker-repo.jfrog.io/artifactory/tip-wlan-cloud-schemas/0.0.1-SNAPSHOT/sql/cloud-sdk-schema-postgresql-tables.sql"
             echo "***** Now executing cloud-sdk-schema-postgresql-db-user.sql on host {{ $pg }} and creating db prov_db and user tip_user using User Postgres. This uses full client-cert authentication *****"
-            ### Observed that PSQL was unable to resolve the Postgres-service host because the postgres service wasnt 
+            ### Observed that PSQL was unable to resolve the Postgres-service host because the postgres service wasnt
             ### really ready when running Postgres in Master-Slave config... hence the below retry-logic
             psql 'host={{ $pg }} port=5432 user=postgres sslmode=verify-ca sslcert=/opt/tip-wlan/certs/postgresclientcert.pem sslkey=/opt/tip-wlan/certs/postgresclientkey_dec.pem sslrootcert=/opt/tip-wlan/certs/cacert.pem' -f cloud-sdk-schema-postgresql-db-user.sql
             status=$(echo $?)
@@ -126,13 +126,35 @@ spec:
           imagePullPolicy: {{ .Values.global.pullPolicy }}
           env:
             {{- include "common.env" . | nindent 12 }}
+            - name: tip_wlan_AsyncExecutor_CorePoolSize
+              value: "{{ .Values.scalability.tip_wlan_AsyncExecutor_CorePoolSize }}"
+            - name: tip_wlan_AsyncExecutor_MaxPoolSize
+              value: "{{ .Values.scalability.tip_wlan_AsyncExecutor_MaxPoolSize }}"
+            - name: tip_wlan_AsyncExecutor_QueueCapacity
+              value: "{{ .Values.scalability.tip_wlan_AsyncExecutor_QueueCapacity }}"
+            - name: tip_wlan_httpClientConfig_maxConnectionsTotal
+              value: "{{ .Values.scalability.tip_wlan_httpClientConfig_maxConnectionsTotal }}"
+            - name: tip_wlan_httpClientConfig_maxConnectionsPerRoute
+              value: "{{ .Values.scalability.tip_wlan_httpClientConfig_maxConnectionsPerRoute }}"
+            - name: tip_wlan_maxHttpThreads
+              value: "{{ .Values.scalability.tip_wlan_maxHttpThreads }}"
+            - name: JVM_MEM_OPTIONS
+              value: "{{ .Values.scalability.JVM_MEM_OPTIONS }}"
+            - name: singleDataSource_maxTotalConnections
+              value: "{{ .Values.scalability.singleDataSource_maxTotalConnections }}"
+            - name: singleDataSource_maxIdleConnections
+              value: "{{ .Values.scalability.singleDataSource_maxIdleConnections }}"
+            - name: singleDataSource_maxPreparedStatements
+              value: "{{ .Values.scalability.singleDataSource_maxPreparedStatements }}"
+            - name: singleDataSource_maxIdlePreparedStatements
+              value: "{{ .Values.scalability.singleDataSource_maxIdlePreparedStatements }}"
           {{- if .Values.probes.enabled }}
           livenessProbe:
             httpGet:
               path: /ping
               port: {{ .Values.service.port2 }}
               scheme: {{ .Values.probes.livenessProbe.scheme }}
-            initialDelaySeconds: {{ .Values.probes.livenessProbe.initialDelaySeconds }}  
+            initialDelaySeconds: {{ .Values.probes.livenessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.probes.livenessProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.probes.livenessProbe.failureThreshold }}
             periodSeconds: {{ .Values.probes.livenessProbe.periodSeconds }}
@@ -184,7 +206,7 @@ spec:
             - name: {{ .Values.service.name3 }}
               containerPort: {{ .Values.service.port3 }}
               protocol: TCP
-            {{- end }}              
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

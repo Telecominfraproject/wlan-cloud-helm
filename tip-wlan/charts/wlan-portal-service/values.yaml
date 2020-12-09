@@ -61,7 +61,7 @@ securityContext: {}
 testsEnabled: false
 
 # Enable/Disable Remote debugging
-debug: 
+debug:
   enabled: false
 
 service:
@@ -77,6 +77,20 @@ service:
   nodePort3: 15
   nodePortStatic: true ## if true, nodePort ports are statically defined effectively prohibiting multiple deployments on the same cluster; if false, nodePort ports are chosen dynamically by k8s
 
+scalability:
+  #asynchronous task executor - monitor metrics and adjust if tasks start being rejected
+  tip_wlan_AsyncExecutor_CorePoolSize: 10
+  tip_wlan_AsyncExecutor_MaxPoolSize: 50
+  tip_wlan_AsyncExecutor_QueueCapacity: 50
+  #max total number of persistent connections in the http client pool
+  tip_wlan_httpClientConfig_maxConnectionsTotal: 100
+  #max number of persistent connections in the http client pool per destination
+  tip_wlan_httpClientConfig_maxConnectionsPerRoute: 10
+  #max number of concurrent REST API calls a single instance of this service can process
+  tip_wlan_maxHttpThreads:  100
+  #memory tuning parameters for the JVM - max size, initialsize, garbage collection tuning options, etc.
+  JVM_MEM_OPTIONS: " "
+
 ingress:
   enabled: false
   lb_https_redirect: false ## if set to true, enables http->https redirect on cloud load balancer
@@ -86,9 +100,9 @@ ingress:
   hosts:
     - host: wlan-portal-service.zone3.lab.connectus.ai
       paths: [
-         /portal 
+         /portal
         ]
-  tls: 
+  tls:
    - secretName: portal-secret
      hosts:
        - wlan-portal-service.zone3.lab.connectus.ai

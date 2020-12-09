@@ -129,6 +129,20 @@ spec:
               value: {{ .Values.ethernetType.wanName }}
             - name: tip_wlan_ovsdb_listener_threadPoolSize
               value: "{{ .Values.scalability.tip_wlan_ovsdb_listener_threadPoolSize }}"
+            - name: tip_wlan_AsyncExecutor_CorePoolSize
+              value: "{{ .Values.scalability.tip_wlan_AsyncExecutor_CorePoolSize }}"
+            - name: tip_wlan_AsyncExecutor_MaxPoolSize
+              value: "{{ .Values.scalability.tip_wlan_AsyncExecutor_MaxPoolSize }}"
+            - name: tip_wlan_AsyncExecutor_QueueCapacity
+              value: "{{ .Values.scalability.tip_wlan_AsyncExecutor_QueueCapacity }}"
+            - name: tip_wlan_httpClientConfig_maxConnectionsTotal
+              value: "{{ .Values.scalability.tip_wlan_httpClientConfig_maxConnectionsTotal }}"
+            - name: tip_wlan_httpClientConfig_maxConnectionsPerRoute
+              value: "{{ .Values.scalability.tip_wlan_httpClientConfig_maxConnectionsPerRoute }}"
+            - name: tip_wlan_maxHttpThreads
+              value: "{{ .Values.scalability.tip_wlan_maxHttpThreads }}"
+            - name: JVM_MEM_OPTIONS
+              value: "{{ .Values.scalability.JVM_MEM_OPTIONS }}"
           volumeMounts:
           - mountPath: /opt/tip-wlan/certs/client_keystore.jks
             name: certificates
