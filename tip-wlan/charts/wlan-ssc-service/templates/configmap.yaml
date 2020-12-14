@@ -29,5 +29,5 @@ data:
         }
     }
 
-  cqlshrc.tip-wlan: >-
+  cqlshrc.tip-wlan: |
   {{ tpl (.Files.Get "files/cqlshrc.tip-wlan") . | nindent 4 }}
