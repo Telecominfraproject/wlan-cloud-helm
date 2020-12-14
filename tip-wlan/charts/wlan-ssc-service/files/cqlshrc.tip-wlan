@@ -67,12 +67,10 @@ color = on
 ;; A version of CQL to use (this should almost never be set)
 ; version = 3.2.1
 
-
-
 [connection]
 
 ;; The host to connect to
-hostname = tip-wlan-cassandra-headless
+hostname = {{ include "cassandra.service" . }}
 
 ;; The port to connect to (9042 is the native protocol default)
 port = 9042
