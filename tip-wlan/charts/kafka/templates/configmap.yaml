@@ -14,4 +14,4 @@ data:
     ssl.truststore.location=/etc/kafka/secrets/truststore.jks
     ssl.truststore.password={{ .Values.creds.sslTruststorePassword | b64enc }}
     ssl.truststore.type=JKS
-    bootstrap.servers=tip-wlan-kafka-headless:9093
+    bootstrap.servers={{ include "kafka.service" . }}:9093
