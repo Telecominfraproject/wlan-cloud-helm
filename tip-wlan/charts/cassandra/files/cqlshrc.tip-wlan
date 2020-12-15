@@ -72,7 +72,7 @@ color = on
 [connection]
 
 ;; The host to connect to
-hostname = tip-wlan-cassandra-headless
+hostname = {{ include "cassandra.service" . }}
 
 ;; The port to connect to (9042 is the native protocol default)
 port = 9042
