@@ -14,3 +14,4 @@ tip-wlan/resources/scripts
 
 stern*
 *.tgz
+helmfile
