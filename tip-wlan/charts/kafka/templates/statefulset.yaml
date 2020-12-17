@@ -1,5 +1,6 @@
 {{- $advertisedListenersOverride := first (pluck "advertised.listeners" .Values.configurationOverrides) }}
 {{- $zk := include "zookeeper.service" . -}}
+{{- $kafka := include "kafka.service" . -}}
 {{- $ns := include "common.namespace" . -}}
 apiVersion: apps/v1
 kind: StatefulSet
@@ -12,7 +13,7 @@ spec:
   selector:
     matchLabels:
     {{- include "kafka.broker.matchLabels" . | nindent 6 }}
-  serviceName: {{ include "common.fullname" . }}-headless
+  serviceName: {{ $kafka }}
   podManagementPolicy: {{ .Values.podManagementPolicy }}
   updateStrategy:
 {{ toYaml .Values.updateStrategy | indent 4 }}
@@ -119,6 +120,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        - name: KAFKA_ADVERTISED_LISTENERS
+          value: "SSL://{{ $kafka }}:9093"
         - name: KAFKA_HEAP_OPTS
           value: {{ .Values.kafkaHeapOptions }}
         - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
@@ -164,9 +167,9 @@ spec:
           export LOAD_BALANCER_IP=$(echo '{{ .Values.external.loadBalancerIP }}' | tr -d '[]' | cut -d ' ' -f "$(($KAFKA_BROKER_ID + 1))") && \
           {{- end }}
           {{- if eq .Values.external.type "NodePort" }}
-          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_IP}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
+          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_IP}:9092,SSL://{{ $kafka }}:9093{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
           {{- else }}
-          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_NAME}.{{ include "common.fullname" . }}-headless.${POD_NAMESPACE}.svc.cluster.local:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
+          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_NAME}.{{ include "common.fullname" . }}-headless.${POD_NAMESPACE}.svc.cluster.local:9092,SSL://{{ $kafka }}:9093{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
           {{- end }}
           exec /etc/confluent/docker/run
         volumeMounts:
