@@ -120,6 +120,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        - name: KAFKA_ADVERTISED_LISTENERS
+          value: "SSL://{{ $kafka }}:9093"
         - name: KAFKA_HEAP_OPTS
           value: {{ .Values.kafkaHeapOptions }}
         - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
