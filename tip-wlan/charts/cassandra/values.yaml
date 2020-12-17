@@ -329,3 +329,6 @@ metrics:
 creds:
   sslKeystorePassword: DUMMY_PASSWORD
   sslTruststorePassword: DUMMY_PASSWORD
+
+cassandra:
+  url: cassandra-headless
