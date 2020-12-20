@@ -31,6 +31,6 @@ spec:
       nodePort: {{ .Values.global.nodePortPrefixExt | default .Values.nodePortPrefixExt }}{{ .Values.service.nodePort3 }}
       {{- end }}
     {{- end }}      
-    {{- include "service.dev.debugport" . | nindent 2 }}
+    {{- include "service.dev.apdebugports" . | nindent 2 }}
   selector:
     {{- include "common.selectorLabels" . | nindent 4 }}
