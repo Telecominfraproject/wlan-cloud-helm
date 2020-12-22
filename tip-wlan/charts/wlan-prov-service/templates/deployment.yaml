@@ -53,7 +53,7 @@ spec:
                 name: {{ include "common.fullname" . }}-creds
                 key: schema-repo-password
           image: postgres:latest
-          imagePullPolicy: Always
+          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }} 
           command:
           - sh
           - -c
@@ -123,7 +123,7 @@ spec:
           {{- else }}
           image: {{ .Values.global.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
           {{- end }}
-          imagePullPolicy: {{ .Values.global.pullPolicy }}
+          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }} 
           env:
             {{- include "common.env" . | nindent 12 }}
             - name: tip_wlan_AsyncExecutor_CorePoolSize
