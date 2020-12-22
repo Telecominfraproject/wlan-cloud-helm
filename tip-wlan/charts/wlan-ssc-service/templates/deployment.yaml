@@ -44,7 +44,7 @@ spec:
               secretKeyRef:
                 name: {{ include "common.fullname" . }}-creds
                 key: schema-repo-password
-          image: cassandra:3.11.6
+          image: {{ .Values.cassandra.image }}
           imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }} 
           command:
           - sh

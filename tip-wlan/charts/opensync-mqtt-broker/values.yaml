@@ -8,6 +8,9 @@ image:
   name: eclipse-mosquitto
   tag: latest
 
+alpine:
+  image: alpine:3.6
+
 nameOverride: ""
 fullnameOverride: ""
 
