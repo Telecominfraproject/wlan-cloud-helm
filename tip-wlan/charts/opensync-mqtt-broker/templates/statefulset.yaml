@@ -46,6 +46,7 @@ spec:
       initContainers:
         - name: {{ include "common.name" . }}-init-dir-ownership-change
           image: alpine:3.6
+          imagePullPolicy: Always
           # Change ownership to `mosquitto` user for a mounted volume
           command:
           - sh

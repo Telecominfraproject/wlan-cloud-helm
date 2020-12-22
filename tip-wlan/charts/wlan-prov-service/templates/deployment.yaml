@@ -53,7 +53,7 @@ spec:
                 name: {{ include "common.fullname" . }}-creds
                 key: schema-repo-password
           image: postgres:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           command:
           - sh
           - -c

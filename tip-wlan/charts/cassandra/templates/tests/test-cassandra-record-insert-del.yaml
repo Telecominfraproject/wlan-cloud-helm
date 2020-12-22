@@ -12,6 +12,7 @@ spec:
   containers:
   - name: {{ include "common.name" . }}-test-cassandra-basic
     image: {{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}
+    imagePullPolicy: Always
     command:
     - sh
     - -c
