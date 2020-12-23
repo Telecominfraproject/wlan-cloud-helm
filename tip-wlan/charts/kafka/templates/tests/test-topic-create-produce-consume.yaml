@@ -10,6 +10,7 @@ spec:
   containers:
   - name: {{ include "common.name" . }}-test-consume
     image: {{ .Values.image }}:{{ .Values.imageTag }}
+    imagePullPolicy: {{ .Values.imagePullPolicy | default .Values.global.pullPolicy }} 
     command:
     - sh
     - -c

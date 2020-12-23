@@ -12,6 +12,7 @@ spec:
   containers:
   - name: {{ include "common.name" . }}-test-postgres-basic
     image: {{ template "postgresql.image" . }}
+    imagePullPolicy: {{ .Values.image.pullPolicy | default .Values.global.pullPolicy }} 
     env:
       - name: POSTGRES_USER
         value: {{ include "postgresql.username" . | quote }}

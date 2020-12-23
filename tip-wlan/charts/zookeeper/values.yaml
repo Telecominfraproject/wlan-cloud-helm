@@ -18,7 +18,7 @@ updateStrategy:
 image:
   repository: zookeeper     # Container image repository for zookeeper container.
   tag: 3.5.5                # Container image tag for zookeeper container.
-  pullPolicy: IfNotPresent  # Image pull criteria for zookeeper container.
+  pullPolicy: Always        # Image pull criteria for zookeeper container.
 
 service:
   type: ClusterIP  # Exposes zookeeper on a cluster-internal IP.

@@ -29,7 +29,7 @@ spec:
           {{- else }}
           image: {{ .Values.global.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
           {{- end }}
-          imagePullPolicy: {{ .Values.global.pullPolicy }}
+          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }} 
           {{- if .Values.probes.enabled }}
           livenessProbe:
             tcpSocket:

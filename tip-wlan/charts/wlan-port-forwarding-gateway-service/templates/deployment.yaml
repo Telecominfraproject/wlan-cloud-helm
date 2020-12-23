@@ -24,7 +24,7 @@ spec:
       initContainers:
         - name: {{ include "common.name" . }}-readiness-opensync-gw
           image: alpine
-          imagePullPolicy: {{ .Values.global.pullPolicy }}
+          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }} 
           command:
           - sh
           - -c
@@ -57,7 +57,7 @@ spec:
           {{- else }}
           image: {{ .Values.global.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
           {{- end }}
-          imagePullPolicy: {{ .Values.global.pullPolicy }}
+          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }} 
           env:
             {{- include "common.env" . | nindent 12 }}
             - name: PF_GATEWAY_RELEASE_URL

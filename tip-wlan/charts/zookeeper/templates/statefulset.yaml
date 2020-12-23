@@ -50,7 +50,7 @@ spec:
       containers:
         - name: zookeeper
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.image.pullPolicy | default .Values.global.pullPolicy }} 
         {{- with .Values.command }}
           command: {{ range . }}
              - {{ . | quote }}

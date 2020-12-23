@@ -136,6 +136,7 @@ kafka:
 cassandra:
   url: cassandra-headless
   port: 9042
+  image: cassandra:3.11.6
 
 env:
   protocol: https

@@ -40,7 +40,7 @@ controller:
     tag: "1.7.0"
 
     ## The pull policy for the Ingress controller image.
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
 
   config:
     ## The name of the ConfigMap used by the Ingress controller.

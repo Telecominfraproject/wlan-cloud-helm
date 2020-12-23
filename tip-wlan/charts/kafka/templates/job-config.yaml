@@ -23,6 +23,7 @@ spec:
       containers:
         - name: {{ include "common.fullname" . }}-config
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+          imagePullPolicy: {{ .Values.imagePullPolicy | default .Values.global.pullPolicy }}
           command: ["/usr/local/script/runtimeConfig.sh"]
           volumeMounts:
             - name: config-volume
