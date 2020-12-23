@@ -1,0 +1,105 @@
+name: CloudSDK deployment and testing
+
+env:
+  PR_NUMBER: ${{ github.event.number }}
+  # AWS credentials
+  AWS_EKS_NAME: tip-wlan-main
+  AWS_DEFAULT_OUTPUT: json
+  AWS_DEFAULT_REGION: us-east-2
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  # Cloud SDK certs
+  # CACERT: ${{ secrets.CACERT }}
+  # CAKEY: ${{ secrets.CAKEY }}
+
+on:
+  pull_request:
+     branches: [ master ]
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout required repos
+      uses: actions/checkout@v2
+      with:
+        path: wlan-pki-cert-scripts
+        repository: Telecominfraproject/wlan-pki-cert-scripts
+    - name: Checkout Cloud SDK repo
+      uses: actions/checkout@v2
+      with:
+        path: wlan-cloud-helm
+        repository: Telecominfraproject/wlan-cloud-helm
+    - name: Checkout helm values repo
+      uses: actions/checkout@v2
+      with:
+        path: Toolsmith
+        repository: Telecominfraproject/Toolsmith
+        token: ${{ secrets.PAT_TOKEN }}
+
+    #- name: Prepare environment
+    #  run: |
+    #     mkdir ./wlan-helm/tip-wlan/resources/certs
+    #     mkdir -p ./wlan-pki/testCA/private
+    #     mkdir -p ./wlan-pki/testCA/newcerts
+    #     mkdir -p ./wlan-pki/generated
+    #     touch ./wlan-pki/testCA/index.txt
+    #     echo "01" > ./wlan-pki/testCA/serial.txt
+    #     echo "${{ env.CACERT }}" | base64 -d > ./wlan-pki/testCA/cacert.pem
+    #     echo "${{ env.CAKEY }}" | base64 -d > ./wlan-pki/testCA/private/cakey.pem
+    #    cp ./Toolsmith/helm-values/aws-cicd.yaml ./wlan-helm/tip-wlan/resources/environments/aws-cicd.yaml
+
+    - name: Generate certs
+      working-directory: wlan-pki-cert-scripts
+      run: |
+        ./generate_all.sh
+        ./copy-certs-to-helm.sh ../wlan-cloud-helm
+
+    - name: Get kubeconfig for EKS ${{ env.AWS_EKS_NAME }}
+      run: |
+        aws eks update-kubeconfig --name ${{ env.AWS_EKS_NAME }}
+
+    - name: Deploy Cloud SDK
+      run: |
+        # the 2 lines below are needed for the new flow only, not needed for the old one
+        # helm dependency update
+        # helm upgrade --install tip-wlan . -f resources/environments/aws-cicd.yaml --create-namespace --namespace ${GITHUB_REF##*/} 
+        # using a timeout of 20 minutes as the EKS nodes may need to be scaled which takes some time
+        helm upgrade --install tip-wlan-pr-${{ env.PR_NUMBER }} wlan-cloud-helm/tip-wlan -f Toolsmith/helm-values/aws-cicd.yaml --namespace default --wait --timeout 20m --dry-run --set global.nsPrefix=tip-pr-${{ env.PR_NUMBER }}
+
+  test:
+    runs-on: ubuntu-latest
+    needs: [ deploy ]
+    steps:
+    - name: Get kubeconfig for EKS ${{ env.AWS_EKS_NAME }}
+      run: |
+        aws eks update-kubeconfig --name ${{ env.AWS_EKS_NAME }}
+
+    - name: Execute tests
+      run: |
+        echo Running tests...
+        sleep 5
+        echo Tests were successful
+
+  cleanup:
+    runs-on: ubuntu-latest
+    needs: [ deploy, test ]
+    if: ${{ always() }}
+    steps:
+    - name: Get kubeconfig for EKS ${{ env.AWS_EKS_NAME }}
+      run: |
+        aws eks update-kubeconfig --name ${{ env.AWS_EKS_NAME }}
+
+    - name: Delete Cloud SDK Helm release
+      run: |
+        helm delete tip-wlan-pr-${{ env.PR_NUMBER }} --namespace default --dry-run || true
+
+    - name: Delete namespace
+      run: |
+        kubectl delete ns tip-pr-${{ env.PR_NUMBER }} --wait=true --ignore-not-found true
+
