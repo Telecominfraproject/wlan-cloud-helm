@@ -71,7 +71,7 @@ jobs:
         # helm dependency update
         # helm upgrade --install tip-wlan . -f resources/environments/aws-cicd.yaml --create-namespace --namespace ${GITHUB_REF##*/} 
         # using a timeout of 20 minutes as the EKS nodes may need to be scaled which takes some time
-        helm upgrade --install tip-wlan-pr-${{ env.PR_NUMBER }} wlan-cloud-helm/tip-wlan -f pr-deployment.yaml --namespace default --wait --timeout 20m --dry-run
+        helm upgrade --install tip-wlan-pr-${{ env.PR_NUMBER }} wlan-cloud-helm/tip-wlan -f pr-deployment.yaml --namespace default --wait --timeout 20m
 
   test:
     runs-on: ubuntu-latest
@@ -98,7 +98,7 @@ jobs:
 
     - name: Delete Cloud SDK Helm release
       run: |
-        helm delete tip-wlan-pr-${{ env.PR_NUMBER }} --namespace default --dry-run || true
+        helm delete tip-wlan-pr-${{ env.PR_NUMBER }} --namespace default || true
 
     - name: Delete namespace
       run: |
