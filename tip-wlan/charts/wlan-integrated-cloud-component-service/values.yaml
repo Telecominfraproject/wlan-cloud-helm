@@ -81,19 +81,19 @@ ingress:
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: example.com
-      paths: [
-         /portal
-        ]
-  tls:
-   - secretName: portal-secret
-     hosts:
-       - example.com
+  hosts: []
+  #  - host: wlan-integrated-cloud-component-service.local
+  #    paths: [
+  #       /portal
+  #      ]
+  tls: []
+  # - secretName: portal-secret
+  #   hosts:
+  #     - wlan-integrated-cloud-component-service.local
 
  # Transport-Server-passthrough properties
 tsp:
-  host: wlan-portal-service.zone3.lab.connectus.ai
+  host: wlan-portal-service.local
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
