@@ -94,10 +94,10 @@ controller:
   ## The resources of the Ingress controller pods.
   resources:
     limits:
-      cpu: 200m
+      cpu: 500m
       memory: 200Mi
     requests:
-      cpu: 100m
+      cpu: 500m
       memory: 140Mi
 
   ## The tolerations of the Ingress controller pods.

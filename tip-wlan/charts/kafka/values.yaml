@@ -21,10 +21,10 @@ imagePullPolicy: "Always"
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 resources:
   limits:
-    cpu: 200m
+    cpu: 500m
     memory: 2Gi
   requests:
-    cpu: 100m
+    cpu: 500m
     memory: 1Gi
 kafkaHeapOptions: "-Xmx1G -Xms1G"
 
@@ -324,10 +324,10 @@ zookeeper:
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   resources:
     limits:
-      cpu: 200m
+      cpu: 500m
       memory: 1Gi
     requests:
-      cpu: 100m
+      cpu: 500m
       memory: 700Mi
 
   ## Environmental variables to set in Zookeeper

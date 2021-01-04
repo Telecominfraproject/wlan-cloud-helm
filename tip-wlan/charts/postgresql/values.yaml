@@ -441,8 +441,8 @@ resources:
     memory: 500Mi
     cpu: 500m
   requests:
-    memory: 50Mi
-    cpu: 250m
+    memory: 128Mi
+    cpu: 500m
 
 ## Add annotations to all the deployed resources
 ##

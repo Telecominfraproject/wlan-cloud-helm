@@ -126,10 +126,10 @@ ingress:
 
 resources:
   limits:
-    cpu: 100m
+    cpu: 500m
     memory: 320Mi
   requests:
-    cpu: 100m
+    cpu: 500m
     memory: 300Mi
 
 nodeSelector: {}

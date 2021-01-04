@@ -82,11 +82,11 @@ ingress:
 
 resources:
   limits:
-    cpu: 100m
-    memory: 10Mi
+    cpu: 500m
+    memory: 128Mi
   requests:
-    cpu: 100m
-    memory: 5Mi
+    cpu: 500m
+    memory: 128Mi
 
 priorityClassName: ""
 

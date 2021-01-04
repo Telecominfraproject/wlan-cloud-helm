@@ -138,7 +138,7 @@ resources:
      cpu: "1"
      memory: 4Gi
   requests:
-     cpu: 250m
+     cpu: 500m
      memory: 3Gi
 
 ## Secret with keystore, keystore password, truststore, truststore password
