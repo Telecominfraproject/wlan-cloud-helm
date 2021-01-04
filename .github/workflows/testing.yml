@@ -37,7 +37,6 @@ jobs:
         path: Toolsmith
         repository: Telecominfraproject/Toolsmith
         token: ${{ secrets.PAT_TOKEN }}
-        ref: WIFI-1245-add-template-for-pr-deployment
 
     - name: Generate Helm values file
       run: |
