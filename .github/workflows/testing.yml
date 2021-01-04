@@ -1,0 +1,102 @@
+name: CloudSDK deployment and testing
+
+env:
+  PR_NUMBER: ${{ github.event.number }}
+  AWS_EKS_NAME: tip-wlan-main
+  AWS_DEFAULT_OUTPUT: json
+  AWS_DEFAULT_REGION: us-east-2
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+on:
+  pull_request:
+     branches: [ master ]
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout required repos
+      uses: actions/checkout@v2
+      with:
+        path: wlan-pki-cert-scripts
+        repository: Telecominfraproject/wlan-pki-cert-scripts
+    - name: Checkout Cloud SDK repo
+      uses: actions/checkout@v2
+      with:
+        path: wlan-cloud-helm
+        repository: Telecominfraproject/wlan-cloud-helm
+    - name: Checkout helm values repo
+      uses: actions/checkout@v2
+      with:
+        path: Toolsmith
+        repository: Telecominfraproject/Toolsmith
+        token: ${{ secrets.PAT_TOKEN }}
+        ref: WIFI-1245-add-template-for-pr-deployment
+
+    - name: Generate Helm values file
+      run: |
+        ./Toolsmith/helm-values/aws-cicd-pr-deployment.yaml.sh ${{ env.PR_NUMBER }} > pr-deployment.yaml
+
+    - name: Generate certs
+      working-directory: wlan-pki-cert-scripts
+      run: |
+        ./generate_all.sh
+        ./copy-certs-to-helm.sh ../wlan-cloud-helm
+
+    - name: Get kubeconfig for EKS ${{ env.AWS_EKS_NAME }}
+      run: |
+        aws eks update-kubeconfig --name ${{ env.AWS_EKS_NAME }}
+
+    - name: Deploy Cloud SDK
+      run: |
+        # using a timeout of 20 minutes as the EKS nodes may need to be scaled which takes some time
+        helm upgrade --install tip-wlan-pr-${{ env.PR_NUMBER }} wlan-cloud-helm/tip-wlan -f pr-deployment.yaml --namespace default --wait --timeout 20m
+
+  test:
+    runs-on: ubuntu-latest
+    needs: [ deploy ]
+    steps:
+    - name: Execute tests
+      run: |
+        echo Running tests...
+        # this is needed to make until work
+        set +e
+
+        urls="https://wlan-ui-pr-$PR_NUMBER.cicd.lab.wlan.tip.build https://wlan-graphql-pr-$PR_NUMBER.cicd.lab.wlan.tip.build/graphql"
+        for url in $urls; do
+          max_retry=300
+          counter=0
+          until curl --silent $url > /dev/null
+          do
+             sleep 1
+             [[ counter -eq $max_retry ]] && echo "$url not reachable after $counter tries...giving up" && exit 1
+             echo "#$counter: $url not reachable. trying again..."
+             ((counter++))
+          done
+          echo Successfully reached URL $url
+        done
+
+        echo Tests were successful
+
+  cleanup:
+    runs-on: ubuntu-latest
+    needs: [ deploy, test ]
+    if: ${{ always() }}
+    steps:
+    - name: Get kubeconfig for EKS ${{ env.AWS_EKS_NAME }}
+      run: |
+        aws eks update-kubeconfig --name ${{ env.AWS_EKS_NAME }}
+
+    - name: Delete Cloud SDK Helm release
+      run: |
+        helm delete tip-wlan-pr-${{ env.PR_NUMBER }} --namespace default || true
+
+    - name: Delete namespace
+      run: |
+        kubectl delete ns tip-pr-${{ env.PR_NUMBER }} --wait=true --ignore-not-found true
