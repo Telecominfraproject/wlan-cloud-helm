@@ -19,13 +19,13 @@ imagePullPolicy: "Always"
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-resources: {}
-  # limits:
-  #   cpu: 200m
-  #   memory: 1536Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 1024Mi
+resources:
+  limits:
+    cpu: 500m
+    memory: 2Gi
+  requests:
+    cpu: 500m
+    memory: 1Gi
 kafkaHeapOptions: "-Xmx1G -Xms1G"
 
 ## Optional Container Security context
@@ -322,7 +322,13 @@ zookeeper:
 
   ## Configure Zookeeper resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  resources: ~
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 700Mi
 
   ## Environmental variables to set in Zookeeper
   env:

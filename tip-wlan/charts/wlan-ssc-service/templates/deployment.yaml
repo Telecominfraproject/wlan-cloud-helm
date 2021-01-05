@@ -91,7 +91,7 @@ spec:
             protocol: TCP
           resources:
             requests:
-              cpu: 250m
+              cpu: 500m
               memory: 256Mi
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File

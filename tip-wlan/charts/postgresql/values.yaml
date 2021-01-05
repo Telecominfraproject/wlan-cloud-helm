@@ -437,9 +437,12 @@ slave:
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
 resources:
+  limits:
+    memory: 500Mi
+    cpu: 500m
   requests:
-    memory: 256Mi
-    cpu: 250m
+    memory: 128Mi
+    cpu: 500m
 
 ## Add annotations to all the deployed resources
 ##
