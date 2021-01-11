@@ -5,5 +5,4 @@ metadata:
   namespace: {{ include "common.namespace" . }}
 data:
 {{ tpl (.Files.Glob "resources/config/*").AsConfig . | indent 2 }}
-  run.sh: |
-  {{ tpl (.Files.Get "files/run.sh") . | nindent 4 }}
+{{ tpl (.Files.Glob "files/*").AsConfig . | nindent 2 }}
