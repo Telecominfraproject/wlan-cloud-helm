@@ -78,9 +78,11 @@ service:
   port3: 5010
   name3: debug-appl
   nodePort3: '03'
-  nodePortStatic: true ## if true, nodePort ports are statically defined effectively prohibiting multiple deployments on the same cluster; if false, nodePort ports are chosen dynamically by k8s
+  nodePortStatic: true ## if true, nodePort ports are calculated by Helm based on the given start index and length; if false, nodePort ports are chosen dynamically by k8s
 
-# The below ports are the ports that Java would choose as Local ports whenever it opens up
+# The below range will be combined with the nodePortPrefixExt to create a list of ports.
+# e.g. nodePortPrefixExt = 304, accessPointDebugPortRange.start = 10, accessPointDebugPortRange.length = 2, resulting ports = 30410, 30411
+# These ports are the ports that Java would choose as Local ports whenever it opens up
 # a developer session for debug.
 # These ports are therefore assigned as container ports (in the deployment.yaml), so we 
 # can reach them from inside the cluster.
@@ -89,33 +91,9 @@ service:
 # NOTE: Another way to reach these container ports without opening NodePorts was to use 
 # kubectl port forwarding. However, we dont want the developer to install kubectl.
 
-debugPorts:
-  - 30410
-  - 30411
-  - 30412
-  - 30413
-  - 30414
-  - 30415
-  - 30416
-  - 30417
-  - 30418
-  - 30419
-  - 30420
-  - 30421
-  - 30422
-  - 30423
-  - 30424
-  - 30425
-  - 30426
-  - 30427
-  - 30428
-  - 30429
-  - 30430
-  - 30431
-  - 30432
-  - 30433
-  - 30434
-  - 30435
+accessPointDebugPortRange:
+  start: 10
+  length: 26
 
 creds:
   enabled: true

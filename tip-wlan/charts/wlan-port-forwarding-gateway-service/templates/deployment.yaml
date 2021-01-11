@@ -121,7 +121,7 @@ spec:
               containerPort: {{ .Values.service.port3 }}
               protocol: TCP
             {{- end }}
-            {{- include "container.dev.debugport" . | nindent 10 }}
+            {{- include "container.dev.apDebugPorts" . | nindent 10 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

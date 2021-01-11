@@ -5,7 +5,7 @@
 # later be opened by the port-forwarding-gateway service as NodePorts (preferred)
 # or use kubectl port-forwarding to forward the container ports. Example:
 # kubectl port-forward pods/<port-forwarding-gw-pod> <local-machine-port>:<debugPort on the Pod>
-sysctl -w net.ipv4.ip_local_port_range="30410    30435"
+sysctl -w net.ipv4.ip_local_port_range="{{ include "apDebugPortsStart" . }} {{ sub (include "apDebugPortsEnd" . | atoi) 1 }}"
 
 PROFILES=" -Dspring.profiles.include=use_ssl_with_client_cert_and_digest_auth,client_certificate_and_digest_auth,RestTemplateConfiguration_X509_client_cert_auth"
 

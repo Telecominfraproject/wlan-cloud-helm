@@ -1,24 +1,43 @@
 {{/*
-    This template will be used to iterate through the debug-ports and generate
-    debug-ports mapping
+    This template will be used to iterate through the access point debug ports and generate
+    access point debug ports mapping
   */}}
 
-{{- define "container.dev.debugport" -}}
-  {{- range $index, $portid := .Values.debugPorts }}
-  - name: debugport-{{ $index }}
-    containerPort: {{ $portid }}
+{{- define "apDebugPortsStart" -}}
+{{- $portPrefix := $.Values.global.nodePortPrefixExt | default $.Values.nodePortPrefixExt | int -}}
+{{- $start := $.Values.accessPointDebugPortRange.start | int -}}
+{{- $end := (add $.Values.accessPointDebugPortRange.start $.Values.accessPointDebugPortRange.length) | int -}}
+{{- printf "%d%d" $portPrefix $start -}}
+{{- end -}}
+
+
+{{- define "apDebugPortsEnd" -}}
+{{- $portPrefix := $.Values.global.nodePortPrefixExt | default $.Values.nodePortPrefixExt | int -}}
+{{- $start := $.Values.accessPointDebugPortRange.start | int -}}
+{{- $end := (add $.Values.accessPointDebugPortRange.start $.Values.accessPointDebugPortRange.length) | int -}}
+{{- printf "%d%d" $portPrefix $end -}}
+{{- end -}}
+
+
+
+{{- define "container.dev.apDebugPorts" -}}
+{{- $accessPointDebugPorts := untilStep (include "apDebugPortsStart" . | atoi) (include "apDebugPortsEnd" . | atoi) 1 -}}
+  {{- range $index, $port := $accessPointDebugPorts }}
+  - name: apdebugport-{{ $index }}
+    containerPort: {{ $port }}
     protocol: TCP
   {{- end }}
 {{- end -}}
 
-{{- define "service.dev.debugport" -}}
-  {{- range $index, $portid := .Values.debugPorts }}
-  - port: {{ $portid }}
-    targetPort: {{ $portid }}
+{{- define "service.dev.apDebugPorts" -}}
+{{- $accessPointDebugPorts := untilStep (include "apDebugPortsStart" . | atoi) (include "apDebugPortsEnd" . | atoi) 1 -}}
+  {{- range $index, $port := $accessPointDebugPorts }}
+  - port: {{ $port }}
+    targetPort: {{ $port }}
     protocol: TCP
-    name: debugport-{{ $index }}
+    name: apdebugport-{{ $index }}
     {{- if eq $.Values.service.type "NodePort" }}
-    nodePort: {{ $portid }}
+    nodePort: {{ $port }}
     {{- end }}   
   {{- end }}
 {{- end -}}
