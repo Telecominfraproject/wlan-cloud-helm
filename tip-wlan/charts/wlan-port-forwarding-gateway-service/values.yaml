@@ -78,7 +78,7 @@ service:
   port3: 5010
   name3: debug-appl
   nodePort3: '03'
-  nodePortStatic: true ## if true, nodePort ports are statically defined effectively prohibiting multiple deployments on the same cluster; if false, nodePort ports are chosen dynamically by k8s
+  nodePortStatic: true ## if true, nodePort ports are calculated by Helm based on the given start index and length; if false, nodePort ports are chosen dynamically by k8s
 
 # The below range will be combined with the nodePortPrefixExt to create a list of ports.
 # e.g. nodePortPrefixExt = 304, accessPointDebugPortRange.start = 10, accessPointDebugPortRange.length = 2, resulting ports = 30410, 30411
