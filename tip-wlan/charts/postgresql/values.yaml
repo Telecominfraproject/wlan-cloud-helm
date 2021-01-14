@@ -439,10 +439,10 @@ slave:
 resources:
   limits:
     memory: 500Mi
-    cpu: 500m
+    cpu: 50m
   requests:
     memory: 128Mi
-    cpu: 500m
+    cpu: 50m
 
 ## Add annotations to all the deployed resources
 ##

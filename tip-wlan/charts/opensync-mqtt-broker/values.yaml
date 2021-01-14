@@ -85,7 +85,7 @@ resources:
     cpu: 500m
     memory: 128Mi
   requests:
-    cpu: 500m
+    cpu: 50m
     memory: 128Mi
 
 priorityClassName: ""
