@@ -106,7 +106,7 @@ resources:
     cpu: 500m
     memory: 370Mi
   requests:
-    cpu: 500m
+    cpu: 50m
     memory: 350Mi
 
 nodeSelector: {}

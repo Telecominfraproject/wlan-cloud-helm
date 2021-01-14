@@ -97,7 +97,7 @@ controller:
       cpu: 500m
       memory: 200Mi
     requests:
-      cpu: 500m
+      cpu: 50m
       memory: 140Mi
 
   ## The tolerations of the Ingress controller pods.

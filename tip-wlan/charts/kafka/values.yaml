@@ -24,7 +24,7 @@ resources:
     cpu: 500m
     memory: 2Gi
   requests:
-    cpu: 500m
+    cpu: 50m
     memory: 1Gi
 kafkaHeapOptions: "-Xmx1G -Xms1G"
 
@@ -327,7 +327,7 @@ zookeeper:
       cpu: 500m
       memory: 1Gi
     requests:
-      cpu: 500m
+      cpu: 50m
       memory: 700Mi
 
   ## Environmental variables to set in Zookeeper
