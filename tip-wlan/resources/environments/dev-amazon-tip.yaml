@@ -124,6 +124,10 @@ wlan-port-forwarding-gateway-service:
   externallyVisible:
     host: api.wlan.demo.lab.wlan.tip.build
     port: 30401
+  extPortRangeStart:
+    port: 30410
+  extPortRangeEnd:
+    port: 30435
 nginx-ingress-controller:
   enabled: true
   controller:
