@@ -71,10 +71,6 @@ spec:
               value: {{ .Values.externallyVisible.host }}
             - name: PF_GATEWAY_RELEASE_EXT_PORT
               value: "{{ .Values.externallyVisible.port }}"
-            - name: EXT_PORT_RANGE_START
-              value: "{{ .Values.extPortRangeStart.port }}"
-            - name: EXT_PORT_RANGE_END
-              value: "{{ .Values.extPortRangeEnd.port }}"
           {{- if .Values.probes.enabled }}
           livenessProbe:
             httpGet:
@@ -110,7 +106,9 @@ spec:
           - mountPath: /app/port-forwarding-gateway/logback.xml
             name: configuration
             subPath: logback.xml
-
+          - mountPath: /app/run.sh
+            name: configuration
+            subPath: run.sh
           ports:
             - name: {{ .Values.service.name1 }}
               containerPort: {{ .Values.service.port1 }}
