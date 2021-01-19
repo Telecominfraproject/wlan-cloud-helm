@@ -7,9 +7,9 @@ metadata:
 type: Opaque
 data:
   truststore: {{ .Files.Get "resources/certs/truststore.jks" | b64enc }}
-  truststore-password: {{ "mypassword" | b64enc }}
+  truststore-password: {{ .Values.global.creds.sslTruststorePassword | b64enc }}
   keystore: {{ .Files.Get "resources/certs/cassandra_server_keystore.jks" | b64enc }}
-  keystore-password: {{ "mypassword" | b64enc }}
+  keystore-password: {{ .Values.global.creds.sslKeystorePassword | b64enc }}
   cassandraservercert.pem: {{ .Files.Get "resources/certs/cassandraservercert.pem" | b64enc }}
   cassandraserverkey_dec.pem: {{ .Files.Get "resources/certs/cassandraserverkey_dec.pem" | b64enc }}
 

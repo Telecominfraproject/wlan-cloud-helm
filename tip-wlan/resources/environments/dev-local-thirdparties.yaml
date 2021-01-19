@@ -26,6 +26,10 @@ global:
 
   # flag to enable debugging - application support required
   debugEnabled: true
+  creds:
+    sslKeyPassword: mypassword
+    sslKeystorePassword: mypassword
+    sslTruststorePassword: mypassword
 
 # Annotations for namespace
 annotations: {

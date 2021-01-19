@@ -1,3 +1,9 @@
+global:
+  creds:
+    sslKeyPassword: mypassword
+    sslKeystorePassword: mypassword
+    sslTruststorePassword: mypassword
+
 topics:
 - name: wlan_service_metrics
   partitions: 1
