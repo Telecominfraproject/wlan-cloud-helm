@@ -36,11 +36,7 @@ global:
 
   testingEnabled: false
 
-  testingTimestamp: 
-  
-  
-# Namespace related
-createReleaseNamespace: true
+  testingTimestamp:
 
 # DockerRegistry Secret
 createDockerRegistrySecret: true
@@ -75,8 +71,6 @@ wlan-port-forwarding-gateway-service:
 wlan-integrated-cloud-component-service:
   enabled: false
 nginx-ingress-controller:
-  enabled: false
-zookeeper:
   enabled: false
 kafka:
   enabled: false

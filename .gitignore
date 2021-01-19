@@ -2,4 +2,15 @@
 *.jks
 *.pkcs12
 *.p12
+*.csr
+*.cnf
 *.DS_Store
+*.lock
+
+# local development
+*.local_dev
+tip-wlan/resources/certs
+
+stern*
+*.tgz
+helmfile
