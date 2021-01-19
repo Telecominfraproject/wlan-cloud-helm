@@ -74,7 +74,7 @@ spec:
             - name: EXT_PORT_RANGE_START
               value: "{{ include "apDebugPortsStart" . }}"
             - name: EXT_PORT_RANGE_END
-              value: "{{ include "apDebugPortsEnd" . }}"
+              value: "{{ sub (include "apDebugPortsEnd" . | atoi) 1 }}"
           {{- if .Values.probes.enabled }}
           livenessProbe:
             httpGet:
