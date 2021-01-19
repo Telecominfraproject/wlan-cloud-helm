@@ -166,7 +166,7 @@ cassandra:
     debug: true
   persistence:
     enabled: true
-    storageClass: "hostpath"
+    storageClass: standard
   replicaCount: 1
   cluster:
     name: TipWlanCluster
@@ -213,7 +213,7 @@ postgresql:
     slaveReplicas: 1
   persistence:
     enabled: true
-    storageClass: hostpath
+    storageClass: standard
   volumePermissions:
     enabled: true
   livenessProbe:
