@@ -150,9 +150,4 @@ env:
     service: wlan-port-forwarding-gateway-service
     port: 7070
 
- 
-extPortRangeStart:
-  port: 30410
-extPortRangeEnd:
-  port: 30435
 
