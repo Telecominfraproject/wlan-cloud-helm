@@ -4,13 +4,14 @@
 *.p12
 *.csr
 *.cnf
+*.key
 *.DS_Store
-*.lock
 
 # local development
+*.lock
 *.local_dev
-tip-wlan/resources/certs
 
-stern*
+*.zip
 *.tgz
+stern*
 helmfile
