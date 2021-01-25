@@ -40,7 +40,7 @@ jobs:
 
     - name: Generate Helm values file
       run: |
-        ./Toolsmith/helm-values/aws-cicd-pr-deployment.yaml.sh ${{ env.PR_NUMBER }} > pr-deployment.yaml
+        ./Toolsmith/helm-values/aws-cicd-testing-pr-deployment.yaml.sh ${{ env.PR_NUMBER }} > pr-deployment.yaml
 
     - name: Generate certs
       working-directory: wlan-pki-cert-scripts
@@ -55,6 +55,7 @@ jobs:
     - name: Deploy Cloud SDK
       run: |
         # using a timeout of 20 minutes as the EKS nodes may need to be scaled which takes some time
+        helm dependency update
         helm upgrade --install tip-wlan-pr-${{ env.PR_NUMBER }} wlan-cloud-helm/tip-wlan -f pr-deployment.yaml --namespace default --wait --timeout 20m
 
   test:

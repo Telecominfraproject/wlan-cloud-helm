@@ -1,19 +1,21 @@
 global:
+  kafka:
+    image: confluentinc/cp-kafka:5.0.1
+    port: 9092
+    topics:
+    - name: wlan_service_metrics
+      partitions: 1
+      replicationFactor: 1
+    - name: system_events
+      partitions: 1
+      replicationFactor: 1
+    - name: customer_events
+      partitions: 1
+      replicationFactor: 1
   creds:
     sslKeyPassword: mypassword
     sslKeystorePassword: mypassword
     sslTruststorePassword: mypassword
-
-topics:
-- name: wlan_service_metrics
-  partitions: 1
-  replicationFactor: 1
-- name: system_events
-  partitions: 1
-  replicationFactor: 1
-- name: customer_events
-  partitions: 1
-  replicationFactor: 1
 
 kafka:
   enabled: true
