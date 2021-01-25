@@ -26,6 +26,7 @@ jobs:
       with:
         path: wlan-pki-cert-scripts
         repository: Telecominfraproject/wlan-pki-cert-scripts
+        ref: local/dev
     - name: Checkout Cloud SDK repo
       uses: actions/checkout@v2
       with:
@@ -41,7 +42,6 @@ jobs:
     - name: Generate Helm values file
       run: |
         ./Toolsmith/helm-values/aws-cicd-testing-pr-deployment.yaml.sh ${{ env.PR_NUMBER }} > wlan-cloud-helm/tip-wlan/pr-deployment.yaml
-        cat wlan-cloud-helm/tip-wlan/pr-deployment.yaml
 
     - name: Generate certs
       working-directory: wlan-pki-cert-scripts
