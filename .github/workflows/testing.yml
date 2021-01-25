@@ -58,6 +58,7 @@ jobs:
         cd wlan-cloud-helm/tip-wlan
         helm dependency update
         # using a timeout of 20 minutes as the EKS nodes may need to be scaled which takes some time
+        helm template tip-wlan-pr-${{ env.PR_NUMBER }} . -f pr-deployment.yaml --create-namespace --namespace tip-wlan-pr-${{ env.PR_NUMBER }}
         helm upgrade --install tip-wlan-pr-${{ env.PR_NUMBER }} . -f pr-deployment.yaml --create-namespace --namespace tip-wlan-pr-${{ env.PR_NUMBER }} --wait --timeout 20m
 
   test:
