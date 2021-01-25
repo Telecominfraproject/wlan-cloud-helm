@@ -41,6 +41,7 @@ jobs:
     - name: Generate Helm values file
       run: |
         ./Toolsmith/helm-values/aws-cicd-testing-pr-deployment.yaml.sh ${{ env.PR_NUMBER }} > wlan-cloud-helm/tip-wlan/pr-deployment.yaml
+        cat wlan-cloud-helm/tip-wlan/pr-deployment.yaml
 
     - name: Generate certs
       working-directory: wlan-pki-cert-scripts
@@ -57,7 +58,7 @@ jobs:
         cd wlan-cloud-helm/tip-wlan
         helm dependency update
         # using a timeout of 20 minutes as the EKS nodes may need to be scaled which takes some time
-        helm upgrade --install tip-wlan-pr-${{ env.PR_NUMBER }} . -f pr-deployment.yaml --create-namespace --namespace tip-pr-${{ env.PR_NUMBER }} --wait --timeout 20m
+        helm upgrade --install tip-wlan-pr-${{ env.PR_NUMBER }} . -f pr-deployment.yaml --create-namespace --namespace tip-wlan-pr-${{ env.PR_NUMBER }} --wait --timeout 20m
 
   test:
     runs-on: ubuntu-latest
