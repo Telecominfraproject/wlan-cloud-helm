@@ -2,6 +2,7 @@ name: CloudSDK deployment and testing
 
 env:
   PR_NUMBER: ${{ github.event.number }}
+  HELM_RELEASE_PREFIX: tip-wlan
   AWS_EKS_NAME: tip-wlan-main
   AWS_DEFAULT_OUTPUT: json
   AWS_DEFAULT_REGION: us-east-2
@@ -41,7 +42,7 @@ jobs:
 
     - name: Generate Helm values file
       run: |
-        ./Toolsmith/helm-values/aws-cicd-testing-pr-deployment.yaml.sh ${{ env.PR_NUMBER }} > wlan-cloud-helm/tip-wlan/pr-deployment.yaml
+        ./Toolsmith/helm-values/aws-cicd-testing-pr-deployment.yaml.sh ${{ env.PR_NUMBER }} > pr-deployment.yaml
 
     - name: Generate certs
       working-directory: wlan-pki-cert-scripts
@@ -55,11 +56,9 @@ jobs:
 
     - name: Deploy Cloud SDK
       run: |
-        cd wlan-cloud-helm/tip-wlan
-        helm dependency update
+        helm dependency update wlan-cloud-helm/${{ env.HELM_RELEASE_PREFIX }}
         # using a timeout of 20 minutes as the EKS nodes may need to be scaled which takes some time
-        helm template tip-wlan-pr-${{ env.PR_NUMBER }} . -f pr-deployment.yaml --create-namespace --namespace tip-wlan-pr-${{ env.PR_NUMBER }}
-        helm upgrade --install tip-wlan-pr-${{ env.PR_NUMBER }} . -f pr-deployment.yaml --create-namespace --namespace tip-wlan-pr-${{ env.PR_NUMBER }} --wait --timeout 20m
+        helm upgrade --install ${{ env.HELM_RELEASE_PREFIX }}-pr-${{ env.PR_NUMBER }} wlan-cloud-helm/tip-wlan -f pr-deployment.yaml --create-namespace --namespace ${{ env.HELM_RELEASE_PREFIX }}-pr-${{ env.PR_NUMBER }} --wait --timeout 20m
 
   test:
     runs-on: ubuntu-latest
@@ -98,8 +97,8 @@ jobs:
 
     - name: Delete Cloud SDK Helm release
       run: |
-        helm delete tip-wlan-pr-${{ env.PR_NUMBER }} --namespace default || true
+        helm delete ${{ env.HELM_RELEASE_PREFIX }}-pr-${{ env.PR_NUMBER }} --namespace ${{ env.HELM_RELEASE_PREFIX }}-pr-${{ env.PR_NUMBER }} || true
 
     - name: Delete namespace
       run: |
-        kubectl delete ns tip-pr-${{ env.PR_NUMBER }} --wait=true --ignore-not-found true
+        kubectl delete namespace ${{ env.HELM_RELEASE_PREFIX }}-pr-${{ env.PR_NUMBER }} --wait=true --ignore-not-found true
