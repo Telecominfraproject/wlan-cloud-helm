@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ .Release.Namespace }}-common-kafka-certs
+  name: tip-common-kafka-certs
   namespace: {{ .Release.Namespace }}
 type: Opaque
 data:
@@ -12,7 +12,7 @@ data:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ .Release.Namespace }}-common-kafka-client-certs
+  name: tip-common-kafka-client-certs
   namespace: {{ .Release.Namespace }}
 type: Opaque
 data:
@@ -23,12 +23,12 @@ data:
 
 
 {{ if .Values.global.kafka.topics }}
-{{- $zk := printf "%s-wlan-zookeeper-headless" .Release.Namespace -}}
+{{- $zk := printf "%s-zookeeper-headless" .Release.Name -}}
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ .Release.Namespace }}-wlan-kafka-config-{{ .Release.Revision }}
+  name: {{ .Release.Name }}-kafka-config-{{ .Release.Revision }}
   namespace: {{ .Release.Namespace }}
 spec:
   backoffLimit: 10
@@ -47,7 +47,7 @@ spec:
             echo "Waiting for Zookeeper..."
             sleep 20
           done
-          until nc -z {{ $.Release.Namespace }}-wlan-kafka {{ .Values.global.kafka.port }} || (( retries++ >= 6 ))
+          until nc -z {{ $.Release.Name }}-kafka {{ .Values.global.kafka.port }} || (( retries++ >= 6 ))
           do
             echo "Waiting for Kafka..."
             sleep 20

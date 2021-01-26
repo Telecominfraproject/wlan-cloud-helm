@@ -12,8 +12,6 @@ global:
   # Change to an unused port prefix range to prevent port conflicts
   # with other instances running within the same k8s cluster
   nodePortPrefix: 302
-  # namespace to deploy the release
-  nsPrefix: tip
 
   repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
   # image pull policy

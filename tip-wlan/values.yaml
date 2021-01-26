@@ -13,8 +13,6 @@ global:
   # with other instances running within the same k8s cluster
   nodePortPrefix: 302
   nodePortPrefixExt: 304
-  # namespace to deploy the release
-  nsPrefix: tip
 
   repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
   # image pull policy

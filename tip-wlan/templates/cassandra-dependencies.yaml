@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ .Release.Namespace }}-common-cassandra-certs
+  name: tip-common-cassandra-certs
   namespace: {{ .Release.Namespace }}
 type: Opaque
 data:
@@ -17,7 +17,7 @@ data:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ .Release.Namespace }}-common-cassandra-client-certs
+  name: tip-common-cassandra-client-certs
   namespace: {{ .Release.Namespace }}
 type: Opaque
 data:
