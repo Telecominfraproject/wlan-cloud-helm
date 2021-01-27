@@ -1,37 +1,15 @@
-# This override file is useful to test one or more subcharts.
-# It overrides the default Tip-Wlan parent chart behaviour 
-#
-# Example use to enable a single subchart (from tip-wlan/ directory):
-#
-# helm install opensync-wifi-controller tip-wlan/ -n default 
-#   -f tip-wlan/resources/environments/disable-allcharts.yaml 
-#   --set opensync-gw-static.enabled=true
-#
-#################################################################
-# Global configuration overrides.
-#
-# These overrides will affect all helm charts (ie. applications)
-# that are listed below and are 'enabled'.
-#################################################################
 global:
-  # Change to an unused port prefix range to prevent port conflicts
-  # with other instances running within the same k8s cluster
   nodePortPrefix: 302
   nodePortPrefixExt: 304
-  # image pull policy
-  pullPolicy: IfNotPresent
+
+  pullPolicy: Always
   repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
-  # override default mount path root directory
-  # referenced by persistent volumes and log files
-  persistence:
-  # flag to enable debugging - application support required
-  debugEnabled: true
+
+  integratedDeployment: false
+  testingEnabled:
 
 createDockerRegistrySecret: false
-#################################################################
-# Enable/disable and configure helm charts (ie. applications)
-# to customize the TIP-WLAN deployment.
-#################################################################
+
 opensync-gw-static:
   enabled: false
 opensync-gw-cloud:

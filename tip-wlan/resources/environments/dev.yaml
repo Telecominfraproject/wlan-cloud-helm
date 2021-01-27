@@ -1,77 +1,38 @@
-# This is a development override file.
-# It overrides the default Tip-Wlan parent chart behaviour
-#
-# It can be tweaked, based on the need to support different
-# dev environments.
-# This file expects to have a GlusterFS storage solution running
-# before "helm install" is performed. 
-#################################################################
-# Global configuration overrides.
-#
-# These overrides will affect all helm charts (ie. applications)
-# that are listed below and are 'enabled'.
-#################################################################
 shared:
   scalability: &jvm-options
-    #how many concurrent connections single instance of OpenSyncGateway can accept
     tip_wlan_ovsdb_listener_threadPoolSize: 50
-    #asynchronous task executor - monitor metrics and adjust if tasks start being rejected
     tip_wlan_AsyncExecutor_CorePoolSize: 10
     tip_wlan_AsyncExecutor_MaxPoolSize: 50
     tip_wlan_AsyncExecutor_QueueCapacity: 50
-    #max total number of persistent connections in the http client pool
     tip_wlan_httpClientConfig_maxConnectionsTotal: 100
-    #max number of persistent connections in the http client pool per destination
     tip_wlan_httpClientConfig_maxConnectionsPerRoute: 10
-    #max number of concurrent REST API calls a single instance of this service can process
     tip_wlan_maxHttpThreads:  100
-    #memory tuning parameters for the JVM - max size, initialsize, garbage collection tuning options, etc.
     JVM_MEM_OPTIONS: " "
-    #max number of connections to PostgreSQL database
     singleDataSource_maxTotalConnections: 8
-    #max number of idle connections to PostgreSQL database
     singleDataSource_maxIdleConnections: 8
-    #max number of cached prepared statements used in PostgreSQL database
     singleDataSource_maxPreparedStatements: 200
-    #max number of cached idle prepared statements used in PostgreSQL database
     singleDataSource_maxIdlePreparedStatements: 200
-    #max number of connections to PostgreSQL database
     singleDataSource_maxTotalConnections: 8
-    #max number of idle connections to PostgreSQL database
     singleDataSource_maxIdleConnections: 8
-    #max number of cached prepared statements used in PostgreSQL database
     singleDataSource_maxPreparedStatements: 200
-    #max number of cached idle prepared statements used in PostgreSQL database
     singleDataSource_maxIdlePreparedStatements: 200
-
 
 global:
-  # Change to an unused port prefix range to prevent port conflicts
-  # with other instances running within the same k8s cluster
   nodePortPrefix: 302
   nodePortPrefixExt: 304
-  # image pull policy
+
   pullPolicy: Always
-
   repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
-  # override default mount path root directory
-  # referenced by persistent volumes and log files
-  persistence:
 
-  # flag to enable debugging - application support required
-  debugEnabled: true
+  integratedDeployment: false
+  testingEnabled: false
+  testingTimestamp:
 
-# Docker registry secret
 dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
-# Annotations for namespace
 annotations: {
     "helm.sh/resource-policy": keep
 }
 
-#################################################################
-# Enable/disable and configure helm charts (ie. applications)
-# to customize the TIP-WLAN deployment.
-#################################################################
 opensync-gw-static:
   enabled: false
 
@@ -163,7 +124,7 @@ wlan-ssc-service:
     sslTruststorePassword: mypassword
     cassandra:
       tip_user: tip_user
-      tip_password: tip_password 
+      tip_password: tip_password
     schema_repo:
       username: tip-read
       password: tip-read

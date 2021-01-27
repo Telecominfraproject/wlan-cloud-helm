@@ -1,13 +1,36 @@
-# Default values for Tip-Wlan
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+shared:
+  scalability: &jvm-options
+    #how many concurrent connections single instance of OpenSyncGateway can accept
+    tip_wlan_ovsdb_listener_threadPoolSize: 50
+    #asynchronous task executor - monitor metrics and adjust if tasks start being rejected
+    tip_wlan_AsyncExecutor_CorePoolSize: 10
+    tip_wlan_AsyncExecutor_MaxPoolSize: 50
+    tip_wlan_AsyncExecutor_QueueCapacity: 50
+    #max total number of persistent connections in the http client pool
+    tip_wlan_httpClientConfig_maxConnectionsTotal: 100
+    #max number of persistent connections in the http client pool per destination
+    tip_wlan_httpClientConfig_maxConnectionsPerRoute: 10
+    #max number of concurrent REST API calls a single instance of this service can process
+    tip_wlan_maxHttpThreads:  100
+    #memory tuning parameters for the JVM - max size, initialsize, garbage collection tuning options, etc.
+    JVM_MEM_OPTIONS: " "
+    #max number of connections to PostgreSQL database
+    singleDataSource_maxTotalConnections: 8
+    #max number of idle connections to PostgreSQL database
+    singleDataSource_maxIdleConnections: 8
+    #max number of cached prepared statements used in PostgreSQL database
+    singleDataSource_maxPreparedStatements: 200
+    #max number of cached idle prepared statements used in PostgreSQL database
+    singleDataSource_maxIdlePreparedStatements: 200
+    #max number of connections to PostgreSQL database
+    singleDataSource_maxTotalConnections: 8
+    #max number of idle connections to PostgreSQL database
+    singleDataSource_maxIdleConnections: 8
+    #max number of cached prepared statements used in PostgreSQL database
+    singleDataSource_maxPreparedStatements: 200
+    #max number of cached idle prepared statements used in PostgreSQL database
+    singleDataSource_maxIdlePreparedStatements: 200
 
-#################################################################
-# Global configuration overrides.
-#
-# These overrides will affect all helm charts (ie. applications)
-# that are listed below and are 'enabled'.
-#################################################################
 global:
   # Change to an unused port prefix range to prevent port conflicts
   # with other instances running within the same k8s cluster
@@ -18,12 +41,6 @@ global:
   # image pull policy
   pullPolicy: Always
 
-  # default mount path root directory referenced
-  # by persistent volumes and log files
-  persistence:
-
-  # override default resource limit flavor for all charts
-  flavor: unlimited
 
   # flag to enable debugging - application support required
   debugEnabled: false
@@ -33,7 +50,6 @@ global:
   integratedDeployment: false
 
   testingEnabled: false
-
   testingTimestamp:
 
 # DockerRegistry Secret
