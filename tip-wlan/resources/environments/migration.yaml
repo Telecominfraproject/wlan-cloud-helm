@@ -39,7 +39,7 @@ kafka:
   allowPlaintextListener: true
   persistence:
     enabled: true
-    storageClass: "hostpath"
+    storageClass: REPLACEME
   metrics:
     serviceMonitor:
       enabled: false
@@ -58,7 +58,7 @@ cassandra:
     debug: true
   persistence:
     enabled: true
-    storageClass: "hostpath"
+    storageClass: REPLACEME
   replicaCount: 1
   cluster:
     name: TipWlanCluster
