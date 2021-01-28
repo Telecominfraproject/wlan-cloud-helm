@@ -15,6 +15,8 @@ If you can re-install your CloudSDK and don't care to loose your data, you can s
 
 ## Procedure
 
+All of the commands should be run under tip-wlan-helm directory.
+
 1. Delete your current Helm release. The following commands will remove the pods, however, the PVC (your databases data) **won't be deleted**:
 ```
 helm list -n default (to look up the name of the release)
