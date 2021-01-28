@@ -38,13 +38,13 @@ helm dependency update tip-wlan
 ```
 7. Perform Helm upgrade:
 ```
-helm upgrade --install tip-wlan tip-wlan/ --namespace tip --create-namespace -f .\resources\environments\your_values_with_fixes.yaml
+helm upgrade --install tip-wlan tip-wlan/ --namespace tip --create-namespace -f tip-wlan/resources/environments/your_values_with_fixes.yaml
 ```
 
 Alternatively, you can run the upgrade command as follows (the order of the -f arguments is important!):
 
 ```
-helm upgrade --install tip-wlan tip-wlan/ --namespace tip --create-namespace -f .\resources\environments\original_values.yaml -f .\resources\environments\migration.yaml
+helm upgrade --install tip-wlan tip-wlan/ --namespace tip --create-namespace -f tip-wlan/resources/environments/original_values.yaml -f tip-wlan/resources/environments/migration.yaml
 ```
 
 As a precaution you can also run `helm template` with the same arguments as the upgrade command and examine the output before actually installing the chart
