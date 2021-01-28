@@ -27,7 +27,6 @@ jobs:
       with:
         path: wlan-pki-cert-scripts
         repository: Telecominfraproject/wlan-pki-cert-scripts
-        ref: local/dev
     - name: Checkout Cloud SDK repo
       uses: actions/checkout@v2
       with:
