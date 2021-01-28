@@ -16,16 +16,17 @@ This repository contains helm charts for various deployment types of the tip wla
 helm list -n default (to look up the name)
 helm uninstall -n default tip-wlan (tip-wlan is usually the name)
 ```
-2. Replace `REPLACEME` with your storage class name in migration.yaml
-3. Update your values file that you used to deploy this chart with the values from migration.yaml to support thirdparties and preserve existing cassandra\postgres data. You need to override existing values for postgres\cassandra\kafka and add the creds property and sub properties to the global values (it used to be under cassandra). This step can be skipped if you choose to use helm to merge those values.
-4. You need to remove old charts from helm, so that helm can successfully pull new ones (if you are doing this in place, if you copied new helm chart to another directory you can skip this):
-```
-rm -rf tip-wlan/charts/cassandra tip-wlan/charts/kafka tip-wlan/charts/postgresql
-```
-5. Then you need to copy the certificates to a new location (if you are doing this in place, otherwize checkout the latest wlan-pki-cert-script repo and use `copy-certs-to-helm.sh %path_to_new_helm_code%` from that repo):
+2. Then you need to copy the certificates to a new location (if you are doing this in place, otherwize checkout the latest wlan-pki-cert-script repo and use `copy-certs-to-helm.sh %path_to_new_helm_code%` from that repo):
 ```
 find . -regextype posix-extended -regex '.+(jks|pem|key|pkcs12|p12)$' -exec cp "{}" tip-wlan/resources/certs/ \;
 ```
+3. Replace `REPLACEME` with your storage class name in migration.yaml
+4. Update your values file that you used to deploy this chart with the values from migration.yaml to support thirdparties and preserve existing cassandra\postgres data. You need to override existing values for postgres\cassandra\kafka and add the creds property and sub properties to the global values (it used to be under cassandra). This step can be skipped if you choose to use helm to merge those values.
+5. You need to remove old charts from helm, so that helm can successfully pull new ones (if you are doing this in place, if you copied new helm chart to another directory you can skip this):
+```
+rm -rf tip-wlan/charts/cassandra tip-wlan/charts/kafka tip-wlan/charts/postgresql
+```
+
 6. Then you need to update subcharts:
 ```
 helm dependency update
