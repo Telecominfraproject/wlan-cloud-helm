@@ -88,7 +88,7 @@ wlan-cloud-graphql-gw:
     portalsvc: tip-wlan-wlan-portal-service:9051
   ingress:
     hosts:
-      - host: wlan-ui-graphql.home.lan
+      - host: wlan-ui-graphql.wlan.local
         paths: [
            /
           ]
@@ -104,7 +104,7 @@ wlan-cloud-static-portal:
     type: NodePort
   ingress:
     hosts:
-      - host: wlan-ui.home.lan
+      - host: wlan-ui.wlan.local
         paths: [
            /
           ]
