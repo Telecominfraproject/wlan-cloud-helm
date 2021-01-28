@@ -1,0 +1,97 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tip-common-kafka-certs
+  namespace: {{ .Release.Namespace }}
+type: Opaque
+data:
+  kafka-0.keystore.jks: {{ .Files.Get "resources/certs/kafka-server.pkcs12" | b64enc }}
+  kafka.truststore.jks: {{ .Files.Get "resources/certs/truststore.jks" | b64enc }}
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tip-common-kafka-client-certs
+  namespace: {{ .Release.Namespace }}
+type: Opaque
+data:
+  client_keystore.jks: {{ .Files.Get "resources/certs/client_keystore.jks" | b64enc }}
+  kafka-server.pkcs12: {{ .Files.Get "resources/certs/kafka-server.pkcs12" | b64enc }}
+  truststore.jks: {{ .Files.Get "resources/certs/truststore.jks" | b64enc }}
+  server.pkcs12: {{ .Files.Get "resources/certs/server.pkcs12" | b64enc }}
+
+
+{{ if .Values.global.kafka.topics }}
+{{- $zk := printf "%s-zookeeper-headless" .Release.Name -}}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-kafka-config-{{ .Release.Revision }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  backoffLimit: 10
+  template:
+    spec:
+      restartPolicy: OnFailure
+      initContainers:
+      - name: depends-on
+        image: {{ .Values.global.kafka.image }}
+        command:
+        - bash
+        - -c
+        - |
+          until kafka-configs --zookeeper {{ $zk }} --entity-type topics --describe || (( count++ >= 6 ))
+          do
+            echo "Waiting for Zookeeper..."
+            sleep 20
+          done
+          until nc -z {{ $.Release.Name }}-kafka {{ .Values.global.kafka.port }} || (( retries++ >= 6 ))
+          do
+            echo "Waiting for Kafka..."
+            sleep 20
+          done
+      containers:
+      - name: kafka-config
+        image: confluentinc/cp-kafka:5.0.1
+        command: 
+        - bash
+        - -c
+        - |
+          set -e
+        {{- range $n, $topic := .Values.global.kafka.topics }}
+          {{- if and $topic.partitions $topic.replicationFactor $topic.reassignPartitions }}
+          cat << EOF > {{ $topic.name }}-increase-replication-factor.json
+            {"version":1, "partitions":[
+              {{- $partitions := (int $topic.partitions) }}
+              {{- $replicas := (int $topic.replicationFactor) }}
+              {{- range $i := until $partitions }}
+                {"topic":"{{ $topic.name }}","partition":{{ $i }},"replicas":[{{- range $j := until $replicas }}{{ $j }}{{- if ne $j (sub $replicas 1) }},{{- end }}{{- end }}]}{{- if ne $i (sub $partitions 1) }},{{- end }}
+              {{- end }}
+            ]}
+          EOF
+          kafka-reassign-partitions --zookeeper {{ $zk }} --reassignment-json-file {{ $topic.name }}-increase-replication-factor.json --execute
+          kafka-reassign-partitions --zookeeper {{ $zk }} --reassignment-json-file {{ $topic.name }}-increase-replication-factor.json --verify
+          {{- else if and $topic.partitions $topic.replicationFactor }}
+          kafka-topics --zookeeper {{ $zk }} --create --if-not-exists --force --topic {{ $topic.name }} --partitions {{ $topic.partitions }} --replication-factor {{ $topic.replicationFactor }}
+          {{- else if $topic.partitions }}
+          kafka-topics --zookeeper {{ $zk }} --alter --force --topic {{ $topic.name }} --partitions {{ $topic.partitions }} || true
+          {{- end }}
+          {{- if $topic.defaultConfig }}
+          kafka-configs --zookeeper {{ $zk }} --entity-type topics --entity-name {{ $topic.name }} --alter --force --delete-config {{ nospace $topic.defaultConfig }} || true
+          {{- end }}
+          {{- if $topic.config }}
+          kafka-configs --zookeeper {{ $zk }} --entity-type topics --entity-name {{ $topic.name }} --alter --force --add-config {{ nospace $topic.config }}
+          {{- end }}
+          kafka-configs --zookeeper {{ $zk }} --entity-type topics --entity-name {{ $topic.name }} --describe
+          {{- if $topic.acls }}
+            {{- range $a, $acl := $topic.acls }}
+              {{ if and $acl.user $acl.operations }}
+          kafka-acls --authorizer-properties zookeeper.connect={{ $zk }} --force --add --allow-principal User:{{ $acl.user }}{{- range $operation := $acl.operations }} --operation {{ $operation }} {{- end }} --topic {{ $topic.name }} {{ $topic.extraParams }}
+              {{- end }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+
+{{- end -}}

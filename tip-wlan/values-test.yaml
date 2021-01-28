@@ -1,7 +1,3 @@
-# Default values for Tip-Wlan
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
 #################################################################
 # Global configuration overrides.
 #
@@ -12,8 +8,6 @@ global:
   # Change to an unused port prefix range to prevent port conflicts
   # with other instances running within the same k8s cluster
   nodePortPrefix: 302
-  # namespace to deploy the release
-  nsPrefix: tip
 
   repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
   # image pull policy
@@ -31,10 +25,7 @@ global:
 
   # Integrated Deployment which deploys Prov Service, Portal Service and 
   # SSC Service in a single docker image 
-  integratedDeployment: false  
-  
-# Namespace related
-createReleaseNamespace: true
+  integratedDeployment: false
 
 # DockerRegistry Secret
 createDockerRegistrySecret: true
@@ -66,8 +57,7 @@ wlan-integrated-cloud-component-service:
   enabled: true
 nginx-ingress-controller:
   enabled: true
-zookeeper:
-  enabled: true
+
 kafka:
   enabled: true
 cassandra:

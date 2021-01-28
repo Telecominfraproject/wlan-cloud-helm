@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tip-common-cassandra-certs
+  namespace: {{ .Release.Namespace }}
+type: Opaque
+data:
+  truststore: {{ .Files.Get "resources/certs/truststore.jks" | b64enc }}
+  truststore-password: {{ .Values.global.creds.sslTruststorePassword | b64enc }}
+  keystore: {{ .Files.Get "resources/certs/cassandra_server_keystore.jks" | b64enc }}
+  keystore-password: {{ .Values.global.creds.sslKeystorePassword | b64enc }}
+  cassandraservercert.pem: {{ .Files.Get "resources/certs/cassandraservercert.pem" | b64enc }}
+  cassandraserverkey_dec.pem: {{ .Files.Get "resources/certs/cassandraserverkey_dec.pem" | b64enc }}
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tip-common-cassandra-client-certs
+  namespace: {{ .Release.Namespace }}
+type: Opaque
+data:
+  cacert.pem: {{ .Files.Get "resources/certs/cacert.pem" | b64enc }}
+  cassandra_server_keystore.jks: {{ .Files.Get "resources/certs/cassandra_server_keystore.jks" | b64enc }}
+  cassandraservercert.pem: {{ .Files.Get "resources/certs/cassandraservercert.pem" | b64enc }}
+  cassandraserverkey_dec.pem: {{ .Files.Get "resources/certs/cassandraserverkey_dec.pem" | b64enc }}
+  kafka-server.pkcs12: {{ .Files.Get "resources/certs/kafka-server.pkcs12" | b64enc }}
+  truststore.jks: {{ .Files.Get "resources/certs/truststore.jks" | b64enc }}
+  server.pkcs12: {{ .Files.Get "resources/certs/server.pkcs12" | b64enc }}

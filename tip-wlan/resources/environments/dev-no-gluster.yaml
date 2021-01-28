@@ -1,46 +1,22 @@
-# This is a development override file.
-# It overrides the default Tip-Wlan parent chart behaviour
-#
-# This override file should be used when you don't have any 
-# storage solution for creating persistent volumes.
-#################################################################
-# Global configuration overrides.
-#
-# These overrides will affect all helm charts (ie. applications)
-# that are listed below and are 'enabled'.
-#################################################################
 global:
-  # Change to an unused port prefix range to prevent port conflicts
-  # with other instances running within the same k8s cluster
   nodePortPrefix: 302
   nodePortPrefixExt: 304
-  nsPrefix: tip
-  # image pull policy
+
   pullPolicy: Always
-
   repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
-  # override default mount path root directory
-  # referenced by persistent volumes and log files
-  persistence:
 
-  # flag to enable debugging - application support required
-  debugEnabled: true
+  integratedDeployment: false
+  testingEnabled: false
+  testingTimestamp:
 
-# Annotations for namespace
+dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
 annotations: {
     "helm.sh/resource-policy": keep
 }
 
-createReleaseNamespace: false
-
-# Docker registry secret
-dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
-#################################################################
-# Enable/disable and configure helm charts (ie. applications)
-# to customize the TIP-WLAN deployment.
-#################################################################
 opensync-gw-static:
   enabled: false
+
 opensync-gw-cloud:
   enabled: true
   externalhost:
@@ -50,20 +26,25 @@ opensync-gw-cloud:
   persistence:
     enabled: true
   filestore:
-    url: "https://tip-wlan-opensync-gw-cloud:9096"
+    url: https://tip-wlan-opensync-gw-cloud:9096
+
 opensync-mqtt-broker:
   enabled: true
   replicaCount: 1
   persistence:
     enabled: false
+
 wlan-cloud-graphql-gw:
   enabled: true
+
 wlan-cloud-static-portal:
   enabled: true
+
 wlan-portal-service:
   enabled: true
   persistence:
-    enabled: true 
+    enabled: true
+
 wlan-prov-service:
   enabled: true
   creds:
@@ -76,6 +57,7 @@ wlan-prov-service:
     schema_repo:
       username: tip-read
       password: tip-read
+
 wlan-ssc-service:
   enabled: true
   creds:
@@ -88,12 +70,14 @@ wlan-ssc-service:
     schema_repo:
       username: tip-read
       password: tip-read
+
 wlan-spc-service:
   enabled: true
   creds:
     sslKeyPassword: mypassword
     sslKeystorePassword: mypassword
     sslTruststorePassword: mypassword
+
 wlan-port-forwarding-gateway-service:
   enabled: true
   creds:
@@ -101,6 +85,7 @@ wlan-port-forwarding-gateway-service:
   externallyVisible:
     host: api.wlan.demo.lab.wlan.tip.build
     port: 30401
+
 nginx-ingress-controller:
   enabled: true
   controller:
@@ -109,28 +94,121 @@ nginx-ingress-controller:
     }
     config:
       externalStatusAddress: "192.168.56.101"
-zookeeper:
-  enabled: true
-  replicaCount: 1
-  persistence:
-    enabled: false
+
 kafka:
   enabled: true
   replicaCount: 1
+  image:
+    debug: true
+  auth:
+    clientProtocol: mtls
+    interBrokerProtocol: tls
+    jksSecret: tip-common-kafka-certs
+    jksPassword: mypassword
+    tlsEndpointIdentificationAlgorithm: ""
+    jaas:
+      clientUsers:
+      - brokerUser
+      clientPassword:
+      - brokerPassword
+  extraEnvVars:
+  - name: KAFKA_CFG_SSL_KEYSTORE_TYPE
+    value: PKCS12
+  allowPlaintextListener: true
   persistence:
-    enabled: false
+    enabled: true
+  metrics:
+    serviceMonitor:
+      enabled: false
+      namespace: monitoring
+      selector:
+        release: prometheus-operator
+  zookeeper:
+    enabled: true
+    persistence:
+      enabled: true
+
 cassandra:
   enabled: true
-  cluster:
-    replicaCount: 3
-    seedCount: 2
+  tlsEncryptionSecretName: tip-common-cassandra-certs
+  image:
+    debug: true
   persistence:
+    enabled: true
+  replicaCount: 1
+  cluster:
+    name: TipWlanCluster
+    seedCount: 1
+    internodeEncryption: all
+    clientEncryption: true
+  exporter:
     enabled: false
+    serviceMonitor:
+      enabled: false
+      additionalLabels:
+        release: prometheus-operator
+  dbUser:
+    user: cassandra
+    password: cassandra
+  resources:
+    limits: {}
+    requests:
+      cpu: 1
+      memory: 3Gi
+
 postgresql:
   enabled: true
+  postgresqlDatabase: tip
+  image:
+    debug: true
+  metrics:
+    enabled: false
+    serviceMonitor:
+      enabled: falsea
+      namespace: monitoring
+      additionalLabels:
+        release: prometheus-operator
+  postgresqlUsername: postgres
   postgresqlPassword: postgres
+  pgHbaConfiguration: |
+    hostssl replication repl_user 0.0.0.0/0 md5 clientcert=0
+    hostssl postgres postgres 0.0.0.0/0 cert clientcert=1
+    hostssl postgres postgres ::/0 cert clientcert=1
+    hostssl all all 0.0.0.0/0 md5 clientcert=1
   replication:
     enabled: true
+    user: repl_user
+    password: repl_password
     slaveReplicas: 1
   persistence:
+    enabled: true
+  volumePermissions:
+    enabled: true
+  livenessProbe:
     enabled: false
+  readinessProbe:
+    enabled: false
+  tls:
+    enabled: true
+    certificatesSecret: tip-common-postgres-certs
+    certFilename: cert.crt
+    certKeyFilename: cert.key
+    certCAFilename: cacert.pem
+  initdbScriptsConfigMap: tip-common-postgres-scripts
+  extraEnv:
+  - name: PGSSLCERT
+    value: /opt/tip-wlan/certs/postgresclientcert.pem
+  - name: PGSSLKEY
+    value: /opt/tip-wlan/certs/postgresclientkey_dec.pem
+  - name: PGSSLROOTCERT
+    value: /opt/tip-wlan/certs/cacert.pem
+  primary:
+    extraInitContainers:
+    - command: [ "sh", "-c", "chmod 0600 /opt/bitnami/postgresql/certs/postgresclientkey_dec.pem" ]
+      image: busybox:latest
+      name: chmod-client-cert-additional
+      securityContext:
+        runAsUser: 0
+      volumeMounts:
+      - mountPath: /opt/bitnami/postgresql/certs
+        name: postgresql-certificates

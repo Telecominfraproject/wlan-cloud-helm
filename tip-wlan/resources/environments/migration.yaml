@@ -1,68 +1,21 @@
 global:
-  nodePortPrefix: 302
-  nodePortPrefixExt: 304
-
-  pullPolicy: Always
-  repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
-
-  integratedDeployment: true
-  testingEnabled:
-
-dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
-annotations: {
-    "helm.sh/resource-policy": keep
-}
-
-opensync-gw-static:
-  enabled: false
-
-opensync-gw-cloud:
-  enabled: true
-  env:
-    protocol: https
-    ssc:
-      service: wlan-integrated-cloud-component-service
-      port: 9092
-    prov:
-      service: wlan-integrated-cloud-component-service
-      port: 9092
-
-opensync-mqtt-broker:
-  enabled: true
-  replicaCount: 1
-  persistence:
-    enabled: true
-    storageClass: glusterfs-storage
-
-wlan-cloud-graphql-gw:
-  enabled: true
-
-wlan-cloud-static-portal:
-  enabled: true
-
-wlan-integrated-cloud-component-service:
-  enabled: true
-  image:
-    name: wlan-integrated-cloud-component-service-persistence
-    tag: 0.0.1-SNAPSHOT
+  kafka:
+    image: confluentinc/cp-kafka:5.0.1
+    port: 9092
+    topics:
+    - name: wlan_service_metrics
+      partitions: 1
+      replicationFactor: 1
+    - name: system_events
+      partitions: 1
+      replicationFactor: 1
+    - name: customer_events
+      partitions: 1
+      replicationFactor: 1
   creds:
-    enabled: true
-    postgres:
-      password: cG9zdGdyZXMxMjM=
-    schema_repo:
-      username: tip-read
-      password: tip-read
-  integratedWithPersistence:
-    enabled: true
-
-nginx-ingress-controller:
-  enabled: true
-  controller:
-    nodeSelector: {
-      type: master
-    }
-    config:
-      externalStatusAddress: "192.168.56.101"
+    sslKeyPassword: mypassword
+    sslKeystorePassword: mypassword
+    sslTruststorePassword: mypassword
 
 kafka:
   enabled: true
@@ -86,7 +39,7 @@ kafka:
   allowPlaintextListener: true
   persistence:
     enabled: true
-    storageClass: glusterfs-storage
+    storageClass: REPLACEME
   metrics:
     serviceMonitor:
       enabled: false
@@ -105,7 +58,7 @@ cassandra:
     debug: true
   persistence:
     enabled: true
-    storageClass: glusterfs-storage
+    storageClass: REPLACEME
   replicaCount: 1
   cluster:
     name: TipWlanCluster
@@ -135,7 +88,7 @@ postgresql:
   metrics:
     enabled: false
     serviceMonitor:
-      enabled: falsea
+      enabled: false
       namespace: monitoring
       additionalLabels:
         release: prometheus-operator
@@ -153,7 +106,7 @@ postgresql:
     slaveReplicas: 1
   persistence:
     enabled: true
-    storageClass: glusterfs-storage
+    existingClaim: data-tip-wlan-postgresql-master-0
   volumePermissions:
     enabled: true
   livenessProbe:

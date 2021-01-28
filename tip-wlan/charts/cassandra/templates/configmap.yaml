@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: cassandra-configurations-override
-  namespace: {{ include "common.namespace" . }}
-data:
-{{ tpl (.Files.Glob "resources/config/*").AsConfig . | indent 2 }}
-  cqlshrc.tip-wlan: |
-  {{ tpl (.Files.Get "files/cqlshrc.tip-wlan") . | nindent 4 }}

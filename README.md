@@ -1,16 +1,68 @@
 # wlan-cloud-helm
 This repository contains helm charts for various deployment types of the tip wlan cloud services.
 
+# IMPORTANT - CloudSDK Helm charts v0.4 to v1.x migration procedure
+
+We've introduced breaking changes to how CloudSDK database charts are managed.
+If you want to preserve your data when moving from v0.4 to v1.x of the CloudSDK Helm charts, follow the steps outlined below.
+If you can re-install your CloudSDK and don't care to loose your data, you can skip the steps and just install the upstream charts version with no changes to the default installation procedure.
+
+## Prerequisites
+
+1. Checkout latest wlan-cloud-helm repository
+2. Have your certificates for existing installation
+3. Helm 3.2+
+
+## Procedure
+
+All of the commands should be run under tip-wlan-helm directory.
+
+1. Delete your current Helm release. The following commands will remove the pods, however, the PVC (your databases data) **won't be deleted**:
+```
+helm list -n default (to look up the name of the release)
+helm uninstall -n default tip-wlan (tip-wlan is usually the name of the release)
+```
+2. Replace `REPLACEME` with your storage class name in the `tip-wlan/resources/environments/migration.yaml` file. You can check the available storageclasses with the `kubectl get storageclass` command.
+3. Update your values file that you used for deploying the original release with the values from `migration.yaml` to preserve existing cassandra\postgres data (or skip that step and use the second upgrade command mentioned in #7)
+4. If you want to preserve the PKI certificates from the original Helm installation, copy them to a new location using the command below (or checkout the latest wlan-pki-cert-script repo and use `copy-certs-to-helm.sh %path_to_new_helm_code%` to generate new self-signed keys):
+```
+find . -regextype posix-extended -regex '.+(jks|pem|key|pkcs12|p12)$' -exec cp "{}" tip-wlan/resources/certs/ \;
+```
+5. Remove the old charts from the helm directory, so that the upgrade command can successfully pull new chart depedencies:
+```
+rm -rf tip-wlan/charts/cassandra tip-wlan/charts/kafka tip-wlan/charts/postgresql
+```
+6. Pull 3rd party subcharts:
+```
+helm dependency update tip-wlan
+```
+7. Perform Helm upgrade:
+```
+helm upgrade --install tip-wlan tip-wlan/ --namespace tip --create-namespace -f tip-wlan/resources/environments/your_values_with_fixes.yaml
+```
+
+Alternatively, you can run the upgrade command as follows (the order of the -f arguments is important!):
+
+```
+helm upgrade --install tip-wlan tip-wlan/ --namespace tip --create-namespace -f tip-wlan/resources/environments/original_values.yaml -f tip-wlan/resources/environments/migration.yaml
+```
+
+As a precaution you can also run `helm template` with the same arguments as the upgrade command and examine the output before actually installing the chart
+
 # Deploying the wlan-cloud deployment
- - Run the following command under tip-wlan-helm directory:
- 	- helm install <RELEASE_NAME> tip-wlan/ -n default -f tip-wlan/resources/environments/dev.yaml
-	
-	More details can be found here: https://telecominfraproject.atlassian.net/wiki/spaces/WIFI/pages/262176803/Pre-requisites+before+deploying+Tip-Wlan+solution
+Run the following command under tip-wlan-helm directory:
+```
+helm dependency update tip-wlan
+helm upgrade --install <RELEASE_NAME> tip-wlan/ --namespace tip  --create-namespace -f tip-wlan/resources/environments/dev.yaml
+```
+
+More details can be found here: https://telecominfraproject.atlassian.net/wiki/spaces/WIFI/pages/262176803/Pre-requisites+before+deploying+Tip-Wlan+solution
 
 # Deleting the wlan-cloud deployment:
-- Run the following command:
-	- helm del tip-wlan -n default
-	
+Run the following command:
+```
+helm del tip-wlan -n default
+```
 	(Note: this would not delete the tip namespace and any PVC/PV/Endpoints under this namespace. These are needed so we can reuse the same PVC mount when the pods are restarted.)
 	
 	To get rid of them (PVC/PV/Endpoints), you can use the following script (expects that you are in the `tip` namespace or add `-n tip` to the below set of commands):
@@ -92,13 +144,17 @@ done
 
 Run minikube:
 
-```minikube start --memory=10g --cpus=4 --driver=virtualbox --extra-config=kubelet.serialize-image-pulls=false --extra-config=kubelet.image-pull-progress-deadline=3m0s --docker-opt=max-concurrent-downloads=10```
+```
+minikube start --memory=10g --cpus=4 --driver=virtualbox --extra-config=kubelet.serialize-image-pulls=false --extra-config=kubelet.image-pull-progress-deadline=3m0s --docker-opt=max-concurrent-downloads=10
+```
 
 Please note that you may choose another driver (parallels, vmwarefusion, hyperkit, vmware, docker, podman) which might be more suitable for your setup. Omitting this option enables auto discovery of available drivers.
 
 Deploy CloudSDK chart:
 
-```helm upgrade --install tip-wlan tip-wlan -f tip-wlan/resources/environments/dev-local.yaml -n default```
+```
+helm upgrade --install tip-wlan tip-wlan -f tip-wlan/resources/environments/dev-local.yaml -n default
+```
 
 Wait a few minutes, when all pods are in `Running` state, obtain web ui link with `minikube service tip-wlan-wlan-cloud-static-portal -n tip --url`, open in the browser. Importing or trusting certificate might be needed.
 
