@@ -1,7 +1,11 @@
 # wlan-cloud-helm
 This repository contains helm charts for various deployment types of the tip wlan cloud services.
 
-# Migration to upstream third parties stateful charts
+# IMPORTANT - CloudSDK Helm charts v0.4 to v1.x migration procedure
+
+We've introduced breaking changes to how CloudSDK database charts are managed.
+If you want to preserve your data when moving from v0.4 to v1.x of the CloudSDK Helm charts, follow the steps outlined below.
+If you can re-install your CloudSDK and don't care to loose your data, you can skip the steps and just install the upstream charts version with no changes to the default installation procedure.
 
 ## Prerequisites
 
@@ -11,42 +15,42 @@ This repository contains helm charts for various deployment types of the tip wla
 
 ## Procedure
 
-1. First, you need to delete the old helm release, because this migration is a breaking change (this doesn't delete PVC):
+1. Delete your current Helm release. The following commands will remove the pods, however, the PVC (your databases data) **won't be deleted**:
 ```
-helm list -n default (to look up the name)
-helm uninstall -n default tip-wlan (tip-wlan is usually the name)
+helm list -n default (to look up the name of the release)
+helm uninstall -n default tip-wlan (tip-wlan is usually the name of the release)
 ```
-2. Then you need to copy the certificates to a new location (if you are doing this in place, otherwize checkout the latest wlan-pki-cert-script repo and use `copy-certs-to-helm.sh %path_to_new_helm_code%` from that repo):
+2. Replace `REPLACEME` with your storage class name in the `tip-wlan/resources/environments/migration.yaml` file. You can check the available storageclasses with the `kubectl get storageclass` command.
+3. Update your values file that you used for deploying the original release with the values from `migration.yaml` to preserve existing cassandra\postgres data (or skip that step and use the second upgrade command mentioned in #7)
+4. If you want to preserve the PKI certificates from the original Helm installation, copy them to a new location using the command below (or checkout the latest wlan-pki-cert-script repo and use `copy-certs-to-helm.sh %path_to_new_helm_code%` to generate new self-signed keys):
 ```
 find . -regextype posix-extended -regex '.+(jks|pem|key|pkcs12|p12)$' -exec cp "{}" tip-wlan/resources/certs/ \;
 ```
-3. Replace `REPLACEME` with your storage class name in migration.yaml
-4. Update your values file that you used to deploy this chart with the values from migration.yaml to support thirdparties and preserve existing cassandra\postgres data. You need to override existing values for postgres\cassandra\kafka and add the creds property and sub properties to the global values (it used to be under cassandra). This step can be skipped if you choose to use helm to merge those values.
-5. You need to remove old charts from helm, so that helm can successfully pull new ones (if you are doing this in place, if you copied new helm chart to another directory you can skip this):
+5. Remove the old charts from the helm directory, so that the upgrade command can successfully pull new chart depedencies:
 ```
 rm -rf tip-wlan/charts/cassandra tip-wlan/charts/kafka tip-wlan/charts/postgresql
 ```
-
-6. Then you need to update subcharts:
+6. Pull 3rd party subcharts:
 ```
-helm dependency update
+helm dependency update tip-wlan
 ```
-7. Last step is to perform your upgrade:
+7. Perform Helm upgrade:
 ```
 helm upgrade --install tip-wlan tip-wlan/ --namespace tip --create-namespace -f .\resources\environments\your_values_with_fixes.yaml
 ```
 
-Alternatively, if you skipped №3, you can do this (order matters, do not reorder -f arguments):
+Alternatively, you can run the upgrade command as follows (the order of the -f arguments is important!):
 
 ```
 helm upgrade --install tip-wlan tip-wlan/ --namespace tip --create-namespace -f .\resources\environments\original_values.yaml -f .\resources\environments\migration.yaml
 ```
 
-As a precaution you can also do `helm template` with the same arguments and examine the output before actually installing the chart
+As a precaution you can also run `helm template` with the same arguments as the upgrade command and examine the output before actually installing the chart
 
 # Deploying the wlan-cloud deployment
 Run the following command under tip-wlan-helm directory:
 ```
+helm dependency update tip-wlan
 helm upgrade --install <RELEASE_NAME> tip-wlan/ --namespace tip  --create-namespace -f tip-wlan/resources/environments/dev.yaml
 ```
 
