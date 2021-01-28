@@ -6,12 +6,12 @@
 *.cnf
 *.key
 *.DS_Store
-
 # local development
 *.lock
 *.local_dev
-
 *.zip
 *.tgz
 stern*
 helmfile
+*.tfstate
+*.tfstate.backup
