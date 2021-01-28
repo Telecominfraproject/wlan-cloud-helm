@@ -44,15 +44,18 @@ helm upgrade --install tip-wlan tip-wlan/ --namespace tip --create-namespace -f 
 As a precaution you can also do `helm template` with the same arguments and examine the output before actually installing the chart
 
 # Deploying the wlan-cloud deployment
- - Run the following command under tip-wlan-helm directory:
-        - helm upgrade --install <RELEASE_NAME> tip-wlan/ --namespace tip  --create-namespace -f tip-wlan/resources/environments/dev.yaml
-	
-	More details can be found here: https://telecominfraproject.atlassian.net/wiki/spaces/WIFI/pages/262176803/Pre-requisites+before+deploying+Tip-Wlan+solution
+Run the following command under tip-wlan-helm directory:
+```
+helm upgrade --install <RELEASE_NAME> tip-wlan/ --namespace tip  --create-namespace -f tip-wlan/resources/environments/dev.yaml
+```
+
+More details can be found here: https://telecominfraproject.atlassian.net/wiki/spaces/WIFI/pages/262176803/Pre-requisites+before+deploying+Tip-Wlan+solution
 
 # Deleting the wlan-cloud deployment:
-- Run the following command:
-	- helm del tip-wlan -n default
-	
+Run the following command:
+```
+helm del tip-wlan -n default
+```
 	(Note: this would not delete the tip namespace and any PVC/PV/Endpoints under this namespace. These are needed so we can reuse the same PVC mount when the pods are restarted.)
 	
 	To get rid of them (PVC/PV/Endpoints), you can use the following script (expects that you are in the `tip` namespace or add `-n tip` to the below set of commands):
