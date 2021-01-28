@@ -1,9 +1,51 @@
 # wlan-cloud-helm
 This repository contains helm charts for various deployment types of the tip wlan cloud services.
 
+# Migration to upstream third parties stateful charts
+
+## Prerequisites
+
+1. Checkout latest wlan-cloud-helm repository
+2. Have your certificates for existing installation
+3. Helm 3.2+
+
+## Procedure
+
+1. First, you need to delete the old helm release, because this migration is a breaking change (this doesn't delete PVC):
+```
+helm list -n default (to look up the name)
+helm uninstall -n default tip-wlan (tip-wlan is usually the name)
+```
+2. Replace `REPLACEME` with your storage class name in migration.yaml
+3. Update your values file that you used to deploy this chart with the values from migration.yaml to support thirdparties and preserve existing cassandra\postgres data. You need to override existing values for postgres\cassandra\kafka and add the creds property and sub properties to the global values (it used to be under cassandra). This step can be skipped if you choose to use helm to merge those values.
+4. You need to remove old charts from helm, so that helm can successfully pull new ones (if you are doing this in place, if you copied new helm chart to another directory you can skip this):
+```
+rm -rf tip-wlan/charts/cassandra tip-wlan/charts/kafka tip-wlan/charts/postgresql
+```
+5. Then you need to copy the certificates to a new location (if you are doing this in place, otherwize checkout the latest wlan-pki-cert-script repo and use `copy-certs-to-helm.sh %path_to_new_helm_code%` from that repo):
+```
+find . -regextype posix-extended -regex '.+(jks|pem|key|pkcs12|p12)$' -exec cp "{}" tip-wlan/resources/certs/ \;
+```
+6. Then you need to update subcharts:
+```
+helm dependency update
+```
+7. Last step is to perform your upgrade:
+```
+helm upgrade --install tip-wlan tip-wlan/ --namespace tip --create-namespace -f .\resources\environments\your_values_with_fixes.yaml
+```
+
+Alternatively, if you skipped №3, you can do this (order matters, do not reorder -f arguments):
+
+```
+helm upgrade --install tip-wlan tip-wlan/ --namespace tip --create-namespace -f .\resources\environments\original_values.yaml -f .\resources\environments\migration.yaml
+```
+
+As a precaution you can also do `helm template` with the same arguments and examine the output before actually installing the chart
+
 # Deploying the wlan-cloud deployment
  - Run the following command under tip-wlan-helm directory:
- 	- helm install <RELEASE_NAME> tip-wlan/ -n default -f tip-wlan/resources/environments/dev.yaml
+        - helm upgrade --install <RELEASE_NAME> tip-wlan/ --namespace tip  --create-namespace -f tip-wlan/resources/environments/dev.yaml
 	
 	More details can be found here: https://telecominfraproject.atlassian.net/wiki/spaces/WIFI/pages/262176803/Pre-requisites+before+deploying+Tip-Wlan+solution
 
