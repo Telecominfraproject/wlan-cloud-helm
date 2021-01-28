@@ -137,13 +137,17 @@ done
 
 Run minikube:
 
-```minikube start --memory=10g --cpus=4 --driver=virtualbox --extra-config=kubelet.serialize-image-pulls=false --extra-config=kubelet.image-pull-progress-deadline=3m0s --docker-opt=max-concurrent-downloads=10```
+```
+minikube start --memory=10g --cpus=4 --driver=virtualbox --extra-config=kubelet.serialize-image-pulls=false --extra-config=kubelet.image-pull-progress-deadline=3m0s --docker-opt=max-concurrent-downloads=10
+```
 
 Please note that you may choose another driver (parallels, vmwarefusion, hyperkit, vmware, docker, podman) which might be more suitable for your setup. Omitting this option enables auto discovery of available drivers.
 
 Deploy CloudSDK chart:
 
-```helm upgrade --install tip-wlan tip-wlan -f tip-wlan/resources/environments/dev-local.yaml -n default```
+```
+helm upgrade --install tip-wlan tip-wlan -f tip-wlan/resources/environments/dev-local.yaml -n default
+```
 
 Wait a few minutes, when all pods are in `Running` state, obtain web ui link with `minikube service tip-wlan-wlan-cloud-static-portal -n tip --url`, open in the browser. Importing or trusting certificate might be needed.
 
