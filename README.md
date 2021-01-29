@@ -61,7 +61,7 @@ More details can be found here: https://telecominfraproject.atlassian.net/wiki/s
 # Deleting the wlan-cloud deployment:
 Run the following command:
 ```
-helm del tip-wlan -n default
+helm del tip-wlan -n tip (replace the namespace with your namespace)
 ```
 	(Note: this would not delete the tip namespace and any PVC/PV/Endpoints under this namespace. These are needed so we can reuse the same PVC mount when the pods are restarted.)
 	
