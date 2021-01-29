@@ -3,7 +3,6 @@ global:
   nodePortPrefixExt: 304
 
   pullPolicy: Always
-  repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
 
   integratedDeployment: false
   testingEnabled:

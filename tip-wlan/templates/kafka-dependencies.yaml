@@ -22,7 +22,7 @@ data:
   server.pkcs12: {{ .Files.Get "resources/certs/server.pkcs12" | b64enc }}
 
 
-{{ if .Values.global.kafka.topics }}
+{{ if .Values.kafka.initJobConfig.topics }}
 {{- $zk := printf "%s-zookeeper-headless" .Release.Name -}}
 ---
 apiVersion: batch/v1
@@ -37,7 +37,7 @@ spec:
       restartPolicy: OnFailure
       initContainers:
       - name: depends-on
-        image: {{ .Values.global.kafka.image }}
+        image: {{ .Values.kafka.initJobConfig.image }}
         command:
         - bash
         - -c
@@ -47,7 +47,7 @@ spec:
             echo "Waiting for Zookeeper..."
             sleep 20
           done
-          until nc -z {{ $.Release.Name }}-kafka {{ .Values.global.kafka.port }} || (( retries++ >= 6 ))
+          until nc -z {{ $.Release.Name }}-kafka {{ .Values.kafka.initJobConfig.port }} || (( retries++ >= 6 ))
           do
             echo "Waiting for Kafka..."
             sleep 20
@@ -60,7 +60,7 @@ spec:
         - -c
         - |
           set -e
-        {{- range $n, $topic := .Values.global.kafka.topics }}
+        {{- range $n, $topic := .Values.kafka.initJobConfig.topics }}
           {{- if and $topic.partitions $topic.replicationFactor $topic.reassignPartitions }}
           cat << EOF > {{ $topic.name }}-increase-replication-factor.json
             {"version":1, "partitions":[
