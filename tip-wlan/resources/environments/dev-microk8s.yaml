@@ -22,25 +22,11 @@ global:
   nodePortPrefixExt: 304
 
   pullPolicy: Always
-  repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
 
   integratedDeployment: false
   testingEnabled: false
   testingTimestamp:
 
-  kafka:
-    image: confluentinc/cp-kafka:5.0.1
-    port: 9092
-    topics:
-    - name: wlan_service_metrics
-      partitions: 1
-      replicationFactor: 1
-    - name: system_events
-      partitions: 1
-      replicationFactor: 1
-    - name: customer_events
-      partitions: 1
-      replicationFactor: 1
   creds:
     sslKeyPassword: mypassword
     sslKeystorePassword: mypassword
@@ -186,121 +172,18 @@ nginx-ingress-controller:
 
 kafka:
   enabled: true
-  replicaCount: 1
-  image:
-    debug: true
-  auth:
-    clientProtocol: mtls
-    interBrokerProtocol: tls
-    jksSecret: tip-common-kafka-certs
-    jksPassword: mypassword
-    tlsEndpointIdentificationAlgorithm: ""
-    jaas:
-      clientUsers:
-      - brokerUser
-      clientPassword:
-      - brokerPassword
-  extraEnvVars:
-  - name: KAFKA_CFG_SSL_KEYSTORE_TYPE
-    value: PKCS12
-  allowPlaintextListener: true
   persistence:
     enabled: true
     storageClass: microk8s-hostpath
-  metrics:
-    serviceMonitor:
-      enabled: false
-      namespace: monitoring
-      selector:
-        release: prometheus-operator
-  zookeeper:
-    enabled: true
-    persistence:
-      enabled: true
 
 cassandra:
   enabled: true
-  tlsEncryptionSecretName: tip-common-cassandra-certs
-  image:
-    debug: true
   persistence:
     enabled: true
     storageClass: microk8s-hostpath
-  replicaCount: 1
-  cluster:
-    name: TipWlanCluster
-    seedCount: 1
-    internodeEncryption: all
-    clientEncryption: true
-  exporter:
-    enabled: false
-    serviceMonitor:
-      enabled: false
-      additionalLabels:
-        release: prometheus-operator
-  dbUser:
-    user: cassandra
-    password: cassandra
-  resources:
-    limits: {}
-    requests:
-      cpu: 1
-      memory: 3Gi
 
 postgresql:
   enabled: true
-  postgresqlDatabase: tip
-  image:
-    debug: true
-  metrics:
-    enabled: false
-    serviceMonitor:
-      enabled: falsea
-      namespace: monitoring
-      additionalLabels:
-        release: prometheus-operator
-  postgresqlUsername: postgres
-  postgresqlPassword: postgres
-  pgHbaConfiguration: |
-    hostssl replication repl_user 0.0.0.0/0 md5 clientcert=0
-    hostssl postgres postgres 0.0.0.0/0 cert clientcert=1
-    hostssl postgres postgres ::/0 cert clientcert=1
-    hostssl all all 0.0.0.0/0 md5 clientcert=1
-  replication:
-    enabled: true
-    user: repl_user
-    password: repl_password
-    slaveReplicas: 1
   persistence:
     enabled: true
     storageClass: microk8s-hostpath
-  volumePermissions:
-    enabled: true
-  livenessProbe:
-    enabled: false
-  readinessProbe:
-    enabled: false
-  tls:
-    enabled: true
-    certificatesSecret: tip-common-postgres-certs
-    certFilename: cert.crt
-    certKeyFilename: cert.key
-    certCAFilename: cacert.pem
-  initdbScriptsConfigMap: tip-common-postgres-scripts
-  extraEnv:
-  - name: PGSSLCERT
-    value: /opt/tip-wlan/certs/postgresclientcert.pem
-  - name: PGSSLKEY
-    value: /opt/tip-wlan/certs/postgresclientkey_dec.pem
-  - name: PGSSLROOTCERT
-    value: /opt/tip-wlan/certs/cacert.pem
-  primary:
-    extraInitContainers:
-    - command: [ "sh", "-c", "chmod 0600 /opt/bitnami/postgresql/certs/postgresclientkey_dec.pem" ]
-      image: busybox:latest
-      name: chmod-client-cert-additional
-      securityContext:
-        runAsUser: 0
-      volumeMounts:
-      - mountPath: /opt/bitnami/postgresql/certs
-        name: postgresql-certificates
