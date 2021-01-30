@@ -54,6 +54,24 @@ global:
   testingEnabled: false
   testingTimestamp:
 
+  certificatePasswords:
+    sslKey: &sslKeyPassword "mypassword"
+    sslKeystore: &sslKeystorePassword "mypassword"
+    sslTruststore: &sslTruststorePassword "mypassword"
+  cassandra:
+    username: tip_user
+    password: tip_password
+  postgres:
+    password: postgres
+    singleDataSource:
+      username: tip_user
+      password: tip_password
+  tip:
+    password: tip_password
+  schema:
+    username: tip-read
+    password: tip-read
+
 # DockerRegistry Secret
 createDockerRegistrySecret: true
 
@@ -105,9 +123,9 @@ kafka:
       partitions: 1
       replicationFactor: 1
   creds:
-    sslKeyPassword: mypassword
-    sslKeystorePassword: mypassword
-    sslTruststorePassword: mypassword
+    sslKeyPassword: *sslKeyPassword
+    sslKeystorePassword: *sslKeystorePassword
+    sslTruststorePassword: *sslTruststorePassword
   enabled: false
   replicaCount: 1
   image:
@@ -116,7 +134,7 @@ kafka:
     clientProtocol: mtls
     interBrokerProtocol: tls
     jksSecret: tip-common-kafka-certs
-    jksPassword: mypassword
+    jksPassword: *sslKeystorePassword
     tlsEndpointIdentificationAlgorithm: ""
     jaas:
       clientUsers:
@@ -178,7 +196,7 @@ postgresql:
   metrics:
     enabled: false
     serviceMonitor:
-      enabled: falsea
+      enabled: false
       namespace: monitoring
       additionalLabels:
         release: prometheus-operator

@@ -117,15 +117,6 @@ affinity: {}
 
 creds:
   enabled: true
-  sslKeyPassword: DUMMY_PASSWORD
-  sslKeystorePassword: DUMMY_PASSWORD
-  sslTruststorePassword: DUMMY_PASSWORD
-  cassandra:
-    tip_user: DUMMY_TIP_USERNAME
-    tip_password: DUMMY_TIP_USERS_PASSWORD
-  schema_repo:
-    username: DUMMY_SCHEMA_REPO_USERNAME
-    password: DUMMY_SCHEMA_REPO_PASSWORD
 
 kafka:
   url: kafka-headless

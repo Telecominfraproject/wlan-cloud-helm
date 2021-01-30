@@ -60,11 +60,6 @@ testsEnabled: false
 
 creds:
   enabled: true
-  postgres:
-    password: DUMMY_POSTGRES_PASSWORD
-  schema_repo:
-    username: DUMMY_SCHEMA_REPO_USERNAME
-    password: DUMMY_SCHEMA_REPO_PASSWORD
 
 service:
   type: NodePort

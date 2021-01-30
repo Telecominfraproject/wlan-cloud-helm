@@ -117,9 +117,6 @@ affinity: {}
 
 creds:
   enabled: true
-  sslKeyPassword: DUMMY_PASSWORD
-  sslKeystorePassword: DUMMY_PASSWORD
-  sslTruststorePassword: DUMMY_PASSWORD
 
 kafka:
   url: kafka-headless

@@ -17,15 +17,15 @@ data:
             class = DefaultSslEngineFactory
             hostname-validation = false
             truststore-path = /opt/tip-wlan/certs/truststore.jks
-            truststore-password = {{ .Values.creds.sslTruststorePassword }}
+            truststore-password = {{ .Values.global.certificatePasswords.sslTruststore }}
             keystore-path = /opt/tip-wlan/certs/cassandra_server_keystore.jks
-            keystore-password = {{ .Values.creds.sslKeystorePassword }}
+            keystore-password = {{ .Values.global.certificatePasswords.sslKeystore }}
         }
 
         advanced.auth-provider {
             class = PlainTextAuthProvider
-            username = {{ .Values.creds.cassandra.tip_user }}
-            password = {{ .Values.creds.cassandra.tip_password }}
+            username = {{ .Values.global.cassandra.username }}
+            password = {{ .Values.global.cassandra.password }}
         }
     }
 

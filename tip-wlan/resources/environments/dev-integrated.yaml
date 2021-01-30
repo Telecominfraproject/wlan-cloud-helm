@@ -8,6 +8,24 @@ global:
   integratedDeployment: true
   testingEnabled:
 
+  certificatePasswords:
+    sslKey: &sslKeyPassword "mypassword"
+    sslKeystore: &sslKeystorePassword "mypassword"
+    sslTruststore: &sslTruststorePassword "mypassword"
+  cassandra:
+    username: tip_user
+    password: tip_password
+  postgres:
+    password: cG9zdGdyZXMxMjM=
+    singleDataSource:
+      username: tip_user
+      password: tip_password
+  tip:
+    password: tip_password
+  schema:
+    username: tip-read
+    password: tip-read
+
 dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
 annotations: {
     "helm.sh/resource-policy": keep
@@ -45,13 +63,6 @@ wlan-integrated-cloud-component-service:
   image:
     name: wlan-integrated-cloud-component-service-persistence
     tag: 0.0.1-SNAPSHOT
-  creds:
-    enabled: true
-    postgres:
-      password: cG9zdGdyZXMxMjM=
-    schema_repo:
-      username: tip-read
-      password: tip-read
   integratedWithPersistence:
     enabled: true
 
@@ -69,6 +80,12 @@ kafka:
   persistence:
     enabled: true
     storageClass: glusterfs-storage
+  creds:
+    sslKeyPassword: *sslKeyPassword
+    sslKeystorePassword: *sslKeystorePassword
+    sslTruststorePassword: *sslTruststorePassword
+  auth:
+    jksPassword: *sslKeystorePassword
 
 cassandra:
   enabled: true
@@ -81,3 +98,4 @@ postgresql:
   persistence:
     enabled: true
     storageClass: glusterfs-storage
+  postgresqlPassword: cG9zdGdyZXMxMjM=

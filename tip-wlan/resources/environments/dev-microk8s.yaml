@@ -27,10 +27,23 @@ global:
   testingEnabled: false
   testingTimestamp:
 
-  creds:
-    sslKeyPassword: mypassword
-    sslKeystorePassword: mypassword
-    sslTruststorePassword: mypassword
+  certificatePasswords:
+    sslKey: &sslKeyPassword "mypassword"
+    sslKeystore: &sslKeystorePassword "mypassword"
+    sslTruststore: &sslTruststorePassword "mypassword"
+  cassandra:
+    username: tip_user
+    password: tip_password
+  postgres:
+    password: postgres
+    singleDataSource:
+      username: tip_user
+      password: tip_password
+  tip:
+    password: tip_password
+  schema:
+    username: tip-read
+    password: tip-read
 
 dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
 annotations: {
@@ -113,44 +126,16 @@ wlan-portal-service:
 
 wlan-prov-service:
   enabled: true
-  creds:
-    enabled: true
-    db:
-      postgresUser:
-        password: postgres
-      tipUser:
-        password: tip_password
-    schema_repo:
-      username: tip-read
-      password: tip-read
-    postgres:
-      singleDataSourceUsername: tip_user
-      singleDataSourcePassword: tip_password
-      singleDataSourceSslKeyPassword: mypassword
   scalability:
     <<: *jvm-options
 
 wlan-ssc-service:
   enabled: true
-  creds:
-    sslKeyPassword: mypassword
-    sslKeystorePassword: mypassword
-    sslTruststorePassword: mypassword
-    cassandra:
-      tip_user: tip_user
-      tip_password: tip_password
-    schema_repo:
-      username: tip-read
-      password: tip-read
   scalability:
     <<: *jvm-options
 
 wlan-spc-service:
   enabled: true
-  creds:
-    sslKeyPassword: mypassword
-    sslKeystorePassword: mypassword
-    sslTruststorePassword: mypassword
   scalability:
     <<: *jvm-options
 
@@ -175,6 +160,12 @@ kafka:
   persistence:
     enabled: true
     storageClass: microk8s-hostpath
+  creds:
+    sslKeyPassword: *sslKeyPassword
+    sslKeystorePassword: *sslKeystorePassword
+    sslTruststorePassword: *sslTruststorePassword
+  auth:
+    jksPassword: *sslKeystorePassword
 
 cassandra:
   enabled: true
