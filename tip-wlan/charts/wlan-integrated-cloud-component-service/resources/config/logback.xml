@@ -46,7 +46,6 @@
     </triggeringPolicy>
   </appender>
 
-
   <!--
   details: http://logback.qos.ch/manual/configuration.html#auto_configuration
 

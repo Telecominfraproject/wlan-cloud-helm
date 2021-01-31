@@ -58,9 +58,6 @@ securityContext: {}
 # Enable/Disable Helm tests
 testsEnabled: false
 
-creds:
-  enabled: true
-
 service:
   type: NodePort
   port1: 9091

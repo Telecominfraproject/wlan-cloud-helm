@@ -10,14 +10,12 @@
 {{- printf "%d%d" $portPrefix $start -}}
 {{- end -}}
 
-
 {{- define "apDebugPortsEnd" -}}
 {{- $portPrefix := $.Values.global.nodePortPrefixExt | default $.Values.nodePortPrefixExt | int -}}
 {{- $start := $.Values.accessPointDebugPortRange.start | int -}}
 {{- $end := (add $.Values.accessPointDebugPortRange.start $.Values.accessPointDebugPortRange.length) | int -}}
 {{- printf "%d%d" $portPrefix $end -}}
 {{- end -}}
-
 
 
 {{- define "container.dev.apDebugPorts" -}}

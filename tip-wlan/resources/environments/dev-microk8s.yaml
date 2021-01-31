@@ -90,7 +90,7 @@ wlan-ssc-service:
 
 wlan-spc-service:
   enabled: true
-  scalability:
+
 nginx-ingress-controller:
   enabled: true
   controller:

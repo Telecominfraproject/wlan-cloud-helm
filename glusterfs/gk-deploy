@@ -990,7 +990,6 @@ parameters:
   output ""
 fi
 
-
 if [[ ${DEPLOY_OBJECT} -eq 1 ]] && [[ "${OBJ_ACCOUNT}" != "" ]] && [[ "${OBJ_USER}" != "" ]] && [[ "${OBJ_PASSWORD}" != "" ]] && [[ ${EXISTS_OBJECT} -eq 0 ]]; then
   if [[ "${OBJ_STORAGE_CLASS}" == "glusterfs-for-s3" ]]; then
     eval_output "${CLI} create secret generic heketi-${NAMESPACE}-admin-secret --from-literal=key=${ADMIN_KEY} --type=kubernetes.io/glusterfs"

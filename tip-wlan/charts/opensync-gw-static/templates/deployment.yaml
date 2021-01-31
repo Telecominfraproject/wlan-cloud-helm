@@ -49,7 +49,7 @@ spec:
             successThreshold: {{ .Values.probes.readinessProbe.successThreshold }}
           startupProbe:
             tcpSocket:
-              port: {{ .Values.service.port1 }}
+              port: {{ .Values.service.port2 }}
             failureThreshold: 500
             periodSeconds: 5
           {{- end }}

@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
-
 ## [0.4.0](https://github.com/Telecominfraproject/wlan-cloud-helm/compare/f7c67645736e3dac498e2caec8c267f04d08b7bc...v0.4) - 2021-01-28
 
 ### Added

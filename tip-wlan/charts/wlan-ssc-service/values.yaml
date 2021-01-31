@@ -115,9 +115,6 @@ tolerations: []
 
 affinity: {}
 
-creds:
-  enabled: true
-
 kafka:
   url: kafka-headless
 

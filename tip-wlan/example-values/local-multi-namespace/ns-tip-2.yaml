@@ -1,7 +1,5 @@
 global:
   nodePortPrefix: 304
-  pullPolicy: Always
-
 
 annotations: {
     "helm.sh/resource-policy": keep
@@ -9,6 +7,7 @@ annotations: {
 
 opensync-gw-static:
   enabled: false
+
 opensync-gw-cloud:
   enabled: true
   externalhost:
@@ -18,7 +17,7 @@ opensync-gw-cloud:
   persistence:
     enabled: true
   filestore:
-    url: "https://wlan-filestore.wlan.local"
+    url: https://wlan-filestore.wlan.local
 
 opensync-mqtt-broker:
   enabled: true
@@ -26,6 +25,7 @@ opensync-mqtt-broker:
   persistence:
     enabled: true
     storageClass: standard
+
 wlan-cloud-graphql-gw:
   enabled: true
   env:
@@ -39,6 +39,7 @@ wlan-cloud-graphql-gw:
     tls:
     - hosts:
       - wlan-ui-graphql-2.wlan.local
+
 wlan-cloud-static-portal:
   enabled: true
   env:
@@ -54,6 +55,7 @@ wlan-cloud-static-portal:
     tls:
     - hosts:
       - wlan-ui-2.wlan.local
+
 wlan-portal-service:
   enabled: true
   persistence:
@@ -69,7 +71,7 @@ wlan-ssc-service:
 
 wlan-spc-service:
   enabled: true
-    
+
 nginx-ingress-controller:
   enabled: false
 
@@ -90,4 +92,3 @@ postgresql:
   persistence:
     enabled: true
     storageClass: standard
-

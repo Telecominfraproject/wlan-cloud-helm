@@ -96,7 +96,6 @@ accessPointDebugPortRange:
   length: 26
 
 creds:
-  enabled: true
   websocketSessionTokenEncKey: DUMMY_ENC_KEY
 
 opensyncgw:
@@ -149,5 +148,4 @@ env:
   pfGateway:
     service: wlan-port-forwarding-gateway-service
     port: 7070
-
 

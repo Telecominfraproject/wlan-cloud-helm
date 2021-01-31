@@ -1,22 +1,3 @@
-shared:
-  scalability: &jvm-options
-    tip_wlan_ovsdb_listener_threadPoolSize: 50
-    tip_wlan_AsyncExecutor_CorePoolSize: 10
-    tip_wlan_AsyncExecutor_MaxPoolSize: 50
-    tip_wlan_AsyncExecutor_QueueCapacity: 50
-    tip_wlan_httpClientConfig_maxConnectionsTotal: 100
-    tip_wlan_httpClientConfig_maxConnectionsPerRoute: 10
-    tip_wlan_maxHttpThreads: 100
-    JVM_MEM_OPTIONS: " "
-    singleDataSource_maxTotalConnections: 8
-    singleDataSource_maxIdleConnections: 8
-    singleDataSource_maxPreparedStatements: 200
-    singleDataSource_maxIdlePreparedStatements: 200
-    singleDataSource_maxTotalConnections: 8
-    singleDataSource_maxIdleConnections: 8
-    singleDataSource_maxPreparedStatements: 200
-    singleDataSource_maxIdlePreparedStatements: 200
-
 global:
   nodePortPrefix: 302
   nodePortPrefixExt: 304

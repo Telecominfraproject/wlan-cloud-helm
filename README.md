@@ -98,7 +98,6 @@ helm del tip-wlan -n tip (replace the namespace with your namespace)
  	- helm test <RELEASE_NAME> -n default
 	(For more details add --debug flag to the above command) 
 
-
 # Local environment
 
 In `wlan-pki-cert-scripts` repository edit the following files and add/replace strings as specified below:
@@ -108,7 +107,6 @@ mqtt-server.cnf:
 
 -commonName_default   = opensync-mqtt-broker.zone1.lab.wlan.tip.build
 +commonName_default   = opensync-mqtt-broker.wlan.local
-
 
 openssl-server.cnf:
 -DNS.1  = opensync-redirector.zone1.lab.wlan.tip.build
@@ -188,7 +186,6 @@ Firefox:
 
 2. Click on `Add Exception...`, enter `https://wlan-ui.wlan.local` into Location field, click on `Get certificate`, check `Permanently store this exception` and click on `Confirm Security Exception`.
 Repeat the step for `https://wlan-ui-graphql.wlan.local`
-
 
 Chrome and other browsers using system certificate store:
 

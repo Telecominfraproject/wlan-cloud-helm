@@ -21,7 +21,6 @@ data:
   server.pkcs12: {{ .Files.Get "resources/certs/server.pkcs12" | b64enc }}
   truststore.jks: {{ .Files.Get "resources/certs/truststore.jks" | b64enc }}
 
-
 {{ if .Values.kafka.initJobConfig.topics }}
 {{- $zk := printf "%s-zookeeper-headless" .Release.Name -}}
 ---
