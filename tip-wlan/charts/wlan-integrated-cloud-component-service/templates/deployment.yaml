@@ -27,7 +27,7 @@ spec:
       initContainers:
         - name: {{ include "common.name" . }}-readiness
           image: busybox:1.28
-          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }} 
+          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
           command: ['sh', '-c', "until nslookup {{ $pg }}.{{ $ns }}.svc.cluster.local; do echo waiting for POSTGRES; sleep 2; done"]
         - name: {{ include "common.name" . }}-create-db-schema
           env:
@@ -49,7 +49,7 @@ spec:
                 name: {{ include "common.fullname" . }}-creds
                 key: schema-repo-password
           image: postgres:latest
-          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }} 
+          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
           command:
           - sh
           - -c
@@ -86,7 +86,7 @@ spec:
           {{- else }}
           image: {{ .Values.global.repository.registry  }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
           {{- end }}
-          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }} 
+          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
           env:
             - name: BACKEND_SERVER
               value: {{ .Release.Name }}-{{ .Chart.Name }}
@@ -96,7 +96,7 @@ spec:
               path: /ping
               port: {{ .Values.service.port1 }}
               scheme: {{ .Values.probes.livenessProbe.scheme }}
-            initialDelaySeconds: {{ .Values.probes.livenessProbe.initialDelaySeconds }}  
+            initialDelaySeconds: {{ .Values.probes.livenessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.probes.livenessProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.probes.livenessProbe.failureThreshold }}
             periodSeconds: {{ .Values.probes.livenessProbe.periodSeconds }}
@@ -111,6 +111,13 @@ spec:
             failureThreshold: {{ .Values.probes.readinessProbe.failureThreshold }}
             periodSeconds: {{ .Values.probes.readinessProbe.periodSeconds }}
             successThreshold: {{ .Values.probes.readinessProbe.successThreshold }}
+          startupProbe:
+            httpGet:
+              path: /ping
+              port: {{ .Values.service.port1 }}
+              scheme: {{ .Values.probes.readinessProbe.scheme }}
+            failureThreshold: 500
+            periodSeconds: 5
           {{- end }}
           volumeMounts:
           - mountPath: /opt/tip-wlan/certs/client_keystore.jks

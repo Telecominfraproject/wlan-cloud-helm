@@ -1,6 +1,6 @@
 {{- if not .Values.byPassNginxForTcpConnections.enabled -}}
 apiVersion: k8s.nginx.org/v1alpha1
-kind: GlobalConfiguration 
+kind: GlobalConfiguration
 metadata:
   name: {{ include "common.name" . }}-global-configuration
   namespace: {{ include "common.namespace" . }}

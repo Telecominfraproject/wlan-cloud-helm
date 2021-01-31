@@ -5,7 +5,7 @@ metadata:
   name: tip-common-postgres-scripts
   namespace: {{ .Release.Namespace }}
 data:
-{{ tpl (.Files.Glob "resources/scripts/creation-replication-user-role.sh").AsConfig . | indent 2 }}
+{{ (.Files.Glob "resources/scripts/creation-replication-user-role.sh").AsConfig | indent 2 }}
 
 ---
 apiVersion: v1

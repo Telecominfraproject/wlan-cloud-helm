@@ -4,7 +4,7 @@ metadata:
   name: {{ include "common.fullname" . }}-log-config
   namespace: {{ include "common.namespace" . }}
 data:
-{{ tpl (.Files.Glob "resources/config/*").AsConfig . | indent 2 }}
+{{ (.Files.Glob "resources/config/logback.xml").AsConfig | indent 2 }}
   datasource.properties: |-
     singleDataSource.url=jdbc:postgresql://{{- include "postgresql.service" . -}}:5432/prov_db
     singleDataSource.username={{ .Values.global.postgres.singleDataSource.username }}

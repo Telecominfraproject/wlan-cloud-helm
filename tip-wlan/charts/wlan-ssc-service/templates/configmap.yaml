@@ -4,7 +4,7 @@ metadata:
   name: {{ include "common.fullname" . }}-ssc-config
   namespace: {{ include "common.namespace" . }}
 data:
-{{ tpl (.Files.Glob "resources/config/*").AsConfig . | indent 2 }}
+{{ (.Files.Glob "resources/config/logback.xml").AsConfig | indent 2 }}
   cassandra-application.conf: >-
     datastax-java-driver {
         basic {

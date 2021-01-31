@@ -53,7 +53,7 @@ spec:
           {{- else }}
           image: {{ .Values.global.repository.registry  }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
           {{- end }}
-          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }} 
+          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
           env:
             {{- include "common.env" . | nindent 12 }}
             - name: FILE_STORE_DIRECTORY_INTERNAL
@@ -93,6 +93,13 @@ spec:
             failureThreshold: {{ .Values.probes.readinessProbe.failureThreshold }}
             periodSeconds: {{ .Values.probes.readinessProbe.periodSeconds }}
             successThreshold: {{ .Values.probes.readinessProbe.successThreshold }}
+          startupProbe:
+            httpGet:
+              path: /ping
+              port: {{ .Values.service.port1 }}
+              scheme: {{ .Values.probes.readinessProbe.scheme }}
+            failureThreshold: 500
+            periodSeconds: 5
           {{- end }}
           volumeMounts:
           - mountPath: /opt/tip-wlan/certs/client_keystore.jks
@@ -139,7 +146,7 @@ spec:
       volumes:
       - name: certificates
         secret:
-          secretName: {{ include "common.fullname" . }}-certs
+          secretName: tip-common-postgres-client-certs
       - name: logback-config
         configMap:
             name: {{ include "common.fullname" . }}-log-config

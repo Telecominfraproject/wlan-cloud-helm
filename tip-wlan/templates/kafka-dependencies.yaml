@@ -18,8 +18,8 @@ type: Opaque
 data:
   client_keystore.jks: {{ .Files.Get "resources/certs/client_keystore.jks" | b64enc }}
   kafka-server.pkcs12: {{ .Files.Get "resources/certs/kafka-server.pkcs12" | b64enc }}
-  truststore.jks: {{ .Files.Get "resources/certs/truststore.jks" | b64enc }}
   server.pkcs12: {{ .Files.Get "resources/certs/server.pkcs12" | b64enc }}
+  truststore.jks: {{ .Files.Get "resources/certs/truststore.jks" | b64enc }}
 
 
 {{ if .Values.kafka.initJobConfig.topics }}
@@ -93,5 +93,4 @@ spec:
             {{- end }}
           {{- end }}
         {{- end }}
-
 {{- end -}}

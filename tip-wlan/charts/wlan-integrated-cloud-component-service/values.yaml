@@ -70,7 +70,7 @@ service:
   name2: secondary-port
   nodePort2: 52
 
-postgresql: 
+postgresql:
   url: postgresql-headless
 
 integratedWithPersistence:
@@ -84,9 +84,9 @@ ingress:
   hosts:
     - host: example.com
       paths: [
-         /portal 
+         /portal
         ]
-  tls: 
+  tls:
    - secretName: portal-secret
      hosts:
        - example.com

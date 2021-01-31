@@ -1,45 +1,12 @@
-# This is a development override file.
-# It overrides the default Tip-Wlan parent chart behaviour
-#
-# It can be tweaked, based on the need to support different
-# dev environments.
-# This file expects to have a GlusterFS storage solution running
-# before "helm install" is performed.
-#################################################################
-# Global configuration overrides.
-#
-# These overrides will affect all helm charts (ie. applications)
-# that are listed below and are 'enabled'.
-#################################################################
 global:
-  # Change to an unused port prefix range to prevent port conflicts
-  # with other instances running within the same k8s cluster
   nodePortPrefix: 304
-  nsPrefix: tip-2
-  # image pull policy
   pullPolicy: Always
 
-  repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
-  # override default mount path root directory
-  # referenced by persistent volumes and log files
-  persistence:
 
-  # flag to enable debugging - application support required
-  debugEnabled: true
-
-# Annotations for namespace
 annotations: {
     "helm.sh/resource-policy": keep
 }
 
-# createReleaseNamespace: false
-
-# Docker registry secret
-dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
-#################################################################
-# Enable/disable and configure helm charts (ie. applications)
-# to customize the TIP-WLAN deployment.
-#################################################################
 opensync-gw-static:
   enabled: false
 opensync-gw-cloud:
@@ -52,21 +19,6 @@ opensync-gw-cloud:
     enabled: true
   filestore:
     url: "https://wlan-filestore.wlan.local"
-  scalability:
-    #how many concurrent connections single instance of OpenSyncGateway can accept
-    tip_wlan_ovsdb_listener_threadPoolSize: 50
-    #asynchronous task executor - monitor metrics and adjust if tasks start being rejected
-    tip_wlan_AsyncExecutor_CorePoolSize: 10
-    tip_wlan_AsyncExecutor_MaxPoolSize: 50
-    tip_wlan_AsyncExecutor_QueueCapacity: 50
-    #max total number of persistent connections in the http client pool
-    tip_wlan_httpClientConfig_maxConnectionsTotal: 100
-    #max number of persistent connections in the http client pool per destination
-    tip_wlan_httpClientConfig_maxConnectionsPerRoute: 10
-    #max number of concurrent REST API calls a single instance of this service can process
-    tip_wlan_maxHttpThreads:  100
-    #memory tuning parameters for the JVM - max size, initialsize, garbage collection tuning options, etc.
-    JVM_MEM_OPTIONS: " "
 
 opensync-mqtt-broker:
   enabled: true
@@ -108,151 +60,34 @@ wlan-portal-service:
     enabled: true
     storageClass: standard
     filestoreSize: 1Gi
-  scalability:
-    #asynchronous task executor - monitor metrics and adjust if tasks start being rejected
-    tip_wlan_AsyncExecutor_CorePoolSize: 10
-    tip_wlan_AsyncExecutor_MaxPoolSize: 50
-    tip_wlan_AsyncExecutor_QueueCapacity: 50
-    #max total number of persistent connections in the http client pool
-    tip_wlan_httpClientConfig_maxConnectionsTotal: 100
-    #max number of persistent connections in the http client pool per destination
-    tip_wlan_httpClientConfig_maxConnectionsPerRoute: 10
-    #max number of concurrent REST API calls a single instance of this service can process
-    tip_wlan_maxHttpThreads:  100
-    #memory tuning parameters for the JVM - max size, initialsize, garbage collection tuning options, etc.
-    JVM_MEM_OPTIONS: " "
 
 wlan-prov-service:
   enabled: true
-  creds:
-    enabled: true
-    db:
-      postgresUser:
-        password: postgres
-      tipUser:
-        password: tip_password
-    schema_repo:
-      username: tip-read
-      password: tip-read
-    postgres:
-      singleDataSourceUsername: tip_user
-      singleDataSourcePassword: tip_password
-      singleDataSourceSslKeyPassword: mypassword
-  scalability:
-    #asynchronous task executor - monitor metrics and adjust if tasks start being rejected
-    tip_wlan_AsyncExecutor_CorePoolSize: 10
-    tip_wlan_AsyncExecutor_MaxPoolSize: 50
-    tip_wlan_AsyncExecutor_QueueCapacity: 50
-    #max total number of persistent connections in the http client pool
-    tip_wlan_httpClientConfig_maxConnectionsTotal: 100
-    #max number of persistent connections in the http client pool per destination
-    tip_wlan_httpClientConfig_maxConnectionsPerRoute: 10
-    #max number of concurrent REST API calls a single instance of this service can process
-    tip_wlan_maxHttpThreads:  100
-    #memory tuning parameters for the JVM - max size, initialsize, garbage collection tuning options, etc.
-    JVM_MEM_OPTIONS: " "
-    #max number of connections to PostgreSQL database
-    singleDataSource_maxTotalConnections: 8
-    #max number of idle connections to PostgreSQL database
-    singleDataSource_maxIdleConnections: 8
-    #max number of cached prepared statements used in PostgreSQL database
-    singleDataSource_maxPreparedStatements: 200
-    #max number of cached idle prepared statements used in PostgreSQL database
-    singleDataSource_maxIdlePreparedStatements: 200
 
 wlan-ssc-service:
   enabled: true
-  creds:
-    sslKeyPassword: mypassword
-    sslKeystorePassword: mypassword
-    sslTruststorePassword: mypassword
-    cassandra:
-      tip_user: tip_user
-      tip_password: tip_password
-    schema_repo:
-      username: tip-read
-      password: tip-read
-  scalability:
-    #asynchronous task executor - monitor metrics and adjust if tasks start being rejected
-    tip_wlan_AsyncExecutor_CorePoolSize: 10
-    tip_wlan_AsyncExecutor_MaxPoolSize: 50
-    tip_wlan_AsyncExecutor_QueueCapacity: 50
-    #max total number of persistent connections in the http client pool
-    tip_wlan_httpClientConfig_maxConnectionsTotal: 100
-    #max number of persistent connections in the http client pool per destination
-    tip_wlan_httpClientConfig_maxConnectionsPerRoute: 10
-    #max number of concurrent REST API calls a single instance of this service can process
-    tip_wlan_maxHttpThreads:  100
-    #memory tuning parameters for the JVM - max size, initialsize, garbage collection tuning options, etc.
-    JVM_MEM_OPTIONS: " "
 
 wlan-spc-service:
   enabled: true
-  creds:
-    sslKeyPassword: mypassword
-    sslKeystorePassword: mypassword
-    sslTruststorePassword: mypassword
-  scalability:
-    #asynchronous task executor - monitor metrics and adjust if tasks start being rejected
-    tip_wlan_AsyncExecutor_CorePoolSize: 10
-    tip_wlan_AsyncExecutor_MaxPoolSize: 50
-    tip_wlan_AsyncExecutor_QueueCapacity: 50
-    #max total number of persistent connections in the http client pool
-    tip_wlan_httpClientConfig_maxConnectionsTotal: 100
-    #max number of persistent connections in the http client pool per destination
-    tip_wlan_httpClientConfig_maxConnectionsPerRoute: 10
-    #max number of concurrent REST API calls a single instance of this service can process
-    tip_wlan_maxHttpThreads:  100
-    #memory tuning parameters for the JVM - max size, initialsize, garbage collection tuning options, etc.
-    JVM_MEM_OPTIONS: " "
     
 nginx-ingress-controller:
   enabled: false
 
-zookeeper:
-  enabled: true
-  replicaCount: 1
-  persistence:
-    enabled: true
-    storageClass: standard
 kafka:
   enabled: true
-  replicaCount: 1
   persistence:
     enabled: true
     storageClass: standard
-  creds:
-    sslKeystorePassword: mypassword
-    sslTruststorePassword: mypassword
-    sslKeyPassword: mypassword
+
 cassandra:
   enabled: true
-  image:
-    debug: true
-  cluster:
-    replicaCount: 1
-    seedCount: 1
   persistence:
     enabled: true
     storageClass: standard
-  creds:
-    sslKeystorePassword: mypassword
-    sslTruststorePassword: mypassword
+
 postgresql:
   enabled: true
-  postgresqlPassword: postgres
-## NOTE: If we are using glusterfs as Storage class, we don't really need
-## replication turned on, since the data is anyway replicated on glusterfs nodes
-## Replication is useful:
-## a. When we use HostPath as storage mechanism
-## b. If master goes down and one of the slave is promoted as master
-  replication:
-    enabled: true
-    slaveReplicas: 1
   persistence:
     enabled: true
     storageClass: standard
-  readinessProbe:
-    initialDelaySeconds: 30
-  livenessProbe:
-    initialDelaySeconds: 30
+

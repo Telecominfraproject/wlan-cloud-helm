@@ -45,8 +45,8 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: {{ include "common.name" . }}-init-dir-ownership-change
-          image: {{ .Values.alpine.image }} 
-          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }} 
+          image: {{ .Values.alpine.image }}
+          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
           # Change ownership to `mosquitto` user for a mounted volume
           command:
           - sh
@@ -64,12 +64,12 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ .Values.image.name }}:{{ .Values.image.tag }}
-          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }} 
+          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
           {{- if .Values.probes.enabled }}
           livenessProbe:
             tcpSocket:
               port: {{ .Values.service.port1 }}
-            initialDelaySeconds: {{ .Values.probes.livenessProbe.initialDelaySeconds }}  
+            initialDelaySeconds: {{ .Values.probes.livenessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.probes.livenessProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.probes.livenessProbe.failureThreshold }}
             periodSeconds: {{ .Values.probes.livenessProbe.periodSeconds }}
@@ -82,6 +82,11 @@ spec:
             failureThreshold: {{ .Values.probes.readinessProbe.failureThreshold }}
             periodSeconds: {{ .Values.probes.readinessProbe.periodSeconds }}
             successThreshold: {{ .Values.probes.readinessProbe.successThreshold }}
+          startupProbe:
+            tcpSocket:
+              port: {{ .Values.service.port1 }}
+            failureThreshold: 500
+            periodSeconds: 5
           {{- end }}
           volumeMounts:
           - mountPath: /certs/cacert.pem

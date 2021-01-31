@@ -38,6 +38,6 @@
     name: apdebugport-{{ $index }}
     {{- if eq $.Values.service.type "NodePort" }}
     nodePort: {{ $port }}
-    {{- end }}   
+    {{- end }}
   {{- end }}
 {{- end -}}

@@ -1,5 +1,5 @@
 {{/*
-    Resolve the Postgres service-name to apply to a chart. 
+    Resolve the Postgres service-name to apply to a chart.
 */}}
 {{- define "postgresql.service" -}}
   {{- printf "%s-%s" .Release.Name .Values.postgresql.url | trunc 63 -}}
@@ -19,63 +19,63 @@ else use user-provided URL
 {{- end -}}
 
 {{/*
-  Resolve the Kafka service-name to apply to a chart. 
+  Resolve the Kafka service-name to apply to a chart.
 */}}
 {{- define "kafka.service" -}}
 {{- printf "%s-%s" .Release.Name .Values.kafka.url | trunc 63 -}}
 {{- end -}}
 
 {{/*
-  Resolve the Cassandra service-name to apply to a chart. 
+  Resolve the Cassandra service-name to apply to a chart.
 */}}
 {{- define "cassandra.service" -}}
 {{- printf "%s-%s" .Release.Name .Values.cassandra.url | trunc 63 -}}
 {{- end -}}
 
 {{/*
-  Resolve the MQTT service-name to apply to a chart. 
+  Resolve the MQTT service-name to apply to a chart.
 */}}
 {{- define "mqtt.service" -}}
 {{- printf "%s-%s" .Release.Name .Values.mqtt.url | trunc 63 -}}
 {{- end -}}
 
 {{/*
-  Resolve the integratedcloudcomponent service-name to apply to a chart. 
+  Resolve the integratedcloudcomponent service-name to apply to a chart.
 */}}
 {{- define "integratedcloudcomponent.service" -}}
   {{- printf "%s-%s:%.f" .Release.Name .Values.integratedcloudcomponent.url .Values.integratedcloudcomponent.port | trunc 63 -}}
 {{- end -}}
 
 {{/*
-  Resolve the provisioning service-name to apply to a chart. 
+  Resolve the provisioning service-name to apply to a chart.
 */}}
 {{- define "prov.service" -}}
   {{- printf "%s-%s:%.f" .Release.Name .Values.prov.url .Values.prov.port | trunc 63 -}}
 {{- end -}}
 
 {{/*
-  Resolve the ssc service-name to apply to a chart. 
+  Resolve the ssc service-name to apply to a chart.
 */}}
 {{- define "ssc.service" -}}
   {{- printf "%s-%s:%.f" .Release.Name .Values.ssc.url .Values.ssc.port | trunc 63 -}}
 {{- end -}}
 
 {{/*
-  Resolve the Opensync-gw service-name to apply to a chart. 
+  Resolve the Opensync-gw service-name to apply to a chart.
 */}}
 {{- define "opensyncgw.service" -}}
   {{- printf "%s-%s:%.f" .Release.Name .Values.opensyncgw.url .Values.opensyncgw.port | trunc 63 -}}
 {{- end -}}
 
 {{/*
-  Resolve the pvc name that's would mounted to 2 charts - Portal and Opensync-gw 
+  Resolve the pvc name that's would mounted to 2 charts - Portal and Opensync-gw
 */}}
 {{- define "portal.sharedPvc.name" -}}
 {{- printf "%s-%s-%s-%.f" .Values.portal.sharedPvc.name .Release.Name .Values.portal.url .Values.portal.sharedPvc.ordinal | trunc 63 -}}
 {{- end -}}
 
 {{/*
-  Resolve the filestore-directory name that's would mounted to 2 charts - Portal and Opensync-gw 
+  Resolve the filestore-directory name that's would mounted to 2 charts - Portal and Opensync-gw
 */}}
 {{- define "filestore.dir.name" -}}
   {{- printf "%s" .Values.filestore.internal | trunc 63 -}}

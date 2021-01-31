@@ -6,25 +6,7 @@ global:
 
   integratedDeployment: false
   testingEnabled:
-  certificatePasswords:
-    sslKey: &sslKeyPassword "mypassword"
-    sslKeystore: &sslKeystorePassword "mypassword"
-    sslTruststore: &sslTruststorePassword "mypassword"
-  cassandra:
-    username: tip_user
-    password: tip_password
-  postgres:
-    password: postgres
-    singleDataSource:
-      username: tip_user
-      password: tip_password
-  tip:
-    password: tip_password
-  schema:
-    username: tip-read
-    password: tip-read
 
-dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
 annotations: {
     "helm.sh/resource-policy": keep
 }
@@ -47,7 +29,7 @@ opensync-gw-cloud:
   persistence:
     enabled: true
   filestore:
-    url: "https://wlan-filestore.wlan.local"
+    url: https://wlan-filestore.wlan.local
 
 opensync-mqtt-broker:
   enabled: true
@@ -150,12 +132,6 @@ kafka:
   persistence:
     enabled: true
     storageClass: hostpath
-  creds:
-    sslKeyPassword: *sslKeyPassword
-    sslKeystorePassword: *sslKeystorePassword
-    sslTruststorePassword: *sslTruststorePassword
-  auth:
-    jksPassword: *sslKeystorePassword
 
 cassandra:
   enabled: true

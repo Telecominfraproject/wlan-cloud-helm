@@ -26,25 +26,6 @@ global:
   integratedDeployment: false
   testingEnabled:
 
-  certificatePasswords:
-    sslKey: &sslKeyPassword "mypassword"
-    sslKeystore: &sslKeystorePassword "mypassword"
-    sslTruststore: &sslTruststorePassword "mypassword"
-  cassandra:
-    username: tip_user
-    password: tip_password
-  postgres:
-    password: postgres
-    singleDataSource:
-      username: tip_user
-      password: tip_password
-  tip:
-    password: tip_password
-  schema:
-    username: tip-read
-    password: tip-read
-
-dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
 annotations: {
     "helm.sh/resource-policy": keep
 }
@@ -62,8 +43,6 @@ opensync-gw-cloud:
     enabled: true
   filestore:
     url: https://wlan-filestore.wlan.local
-  scalability:
-    <<: *jvm-options
 
 opensync-mqtt-broker:
   enabled: true
@@ -110,23 +89,15 @@ wlan-portal-service:
     enabled: true
     storageClass: standard
     filestoreSize: 1Gi
-  scalability:
-    <<: *jvm-options
 
 wlan-prov-service:
   enabled: true
-  scalability:
-    <<: *jvm-options
 
 wlan-ssc-service:
   enabled: true
-  scalability:
-    <<: *jvm-options
 
 wlan-spc-service:
   enabled: true
-  scalability:
-    <<: *jvm-options
 
 wlan-port-forwarding-gateway-service:
   enabled: true
@@ -155,12 +126,6 @@ kafka:
   persistence:
     enabled: true
     storageClass: standard
-  creds:
-    sslKeyPassword: *sslKeyPassword
-    sslKeystorePassword: *sslKeystorePassword
-    sslTruststorePassword: *sslTruststorePassword
-  auth:
-    jksPassword: *sslKeystorePassword
 
 cassandra:
   enabled: true

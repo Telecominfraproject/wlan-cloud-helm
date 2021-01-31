@@ -1,22 +1,3 @@
-shared:
-  scalability: &jvm-options
-    tip_wlan_ovsdb_listener_threadPoolSize: 50
-    tip_wlan_AsyncExecutor_CorePoolSize: 10
-    tip_wlan_AsyncExecutor_MaxPoolSize: 50
-    tip_wlan_AsyncExecutor_QueueCapacity: 50
-    tip_wlan_httpClientConfig_maxConnectionsTotal: 100
-    tip_wlan_httpClientConfig_maxConnectionsPerRoute: 10
-    tip_wlan_maxHttpThreads: 100
-    JVM_MEM_OPTIONS: " "
-    singleDataSource_maxTotalConnections: 8
-    singleDataSource_maxIdleConnections: 8
-    singleDataSource_maxPreparedStatements: 200
-    singleDataSource_maxIdlePreparedStatements: 200
-    singleDataSource_maxTotalConnections: 8
-    singleDataSource_maxIdleConnections: 8
-    singleDataSource_maxPreparedStatements: 200
-    singleDataSource_maxIdlePreparedStatements: 200
-
 global:
   nodePortPrefix: 302
   nodePortPrefixExt: 304
@@ -27,25 +8,6 @@ global:
   testingEnabled: false
   testingTimestamp:
 
-  certificatePasswords:
-    sslKey: &sslKeyPassword "mypassword"
-    sslKeystore: &sslKeystorePassword "mypassword"
-    sslTruststore: &sslTruststorePassword "mypassword"
-  cassandra:
-    username: tip_user
-    password: tip_password
-  postgres:
-    password: postgres
-    singleDataSource:
-      username: tip_user
-      password: tip_password
-  tip:
-    password: tip_password
-  schema:
-    username: tip-read
-    password: tip-read
-
-dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
 annotations: {
     "helm.sh/resource-policy": keep
 }
@@ -67,8 +29,6 @@ opensync-gw-cloud:
     type: LoadBalancer
     annotations:
       metallb.universe.tf/allow-shared-ip: default
-  scalability:
-    <<: *jvm-options
 
 opensync-mqtt-broker:
   enabled: true
@@ -121,24 +81,16 @@ wlan-portal-service:
     type: LoadBalancer
     annotations:
       metallb.universe.tf/allow-shared-ip: default
-  scalability:
-    <<: *jvm-options
 
 wlan-prov-service:
   enabled: true
-  scalability:
-    <<: *jvm-options
 
 wlan-ssc-service:
   enabled: true
-  scalability:
-    <<: *jvm-options
 
 wlan-spc-service:
   enabled: true
   scalability:
-    <<: *jvm-options
-
 nginx-ingress-controller:
   enabled: true
   controller:
@@ -160,12 +112,6 @@ kafka:
   persistence:
     enabled: true
     storageClass: microk8s-hostpath
-  creds:
-    sslKeyPassword: *sslKeyPassword
-    sslKeystorePassword: *sslKeystorePassword
-    sslTruststorePassword: *sslTruststorePassword
-  auth:
-    jksPassword: *sslKeystorePassword
 
 cassandra:
   enabled: true
