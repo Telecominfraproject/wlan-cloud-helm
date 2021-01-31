@@ -1,19 +1,7 @@
 global:
-  nodePortPrefix: 302
-  nodePortPrefixExt: 304
-
-  pullPolicy: Always
-  repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
-
   integratedDeployment: true
-  testingEnabled:
-
   postgres:
     password: cG9zdGdyZXMxMjM=
-
-annotations: {
-    "helm.sh/resource-policy": keep
-}
 
 opensync-gw-static:
   enabled: false

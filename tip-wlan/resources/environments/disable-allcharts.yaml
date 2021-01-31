@@ -1,12 +1,3 @@
-global:
-  nodePortPrefix: 302
-  nodePortPrefixExt: 304
-
-  pullPolicy: Always
-
-  integratedDeployment: false
-  testingEnabled:
-
 createDockerRegistrySecret: false
 
 opensync-gw-static:

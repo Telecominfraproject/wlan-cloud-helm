@@ -1,16 +1,3 @@
-global:
-  nodePortPrefix: 302
-  nodePortPrefixExt: 304
-
-  pullPolicy: Always
-
-  integratedDeployment:
-  testingEnabled:
-
-annotations: {
-    "helm.sh/resource-policy": keep
-}
-
 opensync-gw-static:
   enabled: false
 

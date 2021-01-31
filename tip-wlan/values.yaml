@@ -75,9 +75,6 @@ global:
 # DockerRegistry Secret
 createDockerRegistrySecret: true
 
-# Annotations to add to the namespace
-annotations: {}
-
 # Enabling components under Tip-wlan
 opensync-gw-static:
   enabled: false
