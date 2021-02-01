@@ -1,10 +1,6 @@
 global:
   nodePortPrefix: 302
 
-annotations: {
-    "helm.sh/resource-policy": keep
-}
-
 opensync-gw-static:
   enabled: false
 
