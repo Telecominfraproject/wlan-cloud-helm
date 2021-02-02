@@ -205,7 +205,7 @@ spec:
       volumes:
       - name: certificates
         secret:
-          secretName: {{ include "common.fullname" . }}-certs
+          secretName: tip-common-opensync-gw-certs
       - name: logback-config
         configMap:
             name: {{ include "common.fullname" . }}-log-config

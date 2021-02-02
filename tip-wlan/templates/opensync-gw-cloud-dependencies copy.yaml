@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tip-common-opensync-gw-certs
+  namespace: {{ .Release.Namespace }}
+type: Opaque
+data:
+  cacert.pem: {{ .Files.Get "resources/certs/cacert.pem" | b64enc }}
+  client_keystore.jks: {{ .Files.Get "resources/certs/client_keystore.jks" | b64enc }}
+  clientcert.pem: {{ .Files.Get "resources/certs/clientcert.pem" | b64enc }}
+  clientkey.pem: {{ .Files.Get "resources/certs/clientkey.pem" | b64enc }}
+  server.pkcs12: {{ .Files.Get "resources/certs/server.pkcs12" | b64enc }}
+  truststore.jks: {{ .Files.Get "resources/certs/truststore.jks" | b64enc }}
+
+  httpClientConfig.json: {{ tpl ( .Files.Get "resources/certs/httpClientConfig.json" ) . | b64enc }}
+  ssl.properties: {{ tpl ( .Files.Get "resources/certs/ssl.properties" ) . | b64enc }}

@@ -129,7 +129,7 @@ spec:
       volumes:
       - name: opensync-mqtt-broker-truststore
         secret:
-          secretName: opensync-mqtt-broker-certs
+          secretName: tip-common-opensync-mqtt-broker-certs
       - name: opensync-mqtt-broker-conf
         configMap:
             name: mosquitto-config

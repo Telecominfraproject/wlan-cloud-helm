@@ -1,3 +1,6 @@
+global:
+  PullPolicy: IfNotPresent
+
 common:
   efs-provisioner:
     enabled: false
@@ -6,9 +9,9 @@ opensync-gw-static:
   enabled: false
 
 opensync-gw-cloud:
+  enabled: true
   service:
     type: LoadBalancer
-  enabled: true
   externalhost:
     address:
       ovsdb: opensync-controller.wlan.local
@@ -61,10 +64,10 @@ wlan-cloud-static-portal:
       secretName: nginx-ingress-controller-default-server-secret
 
 wlan-portal-service:
+  enabled: true
   service:
     type: NodePort
     nodePort_static: false
-  enabled: true
   persistence:
     enabled: true
     storageClass: hostpath
