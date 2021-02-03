@@ -5,26 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Unreleased](xxx) - 2021-02-04
 
-## [1.0.1]()
+### Added
 
-values files changes:
-1. removed dockerRegistrySecret property as obsolete from environment values files
-2. removed annotations property as obsolete from environment values files
-3. moved scalabilty property completely to base values.yaml to not repeat this in values files
-4. updated multi-namespace examples to support latest changes
-5. removed passwords\certificates from environment values files
-
-other changes:
-1. centralized passwords in helm values
-2. centralized certificates secrets in parent chart 
-3. removed .Values.creds.enabled conditions, because they do not make sense, none of the services using those conditions would properly work without those
-4. added startup probes to prevent container restarts during startup process
-5. defaulting most of the properties to values.yaml
-5. not templating around files.glob where not needed
-6. minor formatting fixes
-7. fixed multi-namepsace examples
+- Replaced cassandra, postgres and kafka with upstream charts ( https://github.com/Telecominfraproject/wlan-cloud-helm/pull/49 )
+- Removed hardcoded docker secret in favor of variables ( https://github.com/Telecominfraproject/wlan-cloud-helm/pull/53 )
+- Improved kafka setup templating ( https://github.com/Telecominfraproject/wlan-cloud-helm/pull/53 )
+- Improved default values in values.yaml ( https://github.com/Telecominfraproject/wlan-cloud-helm/pull/53 and https://github.com/Telecominfraproject/wlan-cloud-helm/pull/54 )
+- Centralized secret to the parent chart ( https://github.com/Telecominfraproject/wlan-cloud-helm/pull/54 )
+- Improved default values and added yaml anchors ( https://github.com/Telecominfraproject/wlan-cloud-helm/pull/54 )
 
 ## [0.4.0](https://github.com/Telecominfraproject/wlan-cloud-helm/compare/f7c67645736e3dac498e2caec8c267f04d08b7bc...v0.4) - 2021-01-28
 
