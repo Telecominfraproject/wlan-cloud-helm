@@ -116,8 +116,8 @@ spec:
               path: /ping
               port: {{ .Values.service.port1 }}
               scheme: {{ .Values.probes.readinessProbe.scheme }}
-            failureThreshold: 500
-            periodSeconds: 5
+            failureThreshold: {{ .Values.probes.startupProbe.failureThreshold }}
+            periodSeconds: {{ .Values.probes.startupProbe.periodSeconds}}
           {{- end }}
           volumeMounts:
           - mountPath: /opt/tip-wlan/certs/client_keystore.jks

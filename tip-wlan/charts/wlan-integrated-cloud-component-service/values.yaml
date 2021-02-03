@@ -46,6 +46,9 @@ probes:
     successThreshold: 1
     failureThreshold: 3
     scheme: HTTPS
+  startupProbe:
+    periodSeconds: 30
+    failureThreshold: 500
 
 securityContext: {}
   # capabilities:

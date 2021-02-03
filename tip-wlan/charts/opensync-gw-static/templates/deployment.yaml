@@ -50,8 +50,8 @@ spec:
           startupProbe:
             tcpSocket:
               port: {{ .Values.service.port2 }}
-            failureThreshold: 500
-            periodSeconds: 5
+            failureThreshold: {{ .Values.probes.startupProbe.failureThreshold }}
+            periodSeconds: {{ .Values.probes.startupProbe.periodSeconds}}
           {{- end }}
           volumeMounts:
           - mountPath: /opt/tip-wlan/certs/client_keystore.jks

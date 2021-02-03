@@ -10,15 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Replaced cassandra, postgres and kafka with upstream charts ( https://github.com/Telecominfraproject/wlan-cloud-helm/pull/49 )
-- Removed hardcoded docker secret in favor of variables ( https://github.com/Telecominfraproject/wlan-cloud-helm/pull/53 )
-
-### Replaced
 - Centralized secrets to the parent chart ( https://github.com/Telecominfraproject/wlan-cloud-helm/pull/54 )
+
+### Changed
 - Improved kafka setup templating ( https://github.com/Telecominfraproject/wlan-cloud-helm/pull/53 )
 - Improved values.yaml ( https://github.com/Telecominfraproject/wlan-cloud-helm/pull/53 )
 - Improved default values and added yaml anchors ( https://github.com/Telecominfraproject/wlan-cloud-helm/pull/54 )
 
 ### Removed
+- Removed hardcoded docker secret in favor of variables ( https://github.com/Telecominfraproject/wlan-cloud-helm/pull/53 )
 - Various outdated sections in values.yaml and environment files
 - Various secrets in subcharts as they are now part of the parent chart
 

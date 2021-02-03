@@ -92,8 +92,8 @@ spec:
           startupProbe:
             tcpSocket:
               port: {{ .Values.service.port1 }}
-            failureThreshold: 500
-            periodSeconds: 5
+            failureThreshold: {{ .Values.probes.startupProbe.failureThreshold }}
+            periodSeconds: {{ .Values.probes.startupProbe.periodSeconds}}
           {{- end }}
           env:
             {{- include "common.env" . | nindent 12 }}

@@ -52,6 +52,9 @@ probes:
     timeoutSeconds: 5
     successThreshold: 1
     failureThreshold: 3
+  startupProbe:
+    periodSeconds: 30
+    failureThreshold: 500
 
 # Enable/Disable Helm tests
 testsEnabled: false
