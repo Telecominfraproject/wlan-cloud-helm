@@ -1,47 +1,9 @@
-# This is a development override file.
-# It overrides the default Tip-Wlan parent chart behaviour
-#
-# It can be tweaked, based on the need to support different
-# dev environments.
-# This file expects to have a GlusterFS storage solution running
-# before "helm install" is performed.
-#################################################################
-# Global configuration overrides.
-#
-# These overrides will affect all helm charts (ie. applications)
-# that are listed below and are 'enabled'.
-#################################################################
 global:
-  # Change to an unused port prefix range to prevent port conflicts
-  # with other instances running within the same k8s cluster
   nodePortPrefix: 302
-  nsPrefix: tip-1
-  # image pull policy
-  pullPolicy: Always
 
-  repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
-  # override default mount path root directory
-  # referenced by persistent volumes and log files
-  persistence:
-
-  # flag to enable debugging - application support required
-  debugEnabled: true
-
-# Annotations for namespace
-annotations: {
-    "helm.sh/resource-policy": keep
-}
-
-# createReleaseNamespace: false
-
-# Docker registry secret
-dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
-#################################################################
-# Enable/disable and configure helm charts (ie. applications)
-# to customize the TIP-WLAN deployment.
-#################################################################
 opensync-gw-static:
   enabled: false
+
 opensync-gw-cloud:
   enabled: true
   externalhost:
@@ -51,22 +13,7 @@ opensync-gw-cloud:
   persistence:
     enabled: true
   filestore:
-    url: "https://wlan-filestore.wlan.local"
-  scalability:
-    #how many concurrent connections single instance of OpenSyncGateway can accept
-    tip_wlan_ovsdb_listener_threadPoolSize: 50
-    #asynchronous task executor - monitor metrics and adjust if tasks start being rejected
-    tip_wlan_AsyncExecutor_CorePoolSize: 10
-    tip_wlan_AsyncExecutor_MaxPoolSize: 50
-    tip_wlan_AsyncExecutor_QueueCapacity: 50
-    #max total number of persistent connections in the http client pool
-    tip_wlan_httpClientConfig_maxConnectionsTotal: 100
-    #max number of persistent connections in the http client pool per destination
-    tip_wlan_httpClientConfig_maxConnectionsPerRoute: 10
-    #max number of concurrent REST API calls a single instance of this service can process
-    tip_wlan_maxHttpThreads:  100
-    #memory tuning parameters for the JVM - max size, initialsize, garbage collection tuning options, etc.
-    JVM_MEM_OPTIONS: " "
+    url: https://wlan-filestore.wlan.local
 
 opensync-mqtt-broker:
   enabled: true
@@ -74,6 +21,7 @@ opensync-mqtt-broker:
   persistence:
     enabled: true
     storageClass: standard
+
 wlan-cloud-graphql-gw:
   enabled: true
   env:
@@ -87,6 +35,7 @@ wlan-cloud-graphql-gw:
     tls:
     - hosts:
       - wlan-ui-graphql-1.wlan.local
+
 wlan-cloud-static-portal:
   enabled: true
   env:
@@ -102,110 +51,23 @@ wlan-cloud-static-portal:
     tls:
     - hosts:
       - wlan-ui-1.wlan.local
+
 wlan-portal-service:
   enabled: true
   persistence:
     enabled: true
     storageClass: standard
     filestoreSize: 1Gi
-  scalability:
-    #asynchronous task executor - monitor metrics and adjust if tasks start being rejected
-    tip_wlan_AsyncExecutor_CorePoolSize: 10
-    tip_wlan_AsyncExecutor_MaxPoolSize: 50
-    tip_wlan_AsyncExecutor_QueueCapacity: 50
-    #max total number of persistent connections in the http client pool
-    tip_wlan_httpClientConfig_maxConnectionsTotal: 100
-    #max number of persistent connections in the http client pool per destination
-    tip_wlan_httpClientConfig_maxConnectionsPerRoute: 10
-    #max number of concurrent REST API calls a single instance of this service can process
-    tip_wlan_maxHttpThreads:  100
-    #memory tuning parameters for the JVM - max size, initialsize, garbage collection tuning options, etc.
-    JVM_MEM_OPTIONS: " "
 
 wlan-prov-service:
   enabled: true
-  creds:
-    enabled: true
-    db:
-      postgresUser:
-        password: postgres
-      tipUser:
-        password: tip_password
-    schema_repo:
-      username: tip-read
-      password: tip-read
-    postgres:
-      singleDataSourceUsername: tip_user
-      singleDataSourcePassword: tip_password
-      singleDataSourceSslKeyPassword: mypassword
-  scalability:
-    #asynchronous task executor - monitor metrics and adjust if tasks start being rejected
-    tip_wlan_AsyncExecutor_CorePoolSize: 10
-    tip_wlan_AsyncExecutor_MaxPoolSize: 50
-    tip_wlan_AsyncExecutor_QueueCapacity: 50
-    #max total number of persistent connections in the http client pool
-    tip_wlan_httpClientConfig_maxConnectionsTotal: 100
-    #max number of persistent connections in the http client pool per destination
-    tip_wlan_httpClientConfig_maxConnectionsPerRoute: 10
-    #max number of concurrent REST API calls a single instance of this service can process
-    tip_wlan_maxHttpThreads:  100
-    #memory tuning parameters for the JVM - max size, initialsize, garbage collection tuning options, etc.
-    JVM_MEM_OPTIONS: " "
-    #max number of connections to PostgreSQL database
-    singleDataSource_maxTotalConnections: 8
-    #max number of idle connections to PostgreSQL database
-    singleDataSource_maxIdleConnections: 8
-    #max number of cached prepared statements used in PostgreSQL database
-    singleDataSource_maxPreparedStatements: 200
-    #max number of cached idle prepared statements used in PostgreSQL database
-    singleDataSource_maxIdlePreparedStatements: 200
 
 wlan-ssc-service:
   enabled: true
-  creds:
-    sslKeyPassword: mypassword
-    sslKeystorePassword: mypassword
-    sslTruststorePassword: mypassword
-    cassandra:
-      tip_user: tip_user
-      tip_password: tip_password
-    schema_repo:
-      username: tip-read
-      password: tip-read
-  scalability:
-    #asynchronous task executor - monitor metrics and adjust if tasks start being rejected
-    tip_wlan_AsyncExecutor_CorePoolSize: 10
-    tip_wlan_AsyncExecutor_MaxPoolSize: 50
-    tip_wlan_AsyncExecutor_QueueCapacity: 50
-    #max total number of persistent connections in the http client pool
-    tip_wlan_httpClientConfig_maxConnectionsTotal: 100
-    #max number of persistent connections in the http client pool per destination
-    tip_wlan_httpClientConfig_maxConnectionsPerRoute: 10
-    #max number of concurrent REST API calls a single instance of this service can process
-    tip_wlan_maxHttpThreads:  100
-    #memory tuning parameters for the JVM - max size, initialsize, garbage collection tuning options, etc.
-    JVM_MEM_OPTIONS: " "
 
 wlan-spc-service:
   enabled: true
-  creds:
-    sslKeyPassword: mypassword
-    sslKeystorePassword: mypassword
-    sslTruststorePassword: mypassword
-  scalability:
-    #asynchronous task executor - monitor metrics and adjust if tasks start being rejected
-    tip_wlan_AsyncExecutor_CorePoolSize: 10
-    tip_wlan_AsyncExecutor_MaxPoolSize: 50
-    tip_wlan_AsyncExecutor_QueueCapacity: 50
-    #max total number of persistent connections in the http client pool
-    tip_wlan_httpClientConfig_maxConnectionsTotal: 100
-    #max number of persistent connections in the http client pool per destination
-    tip_wlan_httpClientConfig_maxConnectionsPerRoute: 10
-    #max number of concurrent REST API calls a single instance of this service can process
-    tip_wlan_maxHttpThreads:  100
-    #memory tuning parameters for the JVM - max size, initialsize, garbage collection tuning options, etc.
-    JVM_MEM_OPTIONS: " "
-    
+
 nginx-ingress-controller:
   enabled: true
   controller:
@@ -221,50 +83,20 @@ nginx-ingress-controller:
       cert: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZEekNDQXZlZ0F3SUJBZ0lVYSthaVJZWG9QTGliSS9wdVJCdi9DZ2RTTDNzd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0Z6RVZNQk1HQTFVRUF3d01LaTUzYkdGdUxteHZZMkZzTUI0WERUSXdNVEl5TVRJd05UQXpNVm9YRFRNdwpNVEl4T1RJd05UQXpNVm93RnpFVk1CTUdBMVVFQXd3TUtpNTNiR0Z1TG14dlkyRnNNSUlDSWpBTkJna3Foa2lHCjl3MEJBUUVGQUFPQ0FnOEFNSUlDQ2dLQ0FnRUEwQjhuZE1raGIzZEN6N0I2aS9kRlFWenJwaEtQK2RmY2JKN1gKMzB3MU1FWDIvM3ZvVStkRlBNbnZrS3hEdFJwanZCbnhCczF6L1VmajlyUFhDSzZkazNNYU5DajRQYVUxem9WQQppK1Z6amc0ZG5XNjJxWG1qYVYrYUMrQm5zQndyQmx2THQ0dkh1eFRLbHh1RnR4THdid3VObGJvS1lVN01kV3oyCllMY3QzUWZBWElVb2FRK1RTMUZGdVdFeEZOTFRidlBGZWNoajB4ZnhyOU5BcU9aTXI0RGE0NHMzVERxMVVyRTIKbjhaZXFxVXZ1YUE4ZmEzQjNVZVRFNmJ4OEdhN1JybG5Dakd3UDRGVml3ajdvellmanV6T2JOM2dlcjdWcEpLMQpMSjdIdDBBemZlRm9aQ2xPbUVBd1p5alFwRGZOckdNTCs1dWtIK2JxWngyaUo5UndFcDNmdlE4em5jN1Q4dHJDCmxzMjRWNUpySWhUQXlCcTZRWVNnSXdXM2V5TmVpUnQ0ZHp6Sk5rNnd4cFp0WE96WTFwamJrV2FMaEhKOW1LRWoKU3lqVVBnS3dKSVlmb3BJbTJoUzl1dVZHZDdiU1MyV055aHJSOU5LSG5Lamo5Y0IrUWU0eEh0Z1pEcm1GZ1ZpZQp0cXZBUHhJL0ZkV1pSN3RmT2JCNTR3alMxVFk3TEd6cll4TDZSMWNjZDE4WUppcGNTS05xa05ORlllZ092VkNICmFldW1OTUdVNlZZalJWS1JmQXMva2FzcWxleGpheSt0SXNtd3dDZGoxUUN3UitRa2VEZFdoNE8vQzM1NENRb28KTkxZYzRNRk8xbVVDY2NsbUgvbFBvcTd1anBCMWI2VmFBNVprNFhjVUpRc0c4SUlSMDFHTFM5RW1HVVZaeTlOWApwV2dCbXNVQ0F3RUFBYU5UTUZFd0hRWURWUjBPQkJZRUZOZlVJSGhXdnFwUzg2ZC82SnJvbmxFYzZMU1NNQjhHCkExVWRJd1FZTUJhQUZOZlVJSGhXdnFwUzg2ZC82SnJvbmxFYzZMU1NNQThHQTFVZEV3RUIvd1FGTUFNQkFmOHcKRFFZSktvWklodmNOQVFFTEJRQURnZ0lCQUtlTW9PckhLZ3BGemtkckVhMVhSSVRUOHFZanhKc04yNmFIMFovLwp1dDRXVkE4ckNDNzV4VkpaNnpBQWlBOFE2eTRYSHBzRzl2ZSs1QlJIWEdCS0lYOU5FZGNrbWdNdExzQ2xOR0JCCkxkN3lWd3hhaGVCQzhVTWIrVTAxMlNwaFc3K0t6UFJhQ3g4cHNMMUlFQUkyblQ1MzlCNDBmR2NyTktNSDRqZGkKdkxad3VxT00rZnJucFJ1MkZlK3Bja2Fwek92SEJTb0I3THovR1dmMWUwZ0llc1B4WEdmVG9hbGM1SzU5bDF1TQpCTkhpUW15S3E4TS9MbllMejhyOWp3dHNKU2lLYUljelpISjNtQ0ZUb3ljREF3NTl3WEdmWXZWcFBMaWZXTTJxCm1uSlJKM2dQS1lzOUhXWFgyYktoSmZoMjRLOTN2M1duMVRUellYOGtTbWlnRG0wTUhOSTNwZktlMmJqVW9MNmgKMlQ4bWhRbjdPQ2dvZHMvOXczR1dOdmFxYTAySHRnc0tTbk9YdmpSNXFMaVFLRjdhMi95TTlrNWNQcUdHaW1GYgppUWV3eUgvMWw2YjQ0T0s2RGwwMVltWFltNUVqR3plckp2aU90eUhSaWhtME01VmNBWWJaYkE0S1Y1eHhLZjRqClIwaktwQXdqbEpzTDdRMk9zTC9IRkxmaDV1RU1HMXlmTzF1blZkVURKK1FBZHJQUG5tZTZVTVFQZm1UcGx1WjAKS3pvOXY3NEpYV0pwQkNtaWNTbFBQdnB3cXZLTk5iOWd6b0hjOXFheWMwNWVxRldRbzNNZjIzYU82b05wU2ZuaAp5aWMvczFQcC9ZS2FHakVSQXB1UmRvYTlWT1diUncycFZMei9rZVNraS9QTDJFRFc4RUVHYjFXcUFBMkJPVVhDCi9oYXQKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
       key: LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUpRd0lCQURBTkJna3Foa2lHOXcwQkFRRUZBQVNDQ1Mwd2dna3BBZ0VBQW9JQ0FRRFFIeWQweVNGdmQwTFAKc0hxTDkwVkJYT3VtRW8vNTE5eHNudGZmVERVd1JmYi9lK2hUNTBVOHllK1FyRU8xR21POEdmRUd6WFA5UitQMgpzOWNJcnAyVGN4bzBLUGc5cFRYT2hVQ0w1WE9PRGgyZGJyYXBlYU5wWDVvTDRHZXdIQ3NHVzh1M2k4ZTdGTXFYCkc0VzNFdkJ2QzQyVnVncGhUc3gxYlBaZ3R5M2RCOEJjaFNocEQ1TkxVVVc1WVRFVTB0TnU4OFY1eUdQVEYvR3YKMDBDbzVreXZnTnJqaXpkTU9yVlNzVGFmeGw2cXBTKzVvRHg5cmNIZFI1TVRwdkh3WnJ0R3VXY0tNYkEvZ1ZXTApDUHVqTmgrTzdNNXMzZUI2dnRXa2tyVXNuc2UzUUROOTRXaGtLVTZZUURCbktOQ2tOODJzWXd2N202UWY1dXBuCkhhSW4xSEFTbmQrOUR6T2R6dFB5MnNLV3piaFhrbXNpRk1ESUdycEJoS0FqQmJkN0kxNkpHM2gzUE1rMlRyREcKbG0xYzdOaldtTnVSWm91RWNuMllvU05MS05RK0FyQWtoaCtpa2liYUZMMjY1VVozdHRKTFpZM0tHdEgwMG9lYwpxT1Axd0g1QjdqRWUyQmtPdVlXQldKNjJxOEEvRWo4VjFabEh1MTg1c0huakNOTFZOanNzYk90akV2cEhWeHgzClh4Z21LbHhJbzJxUTAwVmg2QTY5VUlkcDY2WTB3WlRwVmlORlVwRjhDeitScXlxVjdHTnJMNjBpeWJEQUoyUFYKQUxCSDVDUjROMWFIZzc4TGZuZ0pDaWcwdGh6Z3dVN1daUUp4eVdZZitVK2lydTZPa0hWdnBWb0RsbVRoZHhRbApDd2J3Z2hIVFVZdEwwU1laUlZuTDAxZWxhQUdheFFJREFRQUJBb0lDQVFDUVRkbXN4enl3cmUrY1ZCQlVkaW9GCjdTalRhTEY5bWFlVGhQdkhMMjc5dnJWSlpoK3I5WUp6YU16NzhnV3NUOVR4ZXNjOVlUMVlVLzJEZENUWU4wSzUKRnlrSEc1VXNJUjVTeU4vOVlDWWtURE5La3BhQ29mMmxOWTE1U0twOFdMdVlXQlBEZTE4TW41anM5ejlhdGY0Ugo4Ti9GL2szdU5KWGRvYVNmWU1Pakt4bTh6UE05RFhpaTA0SlZ6RWNjMmlXU0crSkQwNmNybWNHUm1SZVBSTWZOCk5Mb1E1ZGw4dUlRN0J2Y0tCNkJpRDlFc2t5YitPWGxmTlo2TUZNaFNXTmpuYSt3L0REN1plWkxYcVczWk45RGYKNStBbGFoNlkzVE1EUGxueXkxRk5CVzN1alZrMWdkS21ESFBEUTNDUFBNWVdEa01qdlVJcWdKRHMySVl6dWIvTwpXRjRVUTV5UEJhZzluaWp1dS9uMVZDdGZuSkxwakZIakU1VzdkK3p1UGh6aUJ1WDFOcjRtOVVJdEpaSTNsYmJtCmdvZFlMdGl4b3RwNWF3ang1eXA3MU1zUHlTZzcrbHBPenA4dStuRENJcnc0K0VSME56MG8yTXFmcmJ2VklGQXIKWHIyc2YrejljbmtxalBWWEZaVks3em1TUHI5N0YrbTV4RHpURG9lTG53aVlhUUpOQ0ZhejhMVERjNldVT2w4SQpLOWhHd3FaK0llTlgreW16em16Nkx6WWVPaGlrRmNRaUI0UXVPSjdWWnZWRmVoS3JJMXJLWHJDRU01VmpJZXBkCkhzR0c1eTlLUkcxdEszSU5ScmI0SHlhRDF6SHJSTHRneFpLT1BvWDN0UjNmbTJ1aGova3dwelZnWTltRXJDWDkKd2I4SVA5TXdRR3REQVNBcjZWVmJvUUtDQVFFQThIeWlaK1lVeFEzQnprL1hoNmZMWWNYakE3NTJrQ204VWZzWQp0d1Z4N0EyNW5YRStiUDRIT3UyVC9kTlc0Tkw1elZPT0JkaWZIcTJQVFNVMGYzQUFHL0pNcnVzM3NrNHd4azM5CitYYlh0dHltWkdxb3FEcVN3TUw2czVpY1RnangvenRhSXk1TWFKYWhUYUpNdFRQQlVpZ3U3enhoeGNwVlhNVUMKTklHcFl5Mkt5R2hyMjVVOFdlR0RYQm9SS2xYUXJXYkNZeW1kMXdYQStEaVl0dzA5eit0VHhPNTRodjFCZkJKZwpWMGd0VWdJU0I2WEZDMU9CWDZXQ1pXYlhCN2hPaHhISjNkNHAyQlZyN0gxL2JDQ0ZvVDY5by9WQVNHRmdtTHRiCnpGalRNbjFIaTluVW5jUFlScWpsN1h0NWdPOHBOa3BwMjVrNHIxRVludWhIazcrYzdRS0NBUUVBM1l3THozNloKNEVPRndvODIrUlVId2lkaFExOEdrU1JvWStKVm1udXJpSXdHZTk3ZmRTVk91d092SDlZSVhsRWpjRitoOHFQVQpJVnpIOXBuYXZjTENEMnhIOWZ5d09ML3pmYmJnYnExZjV4Y3BOUXlYM1JnTGFDUVpLNkpJa3NzOUtDb0dhSzlaCmpMVm41MjFFZlFBRE5DSi93YlRCb3dLQ0dTNDUzSzRBaWFEWHN6TkJLUk5MOHVaWWYwK0x0U2IzV3lkZVQ2eUgKdGZiSXR3NlBSS1lxb2NaeGIrM0pWQWFHcGxScjVZSlNDU1BtTjFMSjU0djlTcXBIVnJMNzJudFNwKzdDODJ6SgpJajVOSXFEOGFsOVZ3WFB5dExRd25hYWc1TW5ka0NLQ3R0MlVHSGZwMEh3ZTJTL1hkemppS2gzZTZaT3MyMSt1CitQUHVrSkUxTTZzU09RS0NBUUJjWVJRbDR6MUJRUHFjM1JESEhJN0UvVFlxWHdTK2RqblFLQ3VqU3FVcmIwNUoKQzVKV1hmSzdFVDVUTjliY3dFNlRNRENUVUZZM2U2WmJsUm9vaGdhVXRhdjlXWC9vcjU2TzNyRGNIbW5ZNWNQSgpPU3VXakFHSnFKeVRWdUZjSEpXUlhPUlFOVjNHbzI1Tkd6WnFPUHBmSys1em1mZFkrbE4yTW51WlhlR0twcGowClNTQjlsa003cDZSRlFnSXNDQkVFTzBBYXhZYkxiWHRtSHArVFdiUFA1ZThrN0JKQ2tKQ1NMNkR3aGxwYWNVOHAKdnVVRlo4dC95VjFneEhOL2xLNGR0cGliOE5hVUdnNStKdXRHeHV0dU9HS3kwK2dncGI5c2pEUkVPQzdRNjAwTApqTjdleDdlUjFSbVY4Mk9HUXRqSzhTVGU1V25mOXNBRmN1YmorNncxQW9JQkFHYXM4Z2hQRHpkOWM2OXd1alNFCkI1MTJyTUFSZVRTcEgrd3l5Q09aYnkwUVlDem1aTCtnODdUK2h4b0ZFc25MWnRZOHJBeU0ydEkvY3JrYUl1TlIKTUtqL01QYVREb1N1aVVWWkRQaWVSMVVOU2Q2NUlHU3FNUmNwcTdTcU9HSTM2UGNGU3dVWFJ6Uk1Hb1NLQW5UQQpIYnY2eFNUY0JlWHJVcW9pMzFRa0hFR3NsbXNKdFFnNVZqaVRncTQyQ25TQlE2QXVSYW85Tm9RaGhISTZRREc3CnBRUm11TW43OVJPSkZyeGRZY2Z6TnR2ZmxHRk5jQjlzcEk0SERwcml4cEJDR1ZPVTl5cmozdStNMmlqVFhVaGIKT0o0NGcySTJKRlhjRkxNVHp5aHVwZy9qN3kvTDIwUHhVa2Fyd25zUmxOZWFFbVpFTjVkUDZBS2U0cENEaTVtUApqaGtDZ2dFQkFMUmtVeG9oZDh2ZVBwR3hPbWlOak5HekpiTDlscGx0TWxhR0dPQ3JOUkZSeEppblgzWU9UVnhiCkRFVlpqaXRHNldydzFxaDdnZXAzeEdJaWZHQ1lZV3pNc0RZTitueGtwV0lRRmZOV3dYemNRWlhrTEduZVlUdTAKSVU2RjY5Myt1Q0tkcHVCdVl0d3BQNEJCVkNCRTVON0FzRGV4bFBYTzk1cEw3ZzR4OG5RckdNeGJlRXVOdytaTwpPYmYvTnFFMGZZcURkaERiVHI0UDR6bUpBRlpYeDlKMjNJdWRMUFI3MDZITGZ5bDMrb1pUS2Y2ZWdEL1drWXZGCllLdEtDZzI1UmtSYmZBakZkeDlpOVkzcDlPNEFNVUNaRVFIOWQwU1d6LzJWR0VmYzVha09YL2xvWlAyUXF3c2UKeXMyc0k1U0Z5TEd1ZGM3R2MzVTd5UGd0RVN0elVoWT0KLS0tLS1FTkQgUFJJVkFURSBLRVktLS0tLQo=
 
-zookeeper:
-  enabled: true
-  replicaCount: 1
-  persistence:
-    enabled: true
-    storageClass: standard
 kafka:
   enabled: true
-  replicaCount: 1
   persistence:
     enabled: true
     storageClass: standard
-  creds:
-    sslKeystorePassword: mypassword
-    sslTruststorePassword: mypassword
-    sslKeyPassword: mypassword
+
 cassandra:
   enabled: true
-  image:
-    debug: true
-  cluster:
-    replicaCount: 1
-    seedCount: 1
   persistence:
     enabled: true
     storageClass: standard
-  creds:
-    sslKeystorePassword: mypassword
-    sslTruststorePassword: mypassword
+
 postgresql:
   enabled: true
-  postgresqlPassword: postgres
-## NOTE: If we are using glusterfs as Storage class, we don't really need
-## replication turned on, since the data is anyway replicated on glusterfs nodes
-## Replication is useful:
-## a. When we use HostPath as storage mechanism
-## b. If master goes down and one of the slave is promoted as master
-  replication:
-    enabled: true
-    slaveReplicas: 1
   persistence:
     enabled: true
     storageClass: standard
-  readinessProbe:
-    initialDelaySeconds: 30
-  livenessProbe:
-    initialDelaySeconds: 30

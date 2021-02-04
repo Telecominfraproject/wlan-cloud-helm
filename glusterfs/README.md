@@ -28,7 +28,6 @@ For other issues faced during deployment, see here:
     - If namespace is passed, we will create (if it does not exist) and use that namespace for glusterFS resources.
     - If namespace is NOT passed, we will create (if it does not exist) namespace='gluster-ns' and use it for glusterFS resources.
 
-
 - Deletion:
   ./gk-deploy --admin-key <ADMIN_KEY> --user-key <USER_KEY> --abort -v -n <GLUSTER_NAMESPACE>
     - Note: 

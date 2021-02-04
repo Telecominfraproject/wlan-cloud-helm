@@ -52,6 +52,9 @@ probes:
     timeoutSeconds: 5
     successThreshold: 1
     failureThreshold: 3
+  startupProbe:
+    periodSeconds: 30
+    failureThreshold: 500
 
 # Enable/Disable Helm tests
 testsEnabled: false
@@ -115,7 +118,6 @@ portal:
       name: file-store-data
       ordinal: 0
 
-
 # These are the address and ports for the externalhost
 # This is important for ovsdb and mqtt since
 # that's what AP sees. Please make sure to override
@@ -128,8 +130,6 @@ externalhost:
   ports:
     ovsdb: 6640
     mqtt: 1883
-
-
 
 ethernetType:
   lanName: "lan"

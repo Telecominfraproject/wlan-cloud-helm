@@ -37,7 +37,7 @@ spec:
       {{- if .Values.global.integratedDeployment }}
         - name: {{ include "common.name" . }}-readiness-int-cloud
           image: alpine
-          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }} 
+          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
           command:
           - sh
           - -c
@@ -71,7 +71,7 @@ spec:
           {{- else }}
           image: {{ .Values.global.repository.registry  }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
           {{- end }}
-          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }} 
+          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
           {{- if .Values.probes.enabled }}
           livenessProbe:
             tcpSocket:
@@ -89,6 +89,11 @@ spec:
             failureThreshold: {{ .Values.probes.readinessProbe.failureThreshold }}
             periodSeconds: {{ .Values.probes.readinessProbe.periodSeconds }}
             successThreshold: {{ .Values.probes.readinessProbe.successThreshold }}
+          startupProbe:
+            tcpSocket:
+              port: {{ .Values.service.port1 }}
+            failureThreshold: {{ .Values.probes.startupProbe.failureThreshold }}
+            periodSeconds: {{ .Values.probes.startupProbe.periodSeconds}}
           {{- end }}
           env:
             {{- include "common.env" . | nindent 12 }}
@@ -200,7 +205,7 @@ spec:
       volumes:
       - name: certificates
         secret:
-          secretName: {{ include "common.fullname" . }}-certs
+          secretName: tip-common-opensync-gw-certs
       - name: logback-config
         configMap:
             name: {{ include "common.fullname" . }}-log-config

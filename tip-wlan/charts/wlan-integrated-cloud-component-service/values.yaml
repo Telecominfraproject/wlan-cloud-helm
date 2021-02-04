@@ -46,6 +46,9 @@ probes:
     successThreshold: 1
     failureThreshold: 3
     scheme: HTTPS
+  startupProbe:
+    periodSeconds: 30
+    failureThreshold: 500
 
 securityContext: {}
   # capabilities:
@@ -58,14 +61,6 @@ securityContext: {}
 # Enable/Disable Helm tests
 testsEnabled: false
 
-creds:
-  enabled: true
-  postgres:
-    password: DUMMY_POSTGRES_PASSWORD
-  schema_repo:
-    username: DUMMY_SCHEMA_REPO_USERNAME
-    password: DUMMY_SCHEMA_REPO_PASSWORD
-
 service:
   type: NodePort
   port1: 9091
@@ -75,7 +70,7 @@ service:
   name2: secondary-port
   nodePort2: 52
 
-postgresql: 
+postgresql:
   url: postgresql-headless
 
 integratedWithPersistence:
@@ -89,9 +84,9 @@ ingress:
   hosts:
     - host: example.com
       paths: [
-         /portal 
+         /portal
         ]
-  tls: 
+  tls:
    - secretName: portal-secret
      hosts:
        - example.com

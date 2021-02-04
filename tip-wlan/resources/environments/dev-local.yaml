@@ -1,41 +1,3 @@
-shared:
-  scalability: &jvm-options
-    tip_wlan_ovsdb_listener_threadPoolSize: 50
-    tip_wlan_AsyncExecutor_CorePoolSize: 10
-    tip_wlan_AsyncExecutor_MaxPoolSize: 50
-    tip_wlan_AsyncExecutor_QueueCapacity: 50
-    tip_wlan_httpClientConfig_maxConnectionsTotal: 100
-    tip_wlan_httpClientConfig_maxConnectionsPerRoute: 10
-    tip_wlan_maxHttpThreads: 100
-    JVM_MEM_OPTIONS: " "
-    singleDataSource_maxTotalConnections: 8
-    singleDataSource_maxIdleConnections: 8
-    singleDataSource_maxPreparedStatements: 200
-    singleDataSource_maxIdlePreparedStatements: 200
-    singleDataSource_maxTotalConnections: 8
-    singleDataSource_maxIdleConnections: 8
-    singleDataSource_maxPreparedStatements: 200
-    singleDataSource_maxIdlePreparedStatements: 200
-
-global:
-  nodePortPrefix: 302
-  nodePortPrefixExt: 304
-
-  pullPolicy: Always
-
-  integratedDeployment: false
-  testingEnabled:
-
-  creds:
-    sslKeyPassword: mypassword
-    sslKeystorePassword: mypassword
-    sslTruststorePassword: mypassword
-
-dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
-annotations: {
-    "helm.sh/resource-policy": keep
-}
-
 opensync-gw-static:
   enabled: false
 
@@ -49,8 +11,6 @@ opensync-gw-cloud:
     enabled: true
   filestore:
     url: https://wlan-filestore.wlan.local
-  scalability:
-    <<: *jvm-options
 
 opensync-mqtt-broker:
   enabled: true
@@ -97,51 +57,15 @@ wlan-portal-service:
     enabled: true
     storageClass: standard
     filestoreSize: 1Gi
-  scalability:
-    <<: *jvm-options
 
 wlan-prov-service:
   enabled: true
-  creds:
-    enabled: true
-    db:
-      postgresUser:
-        password: postgres
-      tipUser:
-        password: tip_password
-    schema_repo:
-      username: tip-read
-      password: tip-read
-    postgres:
-      singleDataSourceUsername: tip_user
-      singleDataSourcePassword: tip_password
-      singleDataSourceSslKeyPassword: mypassword
-  scalability:
-    <<: *jvm-options
 
 wlan-ssc-service:
   enabled: true
-  creds:
-    sslKeyPassword: mypassword
-    sslKeystorePassword: mypassword
-    sslTruststorePassword: mypassword
-    cassandra:
-      tip_user: tip_user
-      tip_password: tip_password
-    schema_repo:
-      username: tip-read
-      password: tip-read
-  scalability:
-    <<: *jvm-options
 
 wlan-spc-service:
   enabled: true
-  creds:
-    sslKeyPassword: mypassword
-    sslKeystorePassword: mypassword
-    sslTruststorePassword: mypassword
-  scalability:
-    <<: *jvm-options
 
 wlan-port-forwarding-gateway-service:
   enabled: true

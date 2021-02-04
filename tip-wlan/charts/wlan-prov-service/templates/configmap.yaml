@@ -4,11 +4,11 @@ metadata:
   name: {{ include "common.fullname" . }}-log-config
   namespace: {{ include "common.namespace" . }}
 data:
-{{ tpl (.Files.Glob "resources/config/*").AsConfig . | indent 2 }}
+{{ (.Files.Glob "resources/config/logback.xml").AsConfig | indent 2 }}
   datasource.properties: |-
     singleDataSource.url=jdbc:postgresql://{{- include "postgresql.service" . -}}:5432/prov_db
-    singleDataSource.username={{ .Values.creds.postgres.singleDataSourceUsername }}
-    singleDataSource.password={{ .Values.creds.postgres.singleDataSourcePassword }}
+    singleDataSource.username={{ .Values.global.postgres.singleDataSource.username }}
+    singleDataSource.password={{ .Values.global.postgres.singleDataSource.password }}
     singleDataSource.driverClass=org.postgresql.Driver
     singleDataSource.ssl=true
     singleDataSource.sslmode=verify-ca
@@ -16,4 +16,4 @@ data:
     singleDataSource.sslfactory=org.postgresql.ssl.LibPQFactory
     singleDataSource.sslkey=/opt/tip-wlan/certs/postgresclient.p12
     singleDataSource.sslrootcert=/opt/tip-wlan/certs/cacert.pem
-    singleDataSource.sslkeypassword={{ .Values.creds.postgres.singleDataSourceSslKeyPassword }}
+    singleDataSource.sslkeypassword={{ .Values.global.certificatePasswords.sslKey }}

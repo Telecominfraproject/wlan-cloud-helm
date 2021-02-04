@@ -9,8 +9,6 @@
 
 replicaCount: 1
 
-
-
 image:
   name: wlan-portal-service
   tag: 0.0.1-SNAPSHOT
@@ -48,6 +46,9 @@ probes:
     successThreshold: 1
     failureThreshold: 3
     scheme: HTTPS
+  startupProbe:
+    periodSeconds: 30
+    failureThreshold: 500
 
 securityContext: {}
   # capabilities:

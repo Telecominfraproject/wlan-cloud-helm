@@ -30,6 +30,6 @@ spec:
       {{- if and .Values.service.nodePortStatic (eq .Values.service.type "NodePort") }}
       nodePort: {{ .Values.global.nodePortPrefix }}{{ .Values.service.nodePort3 }}
       {{- end }}
-    {{- end }}      
+    {{- end }}
   selector:
     {{- include "common.selectorLabels" . | nindent 4 }}

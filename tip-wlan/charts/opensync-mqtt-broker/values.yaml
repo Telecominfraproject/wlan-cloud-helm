@@ -52,6 +52,9 @@ probes:
     timeoutSeconds: 5
     successThreshold: 1
     failureThreshold: 3
+  startupProbe:
+    periodSeconds: 30
+    failureThreshold: 500
 
 # Enable/Disable Helm tests
 testsEnabled: false
@@ -105,7 +108,7 @@ persistence:
   ## existingClaimData: opensync-wifi-controller-opensync-mqtt-broker-data
   ## existingClaimDb: opensync-wifi-controller-opensync-mqtt-broker-db
   ## volumeReclaimPolicy: Retain
-  ## If you want to bind to an existing PV, uncomment below with the pv name 
+  ## If you want to bind to an existing PV, uncomment below with the pv name
   ## and comment storageClass and belowannotation
   ## volumeNameDb: pvc-dc52b290-ae86-4cb3-aad0-f2c806a23114
   ## volumeNameData: pvc-735baedf-323b-47bc-9383-952e6bc5ce3e

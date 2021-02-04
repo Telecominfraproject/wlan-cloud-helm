@@ -46,6 +46,9 @@ probes:
     successThreshold: 1
     failureThreshold: 3
     scheme: HTTPS
+  startupProbe:
+    periodSeconds: 30
+    failureThreshold: 500
 
 securityContext: {}
   # capabilities:
@@ -57,22 +60,6 @@ securityContext: {}
 
 # Enable/Disable Helm tests
 testsEnabled: false
-
-creds:
-  enabled: true
-  db:
-    postgresUser:
-      password: DUMMY_POSTGRES_PASSWORD
-    tipUser:
-      password: DUMMY_TIPUSER_PASSWORD
-
-  schema_repo:
-    username: DUMMY_SCHEMA_REPO_USERNAME
-    password: DUMMY_SCHEMA_REPO_PASSWORD
-  postgres:
-    singleDataSourceUsername: DUMMY_POSTGRES_USER
-    singleDataSourcePassword: DUMMY_POSTGRES_PASSWORD
-    singleDataSourceSslKeyPassword: DUMMY_SSL_PASSWORD
 
 # Enable/Disable Remote debugging
 debug:

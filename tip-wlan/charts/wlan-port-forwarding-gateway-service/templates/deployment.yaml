@@ -24,7 +24,7 @@ spec:
       initContainers:
         - name: {{ include "common.name" . }}-readiness-opensync-gw
           image: alpine
-          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }} 
+          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
           command:
           - sh
           - -c
@@ -47,7 +47,7 @@ spec:
             else
               echo ${url} service failed to respond after 50 secs
               exit 1
-            fi        
+            fi
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -57,7 +57,7 @@ spec:
           {{- else }}
           image: {{ .Values.global.repository.registry  }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
           {{- end }}
-          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }} 
+          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
           env:
             {{- include "common.env" . | nindent 12 }}
             - name: PF_GATEWAY_RELEASE_URL
@@ -81,7 +81,7 @@ spec:
               path: /ping
               port: {{ .Values.service.port2 }}
               scheme: {{ .Values.probes.livenessProbe.scheme }}
-            initialDelaySeconds: {{ .Values.probes.livenessProbe.initialDelaySeconds }}  
+            initialDelaySeconds: {{ .Values.probes.livenessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.probes.livenessProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.probes.livenessProbe.failureThreshold }}
             periodSeconds: {{ .Values.probes.livenessProbe.periodSeconds }}
@@ -96,6 +96,13 @@ spec:
             failureThreshold: {{ .Values.probes.readinessProbe.failureThreshold }}
             periodSeconds: {{ .Values.probes.readinessProbe.periodSeconds }}
             successThreshold: {{ .Values.probes.readinessProbe.successThreshold }}
+          startupProbe:
+            httpGet:
+              path: /ping
+              port: {{ .Values.service.port2 }}
+              scheme: {{ .Values.probes.readinessProbe.scheme }}
+            failureThreshold: {{ .Values.probes.startupProbe.failureThreshold }}
+            periodSeconds: {{ .Values.probes.startupProbe.periodSeconds}}
           {{- end }}
           volumeMounts:
           - mountPath: /opt/tip-wlan/certs/client_keystore.jks
@@ -141,7 +148,7 @@ spec:
       volumes:
       - name: certificates
         secret:
-          secretName: {{ include "common.fullname" . }}-certs
+          secretName: tip-common-kafka-client-certs
           defaultMode: 0400
       - name: configuration
         configMap:

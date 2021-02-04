@@ -54,20 +54,34 @@ global:
   testingEnabled: false
   testingTimestamp:
 
+  certificatePasswords:
+    sslKey: &sslKeyPassword "mypassword"
+    sslKeystore: &sslKeystorePassword "mypassword"
+    sslTruststore: &sslTruststorePassword "mypassword"
+  cassandra:
+    username: tip_user
+    password: tip_password
+  postgres:
+    password: postgres
+    singleDataSource:
+      username: tip_user
+      password: tip_password
+  tip:
+    password: tip_password
+  schema:
+    username: tip-read
+    password: tip-read
+
 # DockerRegistry Secret
 createDockerRegistrySecret: true
-
-# Docker Registry secret to pull docker images from WLAN repo
-dockerRegistrySecret: dummySecret
-
-# Annotations to add to the namespace
-annotations: {}
 
 # Enabling components under Tip-wlan
 opensync-gw-static:
   enabled: false
 opensync-gw-cloud:
   enabled: false
+  scalability:
+    <<: *jvm-options
 opensync-mqtt-broker:
   enabled: false
 wlan-cloud-graphql-gw:
@@ -76,12 +90,20 @@ wlan-cloud-static-portal:
   enabled: false
 wlan-portal-service:
   enabled: false
+  scalability:
+    <<: *jvm-options
 wlan-prov-service:
   enabled: false
+  scalability:
+    <<: *jvm-options
 wlan-ssc-service:
   enabled: false
+  scalability:
+    <<: *jvm-options
 wlan-spc-service:
   enabled: false
+  scalability:
+    <<: *jvm-options
 wlan-port-forwarding-gateway-service:
   enabled: false
 wlan-integrated-cloud-component-service:
@@ -105,9 +127,9 @@ kafka:
       partitions: 1
       replicationFactor: 1
   creds:
-    sslKeyPassword: mypassword
-    sslKeystorePassword: mypassword
-    sslTruststorePassword: mypassword
+    sslKeyPassword: *sslKeyPassword
+    sslKeystorePassword: *sslKeystorePassword
+    sslTruststorePassword: *sslTruststorePassword
   enabled: false
   replicaCount: 1
   image:
@@ -116,7 +138,7 @@ kafka:
     clientProtocol: mtls
     interBrokerProtocol: tls
     jksSecret: tip-common-kafka-certs
-    jksPassword: mypassword
+    jksPassword: *sslKeystorePassword
     tlsEndpointIdentificationAlgorithm: ""
     jaas:
       clientUsers:
@@ -178,7 +200,7 @@ postgresql:
   metrics:
     enabled: false
     serviceMonitor:
-      enabled: falsea
+      enabled: false
       namespace: monitoring
       additionalLabels:
         release: prometheus-operator

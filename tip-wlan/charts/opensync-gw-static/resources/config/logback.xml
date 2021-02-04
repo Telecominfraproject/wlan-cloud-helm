@@ -13,8 +13,8 @@
       <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
     </encoder>
   </appender>
-  
-  <!-- 
+
+  <!--
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <file>myApp.log</file>
 
@@ -23,7 +23,7 @@
     </encoder>
   </appender>
   -->
-  
+
   <appender name="logfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>/app/logs/opensyncgw.log</file>
     <append>true</append>
@@ -39,37 +39,37 @@
       <maxFileSize>20MB</maxFileSize>
     </triggeringPolicy>
   </appender>
-      
+
   <!--
   details: http://logback.qos.ch/manual/configuration.html#auto_configuration
-   
-  runtime configuration, if need to override the defaults: 
+
+  runtime configuration, if need to override the defaults:
   	-Dlogback.configurationFile=/path/to/logback.xml
-  
-  for log configuration debugging - use 
+
+  for log configuration debugging - use
   	-Dlogback.statusListenerClass=ch.qos.logback.core.status.OnConsoleStatusListener
-  
+
   log levels:
-	OFF ERROR WARN INFO DEBUG TRACE  
+	OFF ERROR WARN INFO DEBUG TRACE
    -->
   <logger name="org.apache.catalina.startup.DigesterFactory" level="ERROR"/>
   <logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" level="INFO"/>
   <logger name="org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainer" level="INFO"/>
-  
+
   <logger name="com.telecominfraproject.wlan" level="DEBUG"/>
   <logger name="com.netflix.servo.tag.aws.AwsInjectableTag" level="OFF"/>
   <logger name="com.vmware.ovsdb.service.OvsdbConnectionInfo" level="OFF"/>
   <logger name="com.vmware.ovsdb.netty.OvsdbConnectionHandler" level="ERROR"/>
-  
+
   <logger name="MQTT_DATA" level="DEBUG"/>
 
-  <!--   
+  <!--
   <logger name="org.springframework.security.web.authentication.preauth" level="DEBUG"/>
    -->
-   
+
   <root level="WARN">
     <appender-ref ref="stdout"/>
     <appender-ref ref="logfile"/>
   </root>
-  
+
 </configuration>

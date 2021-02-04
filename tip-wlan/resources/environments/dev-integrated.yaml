@@ -1,17 +1,7 @@
 global:
-  nodePortPrefix: 302
-  nodePortPrefixExt: 304
-
-  pullPolicy: Always
-  repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
-
   integratedDeployment: true
-  testingEnabled:
-
-dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
-annotations: {
-    "helm.sh/resource-policy": keep
-}
+  postgres:
+    password: cG9zdGdyZXMxMjM=
 
 opensync-gw-static:
   enabled: false
@@ -45,13 +35,6 @@ wlan-integrated-cloud-component-service:
   image:
     name: wlan-integrated-cloud-component-service-persistence
     tag: 0.0.1-SNAPSHOT
-  creds:
-    enabled: true
-    postgres:
-      password: cG9zdGdyZXMxMjM=
-    schema_repo:
-      username: tip-read
-      password: tip-read
   integratedWithPersistence:
     enabled: true
 
@@ -81,3 +64,4 @@ postgresql:
   persistence:
     enabled: true
     storageClass: glusterfs-storage
+  postgresqlPassword: cG9zdGdyZXMxMjM=

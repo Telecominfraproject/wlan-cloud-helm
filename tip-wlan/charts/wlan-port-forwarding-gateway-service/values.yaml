@@ -50,6 +50,9 @@ probes:
     successThreshold: 1
     failureThreshold: 3
     scheme: HTTPS
+  startupProbe:
+    periodSeconds: 30
+    failureThreshold: 500
 
 securityContext:
   privileged: true
@@ -64,7 +67,7 @@ securityContext:
 testsEnabled: false
 
 # Enable/Disable Remote debugging
-debug: 
+debug:
   enabled: false
 
 service:
@@ -84,11 +87,11 @@ service:
 # e.g. nodePortPrefixExt = 304, accessPointDebugPortRange.start = 10, accessPointDebugPortRange.length = 2, resulting ports = 30410, 30411
 # These ports are the ports that Java would choose as Local ports whenever it opens up
 # a developer session for debug.
-# These ports are therefore assigned as container ports (in the deployment.yaml), so we 
+# These ports are therefore assigned as container ports (in the deployment.yaml), so we
 # can reach them from inside the cluster.
 # Also, we open equivalent NodePorts on the Kubernetes cluster (see service.yaml), so a developer
 # can connect to it to debug an AP.
-# NOTE: Another way to reach these container ports without opening NodePorts was to use 
+# NOTE: Another way to reach these container ports without opening NodePorts was to use
 # kubectl port forwarding. However, we dont want the developer to install kubectl.
 
 accessPointDebugPortRange:
@@ -96,7 +99,6 @@ accessPointDebugPortRange:
   length: 26
 
 creds:
-  enabled: true
   websocketSessionTokenEncKey: DUMMY_ENC_KEY
 
 opensyncgw:
@@ -111,9 +113,9 @@ ingress:
   hosts:
     - host: example.com
       paths: [
-         /portal 
+         /portal
         ]
-  tls: 
+  tls:
    - secretName: portal-secret
      hosts:
        - example.com
@@ -149,5 +151,4 @@ env:
   pfGateway:
     service: wlan-port-forwarding-gateway-service
     port: 7070
-
 

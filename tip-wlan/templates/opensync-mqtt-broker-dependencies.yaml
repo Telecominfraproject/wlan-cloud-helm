@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tip-common-opensync-mqtt-broker-certs
+  namespace: {{ .Release.Namespace }}
+type: Opaque
+data:
+  cacert.pem: {{ .Files.Get "resources/certs/cacert.pem" | b64enc }}
+  mqttservercert.pem: {{ .Files.Get "resources/certs/mqttservercert.pem" | b64enc }}
+  mqttserverkey_dec.pem: {{ .Files.Get "resources/certs/mqttserverkey_dec.pem" | b64enc }}

@@ -1,16 +1,5 @@
 global:
-  nodePortPrefix: 302
-  nodePortPrefixExt: 304
-
-  pullPolicy: Always
-
-  integratedDeployment:
-  testingEnabled: true
-
-dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
-annotations: {
-    "helm.sh/resource-policy": keep
-}
+  integratedDeployment: true
 
 opensync-gw-static:
   enabled: false
@@ -80,4 +69,3 @@ postgresql:
   persistence:
     enabled: true
     storageClass: gp2
-

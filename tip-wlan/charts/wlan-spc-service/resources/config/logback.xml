@@ -46,7 +46,6 @@
     </triggeringPolicy>
   </appender>
 
-
   <!--
   details: http://logback.qos.ch/manual/configuration.html#auto_configuration
 
@@ -67,7 +66,6 @@
   <logger name="com.telecominfraproject.wlan" level="DEBUG"/>
   <logger name="com.telecominfraproject.wlan.core.server.webconfig.WebGenericConverter" level="OFF"/>
 
-
   <logger name="com.telecominfraproject.wlan.streams.provisioning.EquipmentConfigPushTrigger" level="TRACE"/>
   <logger name="com.telecominfraproject.wlan.streams.kafka.KafkaStreamsConfig" level="TRACE"/>
   <logger name="com.telecominfraproject.wlan.stream.StreamMessageDispatcher" level="TRACE"/>
@@ -76,5 +74,5 @@
     <appender-ref ref="logfile"/>
     <appender-ref ref="stdout"/>
   </root>
-  
+
 </configuration>

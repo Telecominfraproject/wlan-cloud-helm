@@ -46,7 +46,6 @@
     </triggeringPolicy>
   </appender>
 
-
   <!--
   details: http://logback.qos.ch/manual/configuration.html#auto_configuration
 
@@ -71,5 +70,5 @@
     <appender-ref ref="stdout"/>
     <appender-ref ref="logfile"/>
   </root>
-  
+
 </configuration>

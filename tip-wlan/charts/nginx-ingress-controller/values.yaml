@@ -137,7 +137,7 @@ controller:
 
   ## Enable the custom resources.
   enableTLSPassthrough: true
-  
+
   ## Add a location based on the value of health-status-uri to the default server. The location responds with the 200 status code for any request.
   ## Useful for external health-checking of the Ingress controller.
   healthStatus: false
@@ -274,7 +274,7 @@ rbac:
 
   ## This property will prevent exposing TCP ports for passthrough connections
   ## Instead we are opening up these services as NodePorts
-  ## We were seeing issues with AP <-- --> MQTT connecitivity when using NGINX 
+  ## We were seeing issues with AP <-- --> MQTT connecitivity when using NGINX
   ## as passthrough for TCP Connections
 byPassNginxForTcpConnections:
   enabled: true
