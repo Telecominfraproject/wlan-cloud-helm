@@ -54,6 +54,8 @@ global:
   testingEnabled: false
   testingTimestamp:
 
+  internalMtls: true
+
   certificatePasswords:
     sslKey: &sslKeyPassword "mypassword"
     sslKeystore: &sslKeystorePassword "mypassword"
