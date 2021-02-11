@@ -198,7 +198,7 @@ cassandra:
       cpu: 2
       memory: 6Gi
     requests:
-      cpu: 500Mi
+      cpu: 500m
       memory: 3Gi
 
 postgresql:
