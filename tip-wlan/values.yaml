@@ -162,6 +162,13 @@ kafka:
     enabled: true
     persistence:
       enabled: true
+  resources:
+    limits:
+      cpu: 1
+      memory: 2Gi
+    requests:
+      cpu: 10m
+      memory: 700Mi
 
 cassandra:
   enabled: false
@@ -187,9 +194,11 @@ cassandra:
     user: cassandra
     password: cassandra
   resources:
-    limits: {}
+    limits:
+      cpu: 2
+      memory: 6Gi
     requests:
-      cpu: 1
+      cpu: 500m
       memory: 3Gi
 
 postgresql:
@@ -249,3 +258,10 @@ postgresql:
       volumeMounts:
       - mountPath: /opt/bitnami/postgresql/certs
         name: postgresql-certificates
+  resources:
+    limits:
+      cpu: 1
+      memory: 1Gi
+    requests:
+      cpu: 100m
+      memory: 100Mi
