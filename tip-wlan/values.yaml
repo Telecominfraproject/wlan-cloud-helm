@@ -194,9 +194,11 @@ cassandra:
     user: cassandra
     password: cassandra
   resources:
-    limits: {}
+    limits:
+      cpu: 2
+      memory: 6Gi
     requests:
-      cpu: 1
+      cpu: 500Mi
       memory: 3Gi
 
 postgresql:
