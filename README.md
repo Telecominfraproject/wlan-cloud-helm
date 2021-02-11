@@ -1,11 +1,11 @@
 # wlan-cloud-helm
 This repository contains helm charts for various deployment types of the tip wlan cloud services.
 
-# IMPORTANT - CloudSDK Helm charts v0.4 to v1.x migration procedure
+# IMPORTANT - Cloud Controller Helm charts v0.4 to v1.x migration procedure
 
-We've introduced breaking changes to how CloudSDK database charts are managed.
-If you want to preserve your data when moving from v0.4 to v1.x of the CloudSDK Helm charts, follow the steps outlined below.
-If you can re-install your CloudSDK and don't care to loose your data, you can skip the steps and just install the upstream charts version with no changes to the default installation procedure.
+We've introduced breaking changes to how Cloud Controller database charts are managed.
+If you want to preserve your data when moving from v0.4 to v1.x of the Cloud Controller Helm charts, follow the steps outlined below.
+If you can re-install your Cloud Controller and don't care to loose your data, you can skip the steps and just install the upstream charts version with no changes to the default installation procedure.
 
 ## Prerequisites
 
@@ -148,7 +148,7 @@ minikube start --memory=10g --cpus=4 --driver=virtualbox --extra-config=kubelet.
 
 Please note that you may choose another driver (parallels, vmwarefusion, hyperkit, vmware, docker, podman) which might be more suitable for your setup. Omitting this option enables auto discovery of available drivers.
 
-Deploy CloudSDK chart:
+Deploy Cloud Controller chart:
 
 ```
 helm upgrade --install tip-wlan tip-wlan -f tip-wlan/resources/environments/dev-local.yaml -n default
