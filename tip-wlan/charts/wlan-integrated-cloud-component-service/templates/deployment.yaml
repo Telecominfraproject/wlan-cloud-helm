@@ -19,128 +19,125 @@ spec:
         {{- include "common.selectorLabels" . | nindent 8 }}
     spec:
       imagePullSecrets:
-        - name: "{{ include "common.namespace" . }}-docker-registry-key"
+      - name: "{{ include "common.namespace" . }}-docker-registry-key"
       serviceAccountName: {{ include "common.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       {{- if .Values.integratedWithPersistence.enabled }}
       initContainers:
-        - name: {{ include "common.name" . }}-readiness
-          image: busybox:1.28
-          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
-          command: ['sh', '-c', "until nslookup {{ $pg }}.{{ $ns }}.svc.cluster.local; do echo waiting for POSTGRES; sleep 2; done"]
-        - name: {{ include "common.name" . }}-create-db-schema
-          env:
-          - name: POSTGRESQL_PORT_NUMBER
-            value: "5432"
-          - name: POSTGRES_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "common.fullname" . }}-creds
-                key: postgresql-password
-          - name: SCHEMA_REPO_USER
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "common.fullname" . }}-creds
-                key: schema-repo-user
-          - name: SCHEMA_REPO_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "common.fullname" . }}-creds
-                key: schema-repo-password
-          image: postgres:latest
-          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
-          command:
-          - sh
-          - -c
-          - |
-            apt update
-            apt -y install curl
-            echo "***** Fetching cloud-sdk-schema-postgresql.sql from JFrog *****"
-            curl -u$SCHEMA_REPO_USER:$SCHEMA_REPO_PASSWORD -O "https://tip-tip-wlan-cloud-docker-repo.jfrog.io/artifactory/tip-wlan-cloud-schemas/0.0.1-SNAPSHOT/sql/cloud-sdk-schema-postgresql.sql"
-            echo "***** Now executing cloud-sdk-schema-postgresql.sql and creating/updating schema on Postgres instance *****"
-            PGPASSWORD=$POSTGRES_PASSWORD psql -h {{- include "postgresql.service" . -}} -U postgres -f cloud-sdk-schema-postgresql.sql
-            exit
-          ports:
-          - containerPort: 5432
-            name: tcp-postgresql
-            protocol: TCP
-          resources:
-            requests:
-              cpu: 50m
-              memory: 256Mi
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-          volumeMounts:
-          - mountPath: /dev/shm
-            name: dshm
-          - mountPath: /bitnami/postgresql
-            name: data
+      - name: wait-for-services
+        image: opsfleet/depends-on:latest
+        args:
+        - "-service={{ .Release.Name }}-postgresql"
+        - -check_interval=5
+      - name: {{ include "common.name" . }}-create-db-schema
+        env:
+        - name: POSTGRESQL_PORT_NUMBER
+          value: "5432"
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "common.fullname" . }}-creds
+              key: postgresql-password
+        - name: SCHEMA_REPO_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "common.fullname" . }}-creds
+              key: schema-repo-user
+        - name: SCHEMA_REPO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "common.fullname" . }}-creds
+              key: schema-repo-password
+        image: postgres:latest
+        imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
+        command:
+        - sh
+        - -c
+        - |
+          apt update
+          apt -y install curl
+          echo "***** Fetching cloud-sdk-schema-postgresql.sql from JFrog *****"
+          curl -u$SCHEMA_REPO_USER:$SCHEMA_REPO_PASSWORD -O "https://tip-tip-wlan-cloud-docker-repo.jfrog.io/artifactory/tip-wlan-cloud-schemas/0.0.1-SNAPSHOT/sql/cloud-sdk-schema-postgresql.sql"
+          echo "***** Now executing cloud-sdk-schema-postgresql.sql and creating/updating schema on Postgres instance *****"
+          PGPASSWORD=$POSTGRES_PASSWORD psql -h {{- include "postgresql.service" . -}} -U postgres -f cloud-sdk-schema-postgresql.sql
+          exit
+        resources:
+          requests:
+            cpu: 50m
+            memory: 256Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /dev/shm
+          name: dshm
+        - mountPath: /bitnami/postgresql
+          name: data
       {{- end }}
       containers:
-        - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          {{- if .Values.global.testingEnabled }}
-          image: {{ .Values.global.repository.registry  }}/{{ .Values.image.name }}:{{ .Values.image.tag }}-{{.Values.global.testingTimestamp}}
-          {{- else }}
-          image: {{ .Values.global.repository.registry  }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
-          {{- end }}
-          imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
-          env:
-            - name: BACKEND_SERVER
-              value: {{ .Release.Name }}-{{ .Chart.Name }}
-          {{- if .Values.probes.enabled }}
-          livenessProbe:
-            httpGet:
-              path: /ping
-              port: {{ .Values.service.port1 }}
-              scheme: {{ .Values.probes.livenessProbe.scheme }}
-            initialDelaySeconds: {{ .Values.probes.livenessProbe.initialDelaySeconds }}
-            timeoutSeconds: {{ .Values.probes.livenessProbe.timeoutSeconds }}
-            failureThreshold: {{ .Values.probes.livenessProbe.failureThreshold }}
-            periodSeconds: {{ .Values.probes.livenessProbe.periodSeconds }}
-            successThreshold: {{ .Values.probes.livenessProbe.successThreshold }}
-          readinessProbe:
-            httpGet:
-              path: /ping
-              port: {{ .Values.service.port1 }}
-              scheme: {{ .Values.probes.readinessProbe.scheme }}
-            initialDelaySeconds: {{ .Values.probes.readinessProbe.initialDelaySeconds }}
-            timeoutSeconds: {{ .Values.probes.readinessProbe.timeoutSeconds }}
-            failureThreshold: {{ .Values.probes.readinessProbe.failureThreshold }}
-            periodSeconds: {{ .Values.probes.readinessProbe.periodSeconds }}
-            successThreshold: {{ .Values.probes.readinessProbe.successThreshold }}
-          startupProbe:
-            httpGet:
-              path: /ping
-              port: {{ .Values.service.port1 }}
-              scheme: {{ .Values.probes.readinessProbe.scheme }}
-            failureThreshold: {{ .Values.probes.startupProbe.failureThreshold }}
-            periodSeconds: {{ .Values.probes.startupProbe.periodSeconds}}
-          {{- end }}
-          volumeMounts:
-          - mountPath: /opt/tip-wlan/certs/client_keystore.jks
-            name: certificates
-            subPath: client_keystore.jks
-          - mountPath: /opt/tip-wlan/certs/truststore.jks
-            name: certificates
-            subPath: truststore.jks
-          - mountPath: /opt/tip-wlan/certs/server.pkcs12
-            name: certificates
-            subPath: server.pkcs12
-          - mountPath: /app/intcloudcomp/logback.xml
-            name: logback-config
-            subPath: logback.xml
-          ports:
-            - name: {{ .Values.service.name1 }}
-              containerPort: {{ .Values.service.port1 }}
-              protocol: TCP
-            - name: {{ .Values.service.name2 }}
-              containerPort: {{ .Values.service.port2 }}
-              protocol: TCP
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+      - name: {{ .Chart.Name }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        {{- if .Values.global.testingEnabled }}
+        image: {{ .Values.global.repository.registry  }}/{{ .Values.image.name }}:{{ .Values.image.tag }}-{{.Values.global.testingTimestamp}}
+        {{- else }}
+        image: {{ .Values.global.repository.registry  }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
+        {{- end }}
+        imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
+        env:
+          - name: BACKEND_SERVER
+            value: {{ .Release.Name }}-{{ .Chart.Name }}
+        {{- if .Values.probes.enabled }}
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: {{ .Values.service.port1 }}
+            scheme: {{ .Values.probes.livenessProbe.scheme }}
+          initialDelaySeconds: {{ .Values.probes.livenessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.probes.livenessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.probes.livenessProbe.failureThreshold }}
+          periodSeconds: {{ .Values.probes.livenessProbe.periodSeconds }}
+          successThreshold: {{ .Values.probes.livenessProbe.successThreshold }}
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: {{ .Values.service.port1 }}
+            scheme: {{ .Values.probes.readinessProbe.scheme }}
+          initialDelaySeconds: {{ .Values.probes.readinessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.probes.readinessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.probes.readinessProbe.failureThreshold }}
+          periodSeconds: {{ .Values.probes.readinessProbe.periodSeconds }}
+          successThreshold: {{ .Values.probes.readinessProbe.successThreshold }}
+        startupProbe:
+          httpGet:
+            path: /ping
+            port: {{ .Values.service.port1 }}
+            scheme: {{ .Values.probes.readinessProbe.scheme }}
+          failureThreshold: {{ .Values.probes.startupProbe.failureThreshold }}
+          periodSeconds: {{ .Values.probes.startupProbe.periodSeconds}}
+        {{- end }}
+        volumeMounts:
+        - mountPath: /opt/tip-wlan/certs/client_keystore.jks
+          name: certificates
+          subPath: client_keystore.jks
+        - mountPath: /opt/tip-wlan/certs/truststore.jks
+          name: certificates
+          subPath: truststore.jks
+        - mountPath: /opt/tip-wlan/certs/server.pkcs12
+          name: certificates
+          subPath: server.pkcs12
+        - mountPath: /app/intcloudcomp/logback.xml
+          name: logback-config
+          subPath: logback.xml
+        ports:
+          - name: {{ .Values.service.name1 }}
+            containerPort: {{ .Values.service.port1 }}
+            protocol: TCP
+          - name: {{ .Values.service.name2 }}
+            containerPort: {{ .Values.service.port2 }}
+            protocol: TCP
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -157,7 +154,7 @@ spec:
       volumes:
       - name: certificates
         secret:
-          secretName: {{ include "common.fullname" . }}-certs
+          secretName: tip-common-postgres-client-certs
       - name: logback-config
         configMap:
             name: {{ include "common.fullname" . }}-log-config
