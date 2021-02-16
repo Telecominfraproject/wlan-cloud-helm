@@ -1,0 +1,92 @@
+name: Nightly testing of all supported deployment scenarios
+
+on:
+  workflow_dispatch:
+  schedule:
+  - cron: '15 0 * * *'
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  microk8s:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout PKI scripts repo
+      uses: actions/checkout@v2
+      with:
+        path: wlan-pki-cert-scripts
+        repository: Telecominfraproject/wlan-pki-cert-scripts
+
+    - name: Checkout Cloud SDK repo
+      uses: actions/checkout@v2
+      with:
+        path: wlan-cloud-helm
+        repository: Telecominfraproject/wlan-cloud-helm
+
+    - name: Generate and copy certs
+      working-directory: wlan-pki-cert-scripts
+      run: |
+        ./generate_all.sh
+        ./copy-certs-to-helm.sh ../wlan-cloud-helm
+
+    - name: Determine public IP address
+      id: ip
+      uses: haythem/public-ip@v1.2
+
+    - uses: balchua/microk8s-actions@v0.2.1
+      with:
+        channel: 'latest/stable'
+        addons: '["dns", "helm3", "storage", "metallb:${{ steps.ip.outputs.ipv4 }}-${{ steps.ip.outputs.ipv4 }}"]'
+
+    - name: Deploy Cloud SDK
+      working-directory: wlan-cloud-helm
+      run: |
+        helm dependency update tip-wlan
+        # Github runners only have 2 CPU cores and 7GB of RAM. Thus we need to disable some of our resource limits
+        helm upgrade --install tip-wlan tip-wlan -f tip-wlan/example-values/microk8s-basic/values.yaml --create-namespace --namespace tip --set cassandra.resources.requests.memory=null --set cassandra.resources.requests.cpu=null --wait --timeout 10m
+
+    - name: Set custom DNS entries
+      run: |
+        sudo sh -c "echo -n \"\n${{ steps.ip.outputs.ipv4 }} wlan-ui.wlan.local wlan-ui-graphql.wlan.local\" >> /etc/hosts"
+
+    - name: Test HTTP endpoints
+      run: |
+        # this is needed to make until work
+        set +e
+
+        urls="https://wlan-ui.wlan.local https://wlan-ui-graphql.wlan.local/graphql"
+        for url in $urls; do
+          max_retry=300
+          counter=0
+          until curl --silent --insecure $url > /dev/null
+          do
+             sleep 1
+             [[ counter -eq $max_retry ]] && echo "$url not reachable after $counter tries...giving up" && exit 1
+             echo "#$counter: $url not reachable. trying again..."
+             ((counter++))
+          done
+          echo Successfully reached URL $url
+        done
+
+    - name: Test MQTT and OpenSync endpoints
+      working-directory: wlan-cloud-helm/tip-wlan/resources/certs
+      run: |
+        # this is needed to make until work
+        set +e
+
+        endpoints="${{ steps.ip.outputs.ipv4 }}:1883 ${{ steps.ip.outputs.ipv4 }}:6640 ${{ steps.ip.outputs.ipv4 }}:6643"
+        for endpoint in $endpoints; do
+          max_retry=300
+          counter=0
+          until echo Q | openssl s_client -connect $endpoint -CAfile cacert.pem -cert clientcert.pem -key clientkey.pem > /dev/null
+          do
+             sleep 1
+             [[ counter -eq $max_retry ]] && echo "$endpoint not reachable after $counter tries...giving up" && exit 1
+             echo "#$counter: $endpoint not reachable. trying again..."
+             ((counter++))
+          done
+          echo Successfully reached endpoint $endpoint
+        done
+ 
