@@ -44,8 +44,14 @@ jobs:
       working-directory: wlan-cloud-helm
       run: |
         helm dependency update tip-wlan
-        # Github runners only have 2 CPU cores and 7GB of RAM. Thus we need to disable some of our resource limits
-        helm upgrade --install tip-wlan tip-wlan -f tip-wlan/example-values/microk8s-basic/values.yaml --create-namespace --namespace tip --set cassandra.resources.requests.memory=null --set cassandra.resources.requests.cpu=null --wait --timeout 10m
+        # Github runners only have 2 CPU cores and 7GB of RAM. Thus we need to disable some of our resource requests
+        helm upgrade --install tip-wlan tip-wlan -f tip-wlan/example-values/microk8s-basic/values.yaml --create-namespace --namespace tip --set cassandra.resources=null --wait --timeout 10m
+
+    - name: Show pod state on deployment failure
+      if: failure()
+      run: |
+        kubectl get pods -n tip
+        kubectl describe pods -n tip
 
     - name: Set custom DNS entries
       run: |
