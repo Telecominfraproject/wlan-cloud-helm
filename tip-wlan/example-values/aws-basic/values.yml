@@ -12,7 +12,6 @@ global:
   nodePortPrefix: 308
   nodePortPrefixExt: 309
   nsPrefix: tip
-  pullPolicy: IfNotPresent
   repository: tip-tip-wlan-cloud-docker-repo.jfrog.io
   persistence:
   debugEnabled: true
