@@ -22,6 +22,7 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
+        {{- include "jmxPrometheus.initContainer" . | nindent 8 }}
         - name: {{ include "common.name" . }}-readiness-opensync-gw
           image: alpine
           imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
@@ -75,6 +76,8 @@ spec:
               value: "{{ include "apDebugPortsStart" . }}"
             - name: EXT_PORT_RANGE_END
               value: "{{ sub (include "apDebugPortsEnd" . | atoi) 1 }}"
+            - name: JVM_MEM_OPTIONS
+              value: "{{ include "jmxPrometheus.jvmOpts" . }}"
           {{- if .Values.probes.enabled }}
           livenessProbe:
             httpGet:
@@ -117,6 +120,8 @@ spec:
           - mountPath: /app/port-forwarding-gateway/logback.xml
             name: configuration
             subPath: logback.xml
+          {{- include "jmxPrometheus.configVolumeMount" . | nindent 10 }}
+          {{- include "jmxPrometheus.tmpVolumeMount" . | nindent 10 }}
 
           ports:
             - name: {{ .Values.service.name1 }}
@@ -131,6 +136,7 @@ spec:
               protocol: TCP
             {{- end }}
             {{- include "container.dev.apDebugPorts" . | nindent 10 }}
+            {{- include "jmxPrometheus.port" . | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -154,3 +160,5 @@ spec:
         configMap:
             name: {{ include "common.fullname" . }}-config
             defaultMode: 0755
+      {{- include "jmxPrometheus.configVolume" . | nindent 6 }}
+      {{- include "jmxPrometheus.tmpVolume" . | nindent 6 }}

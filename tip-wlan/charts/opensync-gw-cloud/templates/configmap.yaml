@@ -4,4 +4,4 @@ metadata:
   name: {{ include "common.fullname" . }}-log-config
   namespace: {{ include "common.namespace" . }}
 data:
-{{ (.Files.Glob "resources/config/*").AsConfig | indent 2 }}
+{{ (.Files.Glob "resources/config/logback.xml").AsConfig | indent 2 }}

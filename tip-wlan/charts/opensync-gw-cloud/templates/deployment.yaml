@@ -27,6 +27,7 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
+        {{- include "jmxPrometheus.initContainer" . | nindent 8 }}
         - name: wait-for-services
           image: opsfleet/depends-on:latest
           args:
@@ -34,17 +35,6 @@ spec:
           - "-service={{ .Release.Name }}-wlan-prov-service"
           - "-service={{ .Release.Name }}-wlan-ssc-service"
           - -check_interval=5
-        - name: download-jmx-prometheus-exporter
-          image: alpine:latest
-          command:
-          - wget
-          args:
-          - -P
-          - /jmx-prometheus-exporter-dir
-          - https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.14.0/jmx_prometheus_javaagent-0.14.0.jar
-          volumeMounts:
-          - name: jmx-prometheus-exporter-dir
-            mountPath: /jmx-prometheus-exporter-dir
       {{- if .Values.global.integratedDeployment }}
         - name: {{ include "common.name" . }}-readiness-int-cloud
           image: alpine
@@ -158,7 +148,7 @@ spec:
             - name: tip_wlan_maxHttpThreads
               value: "{{ .Values.scalability.tip_wlan_maxHttpThreads }}"
             - name: JVM_MEM_OPTIONS
-              value: "{{ .Values.scalability.JVM_MEM_OPTIONS }} -javaagent:/jmx-prometheus-exporter-dir/jmx_prometheus_javaagent-0.14.0.jar=9404:/app/jmx-prometheus-config.yml"
+              value: "{{ .Values.scalability.JVM_MEM_OPTIONS }} {{ include "jmxPrometheus.jvmOpts" . }}"
           volumeMounts:
           - mountPath: /opt/tip-wlan/certs/client_keystore.jks
             name: certificates
@@ -178,17 +168,11 @@ spec:
           - mountPath: /app/opensync/logback.xml
             name: logback-config
             subPath: logback.xml
-          - mountPath: /app/jmx-prometheus-config.yml
-            name: logback-config
-            subPath: jmx-prometheus-config.yml
           - mountPath: {{ $file_store_path }}
             name: file-store-data
-          - name: jmx-prometheus-exporter-dir
-            mountPath: /jmx-prometheus-exporter-dir
+          {{- include "jmxPrometheus.configVolumeMount" . | nindent 10 }}
+          {{- include "jmxPrometheus.tmpVolumeMount" . | nindent 10 }}
           ports:
-            - name: jmx-prometheus
-              containerPort: 9404
-              protocol: TCP
             - name: {{ .Values.service.name1 }}
               containerPort: {{ .Values.service.port1 }}
               protocol: TCP
@@ -206,6 +190,7 @@ spec:
               containerPort: {{ .Values.service.port5 }}
               protocol: TCP
             {{- end }}
+            {{- include "jmxPrometheus.port" . | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -235,5 +220,5 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
-      - name: jmx-prometheus-exporter-dir
-        emptyDir: {}
+      {{- include "jmxPrometheus.configVolume" . | nindent 6 }}
+      {{- include "jmxPrometheus.tmpVolume" . | nindent 6 }}

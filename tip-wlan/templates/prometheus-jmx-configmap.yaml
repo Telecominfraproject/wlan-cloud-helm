@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tip-common-jmx-prometheus-config
+  namespace: {{ .Release.Namespace }}
+data:
+{{ (.Files.Glob "resources/configs/jmx-prometheus-config.yml").AsConfig | indent 2 }}

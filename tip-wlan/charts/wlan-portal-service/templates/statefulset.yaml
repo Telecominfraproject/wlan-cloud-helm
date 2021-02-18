@@ -44,6 +44,8 @@ spec:
       serviceAccountName: {{ include "common.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+      {{- include "jmxPrometheus.initContainer" . | nindent 6 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -71,7 +73,7 @@ spec:
             - name: tip_wlan_maxHttpThreads
               value: "{{ .Values.scalability.tip_wlan_maxHttpThreads }}"
             - name: JVM_MEM_OPTIONS
-              value: "{{ .Values.scalability.JVM_MEM_OPTIONS }}"
+              value: "{{ .Values.scalability.JVM_MEM_OPTIONS }} {{ include "jmxPrometheus.jvmOpts" . }}"
           {{- if .Values.probes.enabled }}
           livenessProbe:
             httpGet:
@@ -116,6 +118,8 @@ spec:
             subPath: logback.xml
           - mountPath: {{ $file_store_path }}
             name: file-store-data
+          {{- include "jmxPrometheus.configVolumeMount" . | nindent 10 }}
+          {{- include "jmxPrometheus.tmpVolumeMount" . | nindent 10 }}
           ports:
             - name: {{ .Values.service.name1 }}
               containerPort: {{ .Values.service.port1 }}
@@ -128,6 +132,7 @@ spec:
               containerPort: {{ .Values.service.port3 }}
               protocol: TCP
             {{- end }}
+            {{- include "jmxPrometheus.port" . | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -154,6 +159,8 @@ spec:
       - name: file-store-data
         emptyDir: {}
       {{- end }}
+      {{- include "jmxPrometheus.configVolume" . | nindent 6 }}
+      {{- include "jmxPrometheus.tmpVolume" . | nindent 6 }}
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
