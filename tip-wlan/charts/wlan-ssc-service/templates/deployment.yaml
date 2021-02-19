@@ -24,6 +24,7 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
+        {{- include "jmxPrometheus.initContainer" . | nindent 8 }}
         - name: wait-for-services
           image: opsfleet/depends-on:latest
           args:
@@ -174,7 +175,7 @@ spec:
             - name: tip_wlan_maxHttpThreads
               value: "{{ .Values.scalability.tip_wlan_maxHttpThreads }}"
             - name: JVM_MEM_OPTIONS
-              value: "{{ .Values.scalability.JVM_MEM_OPTIONS }}"
+              value: "{{ .Values.scalability.JVM_MEM_OPTIONS }} {{ include "jmxPrometheus.jvmOpts" . }}"
 
           {{- if .Values.probes.enabled }}
           livenessProbe:
@@ -227,6 +228,8 @@ spec:
           - mountPath: /app/ssc/cassandra-application.conf
             name: ssc-configurations
             subPath: cassandra-application.conf
+          {{- include "jmxPrometheus.configVolumeMount" . | nindent 10 }}
+          {{- include "jmxPrometheus.tmpVolumeMount" . | nindent 10 }}
           ports:
             - name: {{ .Values.service.name1 }}
               containerPort: {{ .Values.service.port1 }}
@@ -239,6 +242,7 @@ spec:
               containerPort: {{ .Values.service.port3 }}
               protocol: TCP
             {{- end }}
+            {{- include "jmxPrometheus.port" . | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -261,3 +265,5 @@ spec:
       - name: ssc-configurations
         configMap:
             name: {{ include "common.fullname" . }}-ssc-config
+      {{- include "jmxPrometheus.configVolume" . | nindent 6 }}
+      {{- include "jmxPrometheus.tmpVolume" . | nindent 6 }}

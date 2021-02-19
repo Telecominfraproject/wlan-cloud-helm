@@ -27,6 +27,7 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
+        {{- include "jmxPrometheus.initContainer" . | nindent 8 }}
         - name: wait-for-services
           image: opsfleet/depends-on:latest
           args:
@@ -147,7 +148,7 @@ spec:
             - name: tip_wlan_maxHttpThreads
               value: "{{ .Values.scalability.tip_wlan_maxHttpThreads }}"
             - name: JVM_MEM_OPTIONS
-              value: "{{ .Values.scalability.JVM_MEM_OPTIONS }}"
+              value: "{{ .Values.scalability.JVM_MEM_OPTIONS }} {{ include "jmxPrometheus.jvmOpts" . }}"
           volumeMounts:
           - mountPath: /opt/tip-wlan/certs/client_keystore.jks
             name: certificates
@@ -169,6 +170,8 @@ spec:
             subPath: logback.xml
           - mountPath: {{ $file_store_path }}
             name: file-store-data
+          {{- include "jmxPrometheus.configVolumeMount" . | nindent 10 }}
+          {{- include "jmxPrometheus.tmpVolumeMount" . | nindent 10 }}
           ports:
             - name: {{ .Values.service.name1 }}
               containerPort: {{ .Values.service.port1 }}
@@ -187,6 +190,7 @@ spec:
               containerPort: {{ .Values.service.port5 }}
               protocol: TCP
             {{- end }}
+            {{- include "jmxPrometheus.port" . | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -216,3 +220,5 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+      {{- include "jmxPrometheus.configVolume" . | nindent 6 }}
+      {{- include "jmxPrometheus.tmpVolume" . | nindent 6 }}

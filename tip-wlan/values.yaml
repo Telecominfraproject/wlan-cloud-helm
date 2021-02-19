@@ -72,6 +72,10 @@ global:
     username: tip-read
     password: tip-read
 
+  monitoring:
+    enableJmxPrometheusMetrics: false
+    enablePrometheusPodMonitors: false
+
 # DockerRegistry Secret
 createDockerRegistrySecret: true
 
