@@ -31,6 +31,8 @@ wlan-cloud-graphql-gw:
   enabled: true
   env:
     portalsvc: tip-wlan-wlan-portal-service:9051
+  service:
+    type: ClusterIP
   ingress:
     hosts:
       - host: wlan-ui-graphql.wlan.local
@@ -45,8 +47,6 @@ wlan-cloud-static-portal:
   enabled: true
   env:
     graphql: https://wlan-ui-graphql.wlan.local
-  service:
-    type: NodePort
   ingress:
     hosts:
       - host: wlan-ui.wlan.local
@@ -67,6 +67,8 @@ wlan-portal-service:
     type: LoadBalancer
     annotations:
       metallb.universe.tf/allow-shared-ip: default
+  disableTLSv13:
+    enabled: true
 
 wlan-prov-service:
   enabled: true

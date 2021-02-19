@@ -8,3 +8,4 @@ metadata:
 data:
     external-status-address: {{ .Values.controller.config.externalStatusAddress }}
     client-max-body-size: {{ .Values.controller.config.clientMaxBodySize }}
+    error-log-level: {{ .Values.controller.config.errorLogLevel }}

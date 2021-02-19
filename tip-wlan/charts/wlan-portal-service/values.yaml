@@ -153,3 +153,6 @@ env:
 # on the PV
 filestore:
   internal: "/tmp/filestore"
+
+disableTLSv13:
+  enabled: false
