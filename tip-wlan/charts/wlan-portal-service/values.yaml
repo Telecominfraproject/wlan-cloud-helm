@@ -154,5 +154,5 @@ env:
 filestore:
   internal: "/tmp/filestore"
 
-disableTLSv13:
-  enabled: false
+tlsv13:
+  enabled: true

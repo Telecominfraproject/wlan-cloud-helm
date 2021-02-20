@@ -67,8 +67,8 @@ wlan-portal-service:
     type: LoadBalancer
     annotations:
       metallb.universe.tf/allow-shared-ip: default
-  disableTLSv13:
-    enabled: true
+  tlsv13:
+    enabled: false
 
 wlan-prov-service:
   enabled: true

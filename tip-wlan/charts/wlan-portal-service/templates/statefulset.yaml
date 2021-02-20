@@ -115,7 +115,7 @@ spec:
             subPath: server.pkcs12
           - mountPath: /app/portal/log
             name: logback-config
-          {{- if .Values.disableTLSv13.enabled }}
+          {{- if not .Values.tlsv13.enabled }}
           - mountPath: /app/portal/certs
             name: ssl-config
           {{- end }}
@@ -158,7 +158,7 @@ spec:
       - name: logback-config
         configMap:
             name: {{ include "common.fullname" . }}-log-config
-      {{- if .Values.disableTLSv13.enabled }}
+      {{- if not .Values.tlsv13.enabled }}
       - name: ssl-config
         secret:
           secretName: {{ include "common.fullname" . }}-ssl-config
