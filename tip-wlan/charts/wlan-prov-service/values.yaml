@@ -128,7 +128,7 @@ affinity: {}
 
 postgresql:
   url: postgresql
-  image: postgres:latest
+  image: postgres:11
 
 env:
   protocol: https

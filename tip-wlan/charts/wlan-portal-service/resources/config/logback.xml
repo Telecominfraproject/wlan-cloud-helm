@@ -7,7 +7,7 @@
 <!-- For professional support please see                            -->
 <!--    http://www.qos.ch/shop/products/professionalSupport         -->
 <!--                                                                -->
-<configuration>
+<configuration scan="true" scanPeriod="30 seconds">
   <conversionRule conversionWord="filteredStack"
                   converterClass="com.telecominfraproject.wlan.server.exceptions.logback.ExceptionCompressingConverter" />
 
