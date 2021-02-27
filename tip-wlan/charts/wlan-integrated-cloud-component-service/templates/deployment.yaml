@@ -58,7 +58,7 @@ spec:
           apt update
           apt -y install curl
           echo "***** Fetching cloud-sdk-schema-postgresql.sql from JFrog *****"
-          curl -u$SCHEMA_REPO_USER:$SCHEMA_REPO_PASSWORD -O "https://tip-tip-wlan-cloud-docker-repo.jfrog.io/artifactory/tip-wlan-cloud-schemas/0.0.1-SNAPSHOT/sql/cloud-sdk-schema-postgresql.sql"
+          curl -u$SCHEMA_REPO_USER:$SCHEMA_REPO_PASSWORD -O "https://tip-tip-wlan-cloud-docker-repo.jfrog.io/artifactory/tip-wlan-cloud-schemas/1.0.0-SNAPSHOT/sql/cloud-sdk-schema-postgresql.sql"
           echo "***** Now executing cloud-sdk-schema-postgresql.sql and creating/updating schema on Postgres instance *****"
           PGPASSWORD=$POSTGRES_PASSWORD psql -h {{- include "postgresql.service" . -}} -U postgres -f cloud-sdk-schema-postgresql.sql
           exit
