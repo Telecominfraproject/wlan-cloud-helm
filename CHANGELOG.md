@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Replaced cassandra, postgres and kafka with upstream charts [#49](https://github.com/Telecominfraproject/wlan-cloud-helm/pull/49)
 - Centralized secrets to the parent chart [#54](https://github.com/Telecominfraproject/wlan-cloud-helm/pull/54)
+- Export servo MBeans with JMX Prometheus exporter [#65](https://github.com/Telecominfraproject/wlan-cloud-helm/pull/65)
 
 ### Changed
 
