@@ -13,6 +13,11 @@ image:
   name: wlan-portal-service
   tag: 0.0.1-SNAPSHOT
 
+testConnectionImage:
+  registry: docker.io
+  repository: library/alpine
+  tag: latest
+
 nameOverride: ""
 fullnameOverride: ""
 

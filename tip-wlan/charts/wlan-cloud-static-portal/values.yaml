@@ -14,6 +14,11 @@ image:
   tag: 0.0.1-SNAPSHOT
   pullPolicy: IfNotPresent
 
+testConnectionImage:
+  registry: docker.io
+  repository: library/alpine
+  tag: latest
+
 nameOverride: ""
 fullnameOverride: ""
 

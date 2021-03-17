@@ -26,7 +26,7 @@ spec:
       {{- if .Values.integratedWithPersistence.enabled }}
       initContainers:
       - name: wait-for-services
-        image: opsfleet/depends-on:latest
+        image: {{ .Values.waitForServicesImage.registry }}/{{ .Values.waitForServicesImage.repository }}/{{ .Values.waitForServicesImage.tag }}
         args:
         - "-service={{ .Release.Name }}-postgresql"
         - -check_interval=5
@@ -49,7 +49,8 @@ spec:
             secretKeyRef:
               name: {{ include "common.fullname" . }}-creds
               key: schema-repo-password
-        image: postgres:latest
+        image: {{ .Values.createDbSchemaImage.registry }}/{{ .Values.createDbSchemaImage.repository }}/{{ .Values.createDbSchemaImage.tag }}
+        args:
         imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
         command:
         - sh

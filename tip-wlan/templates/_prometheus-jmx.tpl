@@ -17,13 +17,13 @@
 {{- define "jmxPrometheus.initContainer" -}}
 {{- if .Values.global.monitoring.enableJmxPrometheusMetrics -}}
 - name: download-jmx-prometheus-exporter
-  image: alpine:latest
+  image: {{ .Values.global.downloadJmxExporterImage.registry }}/{{ .Values.global.downloadJmxExporterImage.repository }}/{{ .Values.global.downloadJmxExporterImage.tag }}
   command:
   - wget
   args:
   - -P
   - {{ include "jmxPrometheus.agentDir" . }}
-  - https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.14.0/jmx_prometheus_javaagent-0.14.0.jar
+  - {{ .Values.global.monitoring.jmxExporterAgentUrl }}
   volumeMounts:
 {{ include "jmxPrometheus.tmpVolumeMount" . | indent 2 }}
 {{- end -}}

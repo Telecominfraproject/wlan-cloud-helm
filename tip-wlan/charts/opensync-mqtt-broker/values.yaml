@@ -11,6 +11,11 @@ image:
 alpine:
   image: alpine:3.6
 
+testConnectionImage:
+  registry: docker.io
+  repository: library/alpine
+  tag: latest
+
 nameOverride: ""
 fullnameOverride: ""
 

@@ -29,7 +29,7 @@ spec:
       initContainers:
         {{- include "jmxPrometheus.initContainer" . | nindent 8 }}
         - name: wait-for-services
-          image: opsfleet/depends-on:latest
+          image: {{ .Values.waitForServicesImage.registry }}/{{ .Values.waitForServicesImage.repository }}/{{ .Values.waitForServicesImage.tag }}
           args:
           - "-service={{ .Release.Name }}-opensync-mqtt-broker"
           - "-service={{ .Release.Name }}-wlan-prov-service"
@@ -37,7 +37,7 @@ spec:
           - -check_interval=5
       {{- if .Values.global.integratedDeployment }}
         - name: {{ include "common.name" . }}-readiness-int-cloud
-          image: alpine
+          image: {{ .Values.intCloudReadiness.registry }}/{{ .Values.intCloudReadiness.repository }}/{{ .Values.intCloudReadiness.tag }}
           imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
           command:
           - sh

@@ -53,7 +53,7 @@ spec:
           done
       containers:
       - name: kafka-config
-        image: confluentinc/cp-kafka:5.0.1
+        image: {{ .Values.kafka.initJobConfig.image }}
         command: 
         - bash
         - -c

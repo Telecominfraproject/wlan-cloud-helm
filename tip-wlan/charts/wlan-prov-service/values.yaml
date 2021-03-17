@@ -13,6 +13,16 @@ image:
   name: wlan-prov-service
   tag: 0.0.1-SNAPSHOT
 
+waitForServicesImage:
+  registry: docker.io
+  repository: opsfleet/depends-on
+  tag: latest
+
+testConnectionImage:
+  registry: docker.io
+  repository: library/alpine
+  tag: latest
+
 nameOverride: ""
 fullnameOverride: ""
 

@@ -73,8 +73,14 @@ global:
     password: tip-read
 
   monitoring:
+    jmxExporterAgentUrl: https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.14.0/jmx_prometheus_javaagent-0.14.0.jar 
     enableJmxPrometheusMetrics: false
     enablePrometheusPodMonitors: false
+
+  downloadJmxExporterImage:
+    registry: docker.io
+    repository: library/alpine
+    tag: latest
 
 # DockerRegistry Secret
 createDockerRegistrySecret: true
