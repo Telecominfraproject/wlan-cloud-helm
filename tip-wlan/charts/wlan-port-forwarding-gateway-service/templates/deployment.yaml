@@ -24,7 +24,7 @@ spec:
       initContainers:
         {{- include "jmxPrometheus.initContainer" . | nindent 8 }}
         - name: {{ include "common.name" . }}-readiness-opensync-gw
-          image: {{ .Values.opensyncGwReadinessImage.registry }}/{{ .Values.opensyncGwReadinessImage.repository }}/{{ .Values.opensyncGwReadinessImage.tag }}
+          image: {{ .Values.opensyncGwReadinessImage.registry }}/{{ .Values.opensyncGwReadinessImage.repository }}:{{ .Values.opensyncGwReadinessImage.tag }}
           imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
           command:
           - sh

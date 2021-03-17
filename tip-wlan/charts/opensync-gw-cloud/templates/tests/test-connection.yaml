@@ -11,7 +11,7 @@ metadata:
 spec:
   containers:
     - name: wget
-      image: {{ .Values.testConnectionImage.registry }}/{{ .Values.testConnectionImage.repository }}/{{ .Values.testConnectionImage.tag }}
+      image: {{ .Values.testConnectionImage.registry }}/{{ .Values.testConnectionImage.repository }}:{{ .Values.testConnectionImage.tag }}
       command: ['wget']
       args: ['{{ include "common.fullname" . }}:{{ .Values.service.port1 }}']
   restartPolicy: Never

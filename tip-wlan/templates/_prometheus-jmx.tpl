@@ -17,7 +17,7 @@
 {{- define "jmxPrometheus.initContainer" -}}
 {{- if .Values.global.monitoring.enableJmxPrometheusMetrics -}}
 - name: download-jmx-prometheus-exporter
-  image: {{ .Values.global.downloadJmxExporterImage.registry }}/{{ .Values.global.downloadJmxExporterImage.repository }}/{{ .Values.global.downloadJmxExporterImage.tag }}
+  image: {{ .Values.global.downloadJmxExporterImage.registry }}/{{ .Values.global.downloadJmxExporterImage.repository }}:{{ .Values.global.downloadJmxExporterImage.tag }}
   command:
   - wget
   args:

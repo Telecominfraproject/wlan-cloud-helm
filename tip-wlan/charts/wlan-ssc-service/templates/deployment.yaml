@@ -26,7 +26,7 @@ spec:
       initContainers:
         {{- include "jmxPrometheus.initContainer" . | nindent 8 }}
         - name: wait-for-services
-          image: {{ .Values.waitForServicesImage.registry }}/{{ .Values.waitForServicesImage.repository }}/{{ .Values.waitForServicesImage.tag }}
+          image: {{ .Values.waitForServicesImage.registry }}/{{ .Values.waitForServicesImage.repository }}:{{ .Values.waitForServicesImage.tag }}
           args:
           - "-service={{ .Release.Name }}-kafka-headless"
           - "-service={{ .Release.Name }}-cassandra"
