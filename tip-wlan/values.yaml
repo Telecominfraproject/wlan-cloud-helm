@@ -130,6 +130,12 @@ kafka:
     - name: customer_events
       partitions: 1
       replicationFactor: 1
+    - name: location_metrics
+      partitions: 1
+      replicationFactor: 1
+    - name: location_events
+      partitions: 1
+      replicationFactor: 1
   creds:
     sslKeyPassword: *sslKeyPassword
     sslKeystorePassword: *sslKeystorePassword
