@@ -11,8 +11,10 @@ data:
             contact-points = [ "{{ include "cassandra.service" . }}:9042" ]
             load-balancing-policy.local-datacenter = datacenter1
             session-keyspace = tip_wlan_keyspace
+            request.consistency = LOCAL_QUORUM
         }
 
+        advanced.resolve-contact-points = false
         advanced.ssl-engine-factory {
             class = DefaultSslEngineFactory
             hostname-validation = false
