@@ -43,22 +43,11 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: "3.8"
-      - name: create RELEASE.md
-        run: |
-          cat << EOF > RELEASE.md
-          ## Installation
-
-          \`\`\`
-          $ helm repo add tip-wlan-cloud-helm-virtual-repo https://tip.jfrog.io/artifactory/tip-wlan-cloud-helm-virtual-repo --username <USERNAME> --password <PASSWORD>
-          $ helm install tip-wlan-cloud-helm-virtual-repo/tip-wlan --version ${GITHUB_REF#refs/tags/v}
-          \`\`\`
-
-          EOF
       - name: install keepachangelog
         run: pip install keepachangelog
-      - name: get changelog entry
+      - name: create release description
         continue-on-error: true
-        run: python .github/workflows/extract-changelog-entry.py ${GITHUB_REF#refs/tags/v} >> RELEASE.md
+        run: python .github/workflows/prepare-release-description.py ${GITHUB_REF#refs/tags/v} > RELEASE.md
       - name: download Helm chart artifact
         uses: actions/download-artifact@v2
         with:
