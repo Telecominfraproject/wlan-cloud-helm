@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - export servo MBeans with JMX Prometheus exporter [#65](https://github.com/Telecominfraproject/wlan-cloud-helm/pull/65)
 
+### Changed
+
+- make images for all init containers configurable [#67](https://github.com/Telecominfraproject/wlan-cloud-helm/pull/67)
+
 ## [1.0.0] - 2021-04-01
 
 ### Added
@@ -23,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - improved kafka setup templating [#53](https://github.com/Telecominfraproject/wlan-cloud-helm/pull/53)
 - improved values.yaml [#53](https://github.com/Telecominfraproject/wlan-cloud-helm/pull/53)
 - improved default values and added yaml anchors [#54](https://github.com/Telecominfraproject/wlan-cloud-helm/pull/54)
+- make SSC service able to reconnect to Cassandra [#70](https://github.com/Telecominfraproject/wlan-cloud-helm/pull/70)
 
 ### Removed
 
