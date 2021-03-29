@@ -16,17 +16,17 @@ image:
 waitForServicesImage:
   registry: docker.io
   repository: opsfleet/depends-on
-  tag: latest
+  tag: v1.0.0
 
 intCloudReadinessImage:
   registry: docker.io
   repository: library/alpine
-  tag: latest
+  tag: 3.13
 
 testConnectionImage:
   registry: docker.io
   repository: library/alpine
-  tag: latest
+  tag: 3.13
 
 nameOverride: ""
 fullnameOverride: ""

@@ -16,17 +16,17 @@ image:
 waitForServicesImage:
   registry: docker.io
   repository: opsfleet/depends-on
-  tag: latest
+  tag: v1.0.0
 
 testConnectionImage:
   registry: docker.io
   repository: library/alpine
-  tag: latest
+  tag: 3.13
 
 createDbSchemaImage:
   registry: docker.io
   repository: library/postgres
-  tag: latest
+  tag: 13.2-alpine
 
 nameOverride: ""
 fullnameOverride: ""

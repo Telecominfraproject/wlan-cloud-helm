@@ -17,7 +17,7 @@ image:
 testConnectionImage:
   registry: docker.io
   repository: library/alpine
-  tag: latest
+  tag: 3.13
 
 nameOverride: ""
 fullnameOverride: ""
