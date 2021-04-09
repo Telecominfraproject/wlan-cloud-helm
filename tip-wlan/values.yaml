@@ -42,7 +42,7 @@ global:
     username: tip-read
     password: tip-read
   # image pull policy
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
   # flag to enable debugging - application support required
   debugEnabled: false
@@ -73,14 +73,14 @@ global:
     password: tip-read
 
   monitoring:
-    jmxExporterAgentUrl: https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.14.0/jmx_prometheus_javaagent-0.14.0.jar 
     enableJmxPrometheusMetrics: false
     enablePrometheusPodMonitors: false
-
-  downloadJmxExporterImage:
-    registry: docker.io
-    repository: library/alpine
-    tag: 3.13
+    # Docker image containing the JMX exporter Java agent
+    jmxExporterAgent:
+      registry: docker.io
+      repository: bitnami/jmx-exporter
+      tag: 0.15.0
+      path: /opt/bitnami/jmx-exporter/jmx_prometheus_javaagent.jar
 
 # DockerRegistry Secret
 createDockerRegistrySecret: true

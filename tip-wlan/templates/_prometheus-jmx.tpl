@@ -16,14 +16,13 @@
 
 {{- define "jmxPrometheus.initContainer" -}}
 {{- if .Values.global.monitoring.enableJmxPrometheusMetrics -}}
-- name: download-jmx-prometheus-exporter
-  image: {{ .Values.global.downloadJmxExporterImage.registry }}/{{ .Values.global.downloadJmxExporterImage.repository }}:{{ .Values.global.downloadJmxExporterImage.tag }}
+- name: jmx-prometheus-exporter
+  image: {{ .Values.global.monitoring.jmxExporterAgent.registry }}/{{ .Values.global.monitoring.jmxExporterAgent.repository }}:{{ .Values.global.monitoring.jmxExporterAgent.tag }}
   command:
-  - wget
+  - cp
   args:
-  - -P
+  - {{ .Values.global.monitoring.jmxExporterAgent.path }}
   - {{ include "jmxPrometheus.agentDir" . }}
-  - {{ .Values.global.monitoring.jmxExporterAgentUrl }}
   volumeMounts:
 {{ include "jmxPrometheus.tmpVolumeMount" . | indent 2 }}
 {{- end -}}
@@ -69,7 +68,7 @@
 
 {{- define "jmxPrometheus.jvmOpts" -}}
 {{- if .Values.global.monitoring.enableJmxPrometheusMetrics -}}
--javaagent:{{ include "jmxPrometheus.agentDir" . }}/jmx_prometheus_javaagent-0.14.0.jar={{ include "jmxPrometheus.portNumber" . }}:{{ include "jmxPrometheus.configPath" . }}
+-javaagent:{{ include "jmxPrometheus.agentDir" . }}/{{ .Values.global.monitoring.jmxExporterAgent.path | base }}={{ include "jmxPrometheus.portNumber" . }}:{{ include "jmxPrometheus.configPath" . }}
 {{- end -}}
 {{- end -}}
 
