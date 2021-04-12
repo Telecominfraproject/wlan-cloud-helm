@@ -7,5 +7,5 @@ version: 0.1.0
 
 dependencies:
   - name: efs-provisioner
-    version: 1.0.0
+    version: 1.0.1
     condition: efs-provisioner.enabled

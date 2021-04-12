@@ -4,4 +4,4 @@
 apiVersion: v1
 description: EFS-Provisioner Chart to be used by other charts for file storage
 name: efs-provisioner
-version: 1.0.0
+version: 1.0.1
