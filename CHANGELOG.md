@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - export servo MBeans with JMX Prometheus exporter [#65](https://github.com/Telecominfraproject/wlan-cloud-helm/pull/65)
+- render post-deployment message [#73](https://github.com/Telecominfraproject/wlan-cloud-helm/pull/73)
 
 ## [1.0.0] - 2021-04-01
 
