@@ -1,0 +1,20 @@
+
+Your TIP WLAN cloud controller Helm deployment has been successful!
+
+**************************************************************************************
+*** PLEASE BE PATIENT: Some components may need up to 5 minutes to fully start up. ***
+**************************************************************************************
+
+You can check the status with the following command:
+
+kubectl get pods -n {{ .Release.Namespace }} -w
+
+{{ if gt (len (index .Values "wlan-cloud-static-portal").ingress.hosts) 0 }}
+The dashboard should be available at:
+http://{{ (index (index .Values "wlan-cloud-static-portal").ingress.hosts 0).host }}
+
+Login with the following credentials:
+
+Username: support@example.com
+Password: support
+{{ end }}
