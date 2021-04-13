@@ -11,6 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - export servo MBeans with JMX Prometheus exporter [#65](https://github.com/Telecominfraproject/wlan-cloud-helm/pull/65)
 
+## [1.0.1] - 2021-04-12
+
+### Changed
+
+- bump cloud controller version to 1.0.1
+
+### Fixed
+
+- correct SQL and CQL schema URLs
+
 ## [1.0.0] - 2021-04-01
 
 ### Added
