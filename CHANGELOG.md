@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - export servo MBeans with JMX Prometheus exporter [#65](https://github.com/Telecominfraproject/wlan-cloud-helm/pull/65)
 - render post-deployment message [#73](https://github.com/Telecominfraproject/wlan-cloud-helm/pull/73)
 
+### Changed
+
+- migrate to networking.k8s.io/v1 API version for Ingress resources [#74](https://github.com/Telecominfraproject/wlan-cloud-helm/pull/74)
+
 ## [1.0.1] - 2021-04-12
 
 ### Changed
