@@ -1,0 +1,129 @@
+shared:
+  service:
+    srv-https-annotations: &srv-https-annotations
+      kubernetes.io/ingress.class: alb
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/group.name: wlan-cloudsdk
+      alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:eu-central-1:0123456789:certificate/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+      alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_302"}}'
+
+# Annotations for namespace
+annotations: {
+    "helm.sh/resource-policy": keep
+}
+dockerRegistrySecret: ewoJImF1dGhzIjogewoJCSJ0aXAtdGlwLXdsYW4tY2xvdWQtZG9ja2VyLXJlcG8uamZyb2cuaW8iOiB7CgkJCSJhdXRoIjogImRHbHdMWEpsWVdRNmRHbHdMWEpsWVdRPSIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJCSJVc2VyLUFnZW50IjogIkRvY2tlci1DbGllbnQvMTkuMDMuOCAobGludXgpIgoJfQp9
+
+opensync-gw-static:
+  enabled: false
+
+opensync-gw-cloud:
+  service:
+    type: LoadBalancer
+    annotations:
+      external-dns.alpha.kubernetes.io/hostname: opensync-controller.cloudsdk.lab.wlan.tip.build,opensync-redirector.cloudsdk.lab.wlan.tip.build
+      service.beta.kubernetes.io/aws-load-balancer-type: "nlb-ip"
+  enabled: true
+  externalhost:
+    address:
+      ovsdb: opensync-controller.cloudsdk.lab.wlan.tip.build
+      mqtt: opensync-mqtt-broker.cloudsdk.lab.wlan.tip.build
+  persistence:
+    enabled: false
+  image:
+    name: opensync-gateway-cloud
+
+opensync-mqtt-broker:
+  service:
+    type: LoadBalancer
+    annotations:
+      external-dns.alpha.kubernetes.io/hostname: opensync-mqtt-broker.cloudsdk.lab.wlan.tip.build
+      service.beta.kubernetes.io/aws-load-balancer-type: "nlb-ip"
+  enabled: true
+  persistence:
+    enabled: true
+    storageClass: "gp2"
+
+wlan-cloud-graphql-gw:
+  enabled: true
+  ingress:
+    annotations:
+      <<: *srv-https-annotations
+    enabled: true
+    alb_https_redirect: true
+    hosts:
+    - host: wlan-graphql.cloudsdk.lab.wlan.tip.build
+      paths: [
+        /*
+        ]
+  env:
+    portalsvc: wlan-portal-svc.cloudsdk.lab.wlan.tip.build
+
+wlan-cloud-static-portal:
+  enabled: true
+  env:
+    graphql: https://wlan-graphql.cloudsdk.lab.wlan.tip.build
+  service:
+    type: NodePort
+  ingress:
+    annotations:
+      <<: *srv-https-annotations
+    alb_https_redirect: true
+    hosts:
+      - host: wlan-ui.cloudsdk.lab.wlan.tip.build
+        paths: [
+           /*
+          ]
+wlan-portal-service:
+  service:
+    type: NodePort
+    nodePort_static: false
+  enabled: true
+  persistence:
+    enabled: true
+    storageClass: gp2
+  tsp:
+    host: wlan-portal-svc.cloudsdk.lab.wlan.tip.build
+  ingress:
+    enabled: true
+    alb_https_redirect: true
+    tls: []
+    annotations:
+      <<: *srv-https-annotations
+      alb.ingress.kubernetes.io/backend-protocol: HTTPS
+      alb.ingress.kubernetes.io/healthcheck-protocol: HTTPS
+      alb.ingress.kubernetes.io/healthcheck-port: traffic-port
+      alb.ingress.kubernetes.io/healthcheck-path: /ping
+    hosts:
+      - host: wlan-portal-svc.cloudsdk.lab.wlan.tip.build
+        paths: [
+           /*
+          ]
+
+wlan-prov-service:
+  enabled: true
+
+wlan-ssc-service:
+  enabled: true
+
+wlan-spc-service:
+  enabled: true
+
+wlan-port-forwarding-gateway-service:
+  enabled: true
+
+kafka:
+  enabled: true
+  persistence:
+
+cassandra:
+  enabled: true
+  persistence:
+    enabled: true
+    storageClass: gp2
+
+postgresql:
+  enabled: true
+  persistence:
+    enabled: true
+    storageClass: gp2
