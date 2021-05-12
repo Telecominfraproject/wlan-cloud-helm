@@ -2,7 +2,7 @@ shared:
   service:
     srv-https-annotations: &srv-https-annotations
       kubernetes.io/ingress.class: alb
-      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/scheme: internal
       alb.ingress.kubernetes.io/group.name: wlan-cloudsdk
       alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:eu-central-1:0123456789:certificate/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
       alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
@@ -23,6 +23,7 @@ opensync-gw-cloud:
     annotations:
       external-dns.alpha.kubernetes.io/hostname: opensync-controller.cloudsdk.lab.wlan.tip.build,opensync-redirector.cloudsdk.lab.wlan.tip.build
       service.beta.kubernetes.io/aws-load-balancer-type: "nlb-ip"
+      service.beta.kubernetes.io/aws-load-balancer-internal: "true"
   enabled: true
   externalhost:
     address:
@@ -39,6 +40,7 @@ opensync-mqtt-broker:
     annotations:
       external-dns.alpha.kubernetes.io/hostname: opensync-mqtt-broker.cloudsdk.lab.wlan.tip.build
       service.beta.kubernetes.io/aws-load-balancer-type: "nlb-ip"
+      service.beta.kubernetes.io/aws-load-balancer-internal: "true"
   enabled: true
   persistence:
     enabled: true
