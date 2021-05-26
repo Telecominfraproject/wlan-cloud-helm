@@ -11,7 +11,7 @@ replicaCount: 1
 
 image:
   name: wlan-ssc-service
-  tag: 1.1.0-SNAPSHOT
+  tag: 1.2.0-SNAPSHOT
 
 nameOverride: ""
 fullnameOverride: ""
