@@ -62,8 +62,8 @@ spec:
             apt update
             apt -y install curl
             echo "***** Fetching latest cloud-sdk-schema-postgresql for DB and Tables sql from JFrog *****"
-            curl --insecure -u$SCHEMA_REPO_USER:$SCHEMA_REPO_PASSWORD -O "https://tip-tip-wlan-cloud-docker-repo.jfrog.io/artifactory/tip-wlan-cloud-schemas/0.0.1-SNAPSHOT/sql/cloud-sdk-schema-postgresql-db-user.sql"
-            curl --insecure -u$SCHEMA_REPO_USER:$SCHEMA_REPO_PASSWORD -O "https://tip-tip-wlan-cloud-docker-repo.jfrog.io/artifactory/tip-wlan-cloud-schemas/0.0.1-SNAPSHOT/sql/cloud-sdk-schema-postgresql-tables.sql"
+            curl --insecure -u$SCHEMA_REPO_USER:$SCHEMA_REPO_PASSWORD -O "https://tip-tip-wlan-cloud-docker-repo.jfrog.io/artifactory/tip-wlan-cloud-schemas/1.2.0-SNAPSHOT/sql/cloud-sdk-schema-postgresql-db-user.sql"
+            curl --insecure -u$SCHEMA_REPO_USER:$SCHEMA_REPO_PASSWORD -O "https://tip-tip-wlan-cloud-docker-repo.jfrog.io/artifactory/tip-wlan-cloud-schemas/1.2.0-SNAPSHOT/sql/cloud-sdk-schema-postgresql-tables.sql"
             echo "***** Now executing cloud-sdk-schema-postgresql-db-user.sql on host {{ $pg }} and creating db prov_db and user tip_user using User Postgres. This uses full client-cert authentication *****"
             ### Observed that PSQL was unable to resolve the Postgres-service host because the postgres service wasnt
             ### really ready when running Postgres in Master-Slave config... hence the below retry-logic

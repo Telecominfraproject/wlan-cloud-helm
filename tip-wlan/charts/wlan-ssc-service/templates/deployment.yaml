@@ -54,7 +54,7 @@ spec:
             apt update
             apt -y install curl
             echo "***** Fetching cloud-sdk-schema-cassandra.cql from JFrog *****"
-            curl --insecure -u$SCHEMA_REPO_USER:$SCHEMA_REPO_PASSWORD -O "https://tip-tip-wlan-cloud-docker-repo.jfrog.io/artifactory/tip-wlan-cloud-schemas/0.0.1-SNAPSHOT/cql/cloud-sdk-schema-cassandra.cql"
+            curl --insecure -u$SCHEMA_REPO_USER:$SCHEMA_REPO_PASSWORD -O "https://tip-tip-wlan-cloud-docker-repo.jfrog.io/artifactory/tip-wlan-cloud-schemas/1.2.0-SNAPSHOT/cql/cloud-sdk-schema-cassandra.cql"
             echo "***** Now executing cloud-sdk-schema-cassandra.cql and creating/updating schema on Cassandra instance *****"
             counter=0
             status=1
