@@ -149,6 +149,7 @@ kafka:
   enabled: false
   replicaCount: 1
   image:
+    registry: tip-docker-cache-repo.jfrog.io
     debug: true
   auth:
     clientProtocol: mtls
@@ -190,6 +191,7 @@ cassandra:
   enabled: false
   tlsEncryptionSecretName: tip-common-cassandra-certs
   image:
+    registry: tip-docker-cache-repo.jfrog.io
     debug: true
   persistence:
     enabled: true
@@ -221,6 +223,7 @@ postgresql:
   enabled: false
   postgresqlDatabase: tip
   image:
+    registry: tip-docker-cache-repo.jfrog.io
     debug: true
   metrics:
     enabled: false
