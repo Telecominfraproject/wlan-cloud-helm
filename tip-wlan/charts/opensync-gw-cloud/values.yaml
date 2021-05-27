@@ -13,6 +13,21 @@ image:
   name: opensync-gateway-cloud
   tag: 1.1.0-SNAPSHOT
 
+waitForServicesImage:
+  registry: tip-docker-cache-repo.jfrog.io
+  repository: opsfleet/depends-on
+  tag: v1.0.0
+
+intCloudReadinessImage:
+  registry: tip-docker-cache-repo.jfrog.io
+  repository: library/alpine
+  tag: 3.13
+
+testConnectionImage:
+  registry: tip-docker-cache-repo.jfrog.io
+  repository: library/alpine
+  tag: 3.13
+
 nameOverride: ""
 fullnameOverride: ""
 

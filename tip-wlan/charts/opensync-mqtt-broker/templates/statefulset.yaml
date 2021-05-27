@@ -45,7 +45,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: {{ include "common.name" . }}-init-dir-ownership-change
-          image: {{ .Values.alpine.image }}
+          image: {{ .Values.alpine.registry }}/{{ .Values.alpine.repository }}:{{ .Values.alpine.tag }}
           imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
           # Change ownership to `mosquitto` user for a mounted volume
           command:
@@ -63,7 +63,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: {{ .Values.image.name }}:{{ .Values.image.tag }}
+          image: {{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
           {{- if .Values.probes.enabled }}
           livenessProbe:

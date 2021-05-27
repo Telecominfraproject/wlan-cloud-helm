@@ -13,6 +13,16 @@ image:
   name: wlan-prov-service
   tag: 1.1.0-SNAPSHOT
 
+waitForServicesImage:
+  registry: tip-docker-cache-repo.jfrog.io
+  repository: opsfleet/depends-on
+  tag: v1.0.0
+
+testConnectionImage:
+  registry: tip-docker-cache-repo.jfrog.io
+  repository: library/alpine
+  tag: 3.13
+
 nameOverride: ""
 fullnameOverride: ""
 
@@ -128,7 +138,9 @@ affinity: {}
 
 postgresql:
   url: postgresql
-  image: postgres:11
+  registry: tip-docker-cache-repo.jfrog.io
+  repository: library/postgres
+  tag: 11
 
 env:
   protocol: https

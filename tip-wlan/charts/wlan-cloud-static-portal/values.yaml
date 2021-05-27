@@ -14,6 +14,11 @@ image:
   tag: 1.1.0-SNAPSHOT
   pullPolicy: IfNotPresent
 
+testConnectionImage:
+  registry: tip-docker-cache-repo.jfrog.io
+  repository: library/alpine
+  tag: 3.13
+
 nameOverride: ""
 fullnameOverride: ""
 

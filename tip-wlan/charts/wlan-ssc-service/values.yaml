@@ -13,6 +13,16 @@ image:
   name: wlan-ssc-service
   tag: 1.1.0-SNAPSHOT
 
+waitForServicesImage:
+  registry: tip-docker-cache-repo.jfrog.io
+  repository: opsfleet/depends-on
+  tag: v1.0.0
+
+testConnectionImage:
+  registry: tip-docker-cache-repo.jfrog.io
+  repository: library/alpine
+  tag: 3.13
+
 nameOverride: ""
 fullnameOverride: ""
 
@@ -124,7 +134,9 @@ kafka:
 cassandra:
   url: cassandra-headless
   port: 9042
-  image: cassandra:3.11.6
+  registry: tip-docker-cache-repo.jfrog.io
+  repository: library/cassandra
+  tag: 3.11.6
 
 env:
   protocol: https

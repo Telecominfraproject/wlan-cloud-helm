@@ -25,7 +25,7 @@ spec:
       initContainers:
         {{- include "jmxPrometheus.initContainer" . | nindent 8 }}
         - name: wait-for-services
-          image: opsfleet/depends-on:latest
+          image: {{ .Values.waitForServicesImage.registry }}/{{ .Values.waitForServicesImage.repository }}:{{ .Values.waitForServicesImage.tag }}
           args:
           - "-service={{ .Release.Name }}-postgresql"
           - -check_interval=5
@@ -53,7 +53,7 @@ spec:
               secretKeyRef:
                 name: {{ include "common.fullname" . }}-creds
                 key: schema-repo-password
-          image: {{ .Values.postgresql.image }}
+          image: {{ .Values.postgresql.registry }}/{{ .Values.postgresql.repository }}:{{ .Values.postgresql.tag }}
           imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
           command:
           - sh

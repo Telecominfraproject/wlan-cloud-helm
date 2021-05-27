@@ -37,12 +37,15 @@ global:
   nodePortPrefix: 302
   nodePortPrefixExt: 304
 
+  imageRoot:
+    registry: tip-docker-cache-repo.jfrog.io
+
   repository:
     registry: tip-tip-wlan-cloud-docker-repo.jfrog.io
     username: tip-read
     password: tip-read
   # image pull policy
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
   # flag to enable debugging - application support required
   debugEnabled: false
@@ -75,6 +78,12 @@ global:
   monitoring:
     enableJmxPrometheusMetrics: false
     enablePrometheusPodMonitors: false
+    # Docker image containing the JMX exporter Java agent
+    jmxExporterAgent:
+      registry: tip-docker-cache-repo.jfrog.io
+      repository: bitnami/jmx-exporter
+      tag: 0.15.0
+      path: /opt/bitnami/jmx-exporter/jmx_prometheus_javaagent.jar
 
 # DockerRegistry Secret
 createDockerRegistrySecret: true
@@ -143,6 +152,7 @@ kafka:
   enabled: false
   replicaCount: 1
   image:
+    registry: tip-docker-cache-repo.jfrog.io
     debug: true
   auth:
     clientProtocol: mtls
@@ -170,6 +180,8 @@ kafka:
         release: prometheus-operator
   zookeeper:
     enabled: true
+    image:
+      registry: tip-docker-cache-repo.jfrog.io
     persistence:
       enabled: true
   resources:
@@ -184,6 +196,7 @@ cassandra:
   enabled: false
   tlsEncryptionSecretName: tip-common-cassandra-certs
   image:
+    registry: tip-docker-cache-repo.jfrog.io
     debug: true
   persistence:
     enabled: true
@@ -215,6 +228,7 @@ postgresql:
   enabled: false
   postgresqlDatabase: tip
   image:
+    registry: tip-docker-cache-repo.jfrog.io
     debug: true
   metrics:
     enabled: false
@@ -240,6 +254,8 @@ postgresql:
     storageClass: glusterfs-storage
   volumePermissions:
     enabled: true
+    image:
+      registry: tip-docker-cache-repo.jfrog.io
   livenessProbe:
     enabled: false
   readinessProbe:
@@ -261,7 +277,7 @@ postgresql:
   primary:
     extraInitContainers:
     - command: [ "sh", "-c", "chmod 0600 /opt/bitnami/postgresql/certs/postgresclientkey_dec.pem" ]
-      image: busybox:latest
+      image: tip-docker-cache-repo.jfrog.io/library/busybox:latest
       name: chmod-client-cert-additional
       securityContext:
         runAsUser: 0
