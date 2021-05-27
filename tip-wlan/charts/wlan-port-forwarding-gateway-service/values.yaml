@@ -14,12 +14,12 @@ image:
   tag: 0.0.1-SNAPSHOT
 
 opensyncGwReadinessImage:
-  registry: docker.io
+  registry: tip-docker-cache-repo.jfrog.io
   repository: library/alpine
   tag: 3.13
 
 testConnectionImage:
-  registry: docker.io
+  registry: tip-docker-cache-repo.jfrog.io
   repository: library/alpine
   tag: 3.13
 

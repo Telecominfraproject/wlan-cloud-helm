@@ -14,17 +14,17 @@ image:
   tag: 0.0.1-SNAPSHOT
 
 waitForServicesImage:
-  registry: docker.io
+  registry: tip-docker-cache-repo.jfrog.io
   repository: opsfleet/depends-on
   tag: v1.0.0
 
 intCloudReadinessImage:
-  registry: docker.io
+  registry: tip-docker-cache-repo.jfrog.io
   repository: library/alpine
   tag: 3.13
 
 testConnectionImage:
-  registry: docker.io
+  registry: tip-docker-cache-repo.jfrog.io
   repository: library/alpine
   tag: 3.13
 

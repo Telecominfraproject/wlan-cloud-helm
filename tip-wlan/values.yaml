@@ -77,7 +77,7 @@ global:
     enablePrometheusPodMonitors: false
     # Docker image containing the JMX exporter Java agent
     jmxExporterAgent:
-      registry: docker.io
+      registry: tip-docker-cache-repo.jfrog.io
       repository: bitnami/jmx-exporter
       tag: 0.15.0
       path: /opt/bitnami/jmx-exporter/jmx_prometheus_javaagent.jar
