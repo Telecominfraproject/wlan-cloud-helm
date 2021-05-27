@@ -138,7 +138,9 @@ affinity: {}
 
 postgresql:
   url: postgresql
-  image: postgres:11
+  registry: tip-docker-cache-repo.jfrog.io
+  repository: library/postgres
+  tag: 11
 
 env:
   protocol: https

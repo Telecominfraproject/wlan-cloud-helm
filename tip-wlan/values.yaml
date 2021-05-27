@@ -37,6 +37,9 @@ global:
   nodePortPrefix: 302
   nodePortPrefixExt: 304
 
+  imageRoot:
+    registry: tip-docker-cache-repo.jfrog.io
+
   repository:
     registry: tip-tip-wlan-cloud-docker-repo.jfrog.io
     username: tip-read
@@ -177,6 +180,8 @@ kafka:
         release: prometheus-operator
   zookeeper:
     enabled: true
+    image:
+      registry: tip-docker-cache-repo.jfrog.io
     persistence:
       enabled: true
   resources:
@@ -249,6 +254,8 @@ postgresql:
     storageClass: glusterfs-storage
   volumePermissions:
     enabled: true
+    image:
+      registry: tip-docker-cache-repo.jfrog.io
   livenessProbe:
     enabled: false
   readinessProbe:
@@ -270,7 +277,7 @@ postgresql:
   primary:
     extraInitContainers:
     - command: [ "sh", "-c", "chmod 0600 /opt/bitnami/postgresql/certs/postgresclientkey_dec.pem" ]
-      image: busybox:latest
+      image: tip-docker-cache-repo.jfrog.io/library/busybox:latest
       name: chmod-client-cert-additional
       securityContext:
         runAsUser: 0

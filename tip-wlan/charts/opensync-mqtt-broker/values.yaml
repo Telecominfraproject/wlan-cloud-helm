@@ -5,11 +5,14 @@
 replicaCount: 1
 
 image:
-  name: eclipse-mosquitto
+  registry: tip-docker-cache-repo.jfrog.io
+  repository: library/eclipse-mosquitto
   tag: 2.0.3
 
 alpine:
-  image: alpine:3.6
+  registry: tip-docker-cache-repo.jfrog.io
+  repository: library/alpine
+  tag: 3.6
 
 testConnectionImage:
   registry: tip-docker-cache-repo.jfrog.io

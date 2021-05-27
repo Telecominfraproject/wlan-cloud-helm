@@ -53,7 +53,7 @@ spec:
               secretKeyRef:
                 name: {{ include "common.fullname" . }}-creds
                 key: schema-repo-password
-          image: {{ .Values.postgresql.image }}
+          image: {{ .Values.postgresql.registry }}/{{ .Values.postgresql.repository }}:{{ .Values.postgresql.tag }}
           imagePullPolicy: {{ .Values.pullPolicy | default .Values.global.pullPolicy }}
           command:
           - sh
