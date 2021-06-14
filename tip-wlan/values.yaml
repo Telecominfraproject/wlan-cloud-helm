@@ -190,7 +190,7 @@ kafka:
       memory: 2Gi
     requests:
       cpu: 10m
-      memory: 700Mi
+      memory: 1400Mi
 
 cassandra:
   enabled: false
