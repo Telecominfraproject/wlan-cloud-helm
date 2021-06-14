@@ -1,9 +1,9 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "common.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
-{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
 apiVersion: networking.k8s.io/v1
-{{- else if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+{{- else if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1/Ingress" }}
 apiVersion: networking.k8s.io/v1beta1
 {{- else -}}
 apiVersion: extensions/v1beta1
@@ -38,11 +38,11 @@ spec:
         paths:
         {{- if $.Values.ingress.lb_https_redirect }}
           - path: /*
-            {{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
+            {{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
             pathType: ImplementationSpecific
             {{- end }}
             backend:
-              {{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
+              {{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
               service:
                 name: ssl-redirect
                 port:
@@ -54,11 +54,11 @@ spec:
         {{- end }}
         {{- range .paths }}
           - path: {{ . }}
-            {{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
+            {{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
             pathType: ImplementationSpecific
             {{- end }}
             backend:
-              {{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
+              {{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
               service:
                 name: {{ $fullName }}
                 port:
