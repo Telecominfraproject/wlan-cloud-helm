@@ -184,13 +184,21 @@ kafka:
       registry: tip-docker-cache-repo.jfrog.io
     persistence:
       enabled: true
+    resources:
+      limits:
+        cpu: 1
+        memory: 500Gi
+      requests:
+        cpu: 10m
+        memory: 400Mi
+
   resources:
     limits:
       cpu: 1
       memory: 2Gi
     requests:
       cpu: 10m
-      memory: 700Mi
+      memory: 1100Mi
 
 cassandra:
   enabled: false
