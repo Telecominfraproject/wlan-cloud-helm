@@ -42,8 +42,8 @@ global:
 
   repository:
     registry: tip-tip-wlan-cloud-docker-repo.jfrog.io
-    username: tip-read
-    password: tip-read
+    # username: username
+    # password: password
   # image pull policy
   pullPolicy: IfNotPresent
 
@@ -86,7 +86,7 @@ global:
       path: /opt/bitnami/jmx-exporter/jmx_prometheus_javaagent.jar
 
 # DockerRegistry Secret
-createDockerRegistrySecret: true
+createDockerRegistrySecret: false
 
 # Enabling components under Tip-wlan
 opensync-gw-static:
