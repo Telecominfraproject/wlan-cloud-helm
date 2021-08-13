@@ -11,7 +11,7 @@ replicaCount: 1
 
 image:
   name: wlan-integrated-cloud-component-service
-  tag: 1.2.0-SNAPSHOT
+  tag: 1.3.0-SNAPSHOT
 
 waitForServicesImage:
   registry: tip-docker-cache-repo.jfrog.io
